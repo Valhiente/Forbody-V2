@@ -1,18 +1,33 @@
 // ========================================
-// FORBODY V2 - JAVASCRIPT INTERACTIONS
+// FORBODY V2 - PREMIUM INTERACTIONS
 // ========================================
 
-// ========================================
-// 1. NAVIGATION & HEADER
-// ========================================
+// 1. INITIALIZE AOS (Animate On Scroll)
+document.addEventListener('DOMContentLoaded', () => {
+  AOS.init({
+    duration: 800,
+    once: true,
+    offset: 100,
+    easing: 'ease-out-cubic',
+  });
+  
+  // Call dynamic data fetcher
+  fetchTestimonials();
+});
 
+// 2. HEADER & NAVIGATION
 const header = document.getElementById('header');
 const navTabs = document.querySelectorAll('.nav-tab');
-const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-const mobileMenu = document.getElementById('mobileMenu');
 
-// Update active nav tab on scroll
 window.addEventListener('scroll', () => {
+  // Sticky header effect
+  if (window.scrollY > 50) {
+    header.classList.add('scrolled');
+  } else {
+    header.classList.remove('scrolled');
+  }
+
+  // Active tab spy
   let current = '';
   const sections = document.querySelectorAll('section[id]');
   
@@ -25,171 +40,75 @@ window.addEventListener('scroll', () => {
   });
   
   navTabs.forEach(tab => {
-    tab.classList.remove('active', 'text-forbody-red', 'bg-forbody-red/20');
+    tab.classList.remove('text-white', 'bg-white/5');
+    tab.classList.add('text-forbody-silver');
     if (tab.getAttribute('href') === `#${current}`) {
-      tab.classList.add('active', 'text-forbody-red', 'bg-forbody-red/20');
+      tab.classList.remove('text-forbody-silver');
+      tab.classList.add('text-white', 'bg-white/5');
     }
   });
-  
-  // Header shadow on scroll
-  if (window.pageYOffset > 50) {
-    header.style.boxShadow = '0 10px 30px rgba(227, 6, 19, 0.1)';
+});
+
+// 3. MOBILE MENU
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const closeMobileMenuBtn = document.getElementById('closeMobileMenuBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+const mobileLinks = document.querySelectorAll('.mobile-link');
+
+function toggleMobileMenu() {
+  const isOpen = mobileMenu.style.opacity === '1';
+  if (isOpen) {
+    mobileMenu.style.opacity = '0';
+    mobileMenu.style.pointerEvents = 'none';
+    document.body.style.overflow = '';
   } else {
-    header.style.boxShadow = 'none';
+    mobileMenu.style.opacity = '1';
+    mobileMenu.style.pointerEvents = 'auto';
+    document.body.style.overflow = 'hidden';
   }
-});
+}
 
-// Mobile menu toggle
-mobileMenuBtn.addEventListener('click', () => {
-  mobileMenu.classList.toggle('hidden');
-});
+mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+closeMobileMenuBtn.addEventListener('click', toggleMobileMenu);
+mobileLinks.forEach(link => link.addEventListener('click', toggleMobileMenu));
 
-// Close mobile menu on link click
-document.querySelectorAll('#mobileMenu a').forEach(link => {
-  link.addEventListener('click', () => {
-    mobileMenu.classList.add('hidden');
+// 4. ANIMATED COUNTERS (Resultados)
+const counters = document.querySelectorAll('.stat-counter');
+let hasAnimated = false;
+
+const animateCounters = () => {
+  counters.forEach(counter => {
+    const target = +counter.getAttribute('data-target');
+    const duration = 2000; // ms
+    const increment = target / (duration / 16); // 60fps
+    
+    let current = 0;
+    const updateCounter = () => {
+      current += increment;
+      if (current < target) {
+        counter.innerText = Math.ceil(current);
+        requestAnimationFrame(updateCounter);
+      } else {
+        counter.innerText = target;
+      }
+    };
+    updateCounter();
   });
-});
+};
 
-// ========================================
-// 2. REVEAL ON SCROLL
-// ========================================
-
-const reveals = document.querySelectorAll('.reveal');
-
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('active');
-      // Optional: Stop observing after animation
-      // observer.unobserve(entry.target);
-    } else {
-      entry.target.classList.remove('active');
+// Intersection Observer for counters
+const statsSection = document.getElementById('resultados');
+if (statsSection) {
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && !hasAnimated) {
+      animateCounters();
+      hasAnimated = true;
     }
-  });
-}, {
-  threshold: 0.1,
-  rootMargin: '0px 0px -100px 0px'
-});
+  }, { threshold: 0.5 });
+  observer.observe(statsSection);
+}
 
-reveals.forEach(reveal => {
-  observer.observe(reveal);
-});
-
-// ========================================
-// 3. FAQ ACCORDION
-// ========================================
-
-const faqToggles = document.querySelectorAll('.faq-toggle');
-
-faqToggles.forEach(toggle => {
-  toggle.addEventListener('click', () => {
-    const item = toggle.parentElement;
-    const content = item.querySelector('.faq-content');
-    const isOpen = !content.classList.contains('hidden');
-    
-    // Close all others
-    document.querySelectorAll('.faq-content').forEach(c => {
-      c.classList.add('hidden');
-    });
-    
-    // Toggle icon
-    document.querySelectorAll('.faq-toggle i').forEach(icon => {
-      icon.classList.remove('fa-minus');
-      icon.classList.add('fa-plus');
-    });
-    
-    // Open selected
-    if (!isOpen) {
-      content.classList.remove('hidden');
-      toggle.querySelector('i').classList.remove('fa-plus');
-      toggle.querySelector('i').classList.add('fa-minus');
-    }
-  });
-});
-
-// ========================================
-// 4. FORM SUBMISSION
-// ========================================
-
-const contactForm = document.getElementById('contactForm');
-const submitBtn = contactForm.querySelector('button[type="submit"]');
-const formStatus = document.getElementById('formStatus');
-
-contactForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  
-  // Get form data
-  const formData = {
-    name: document.getElementById('formName').value,
-    email: document.getElementById('formEmail').value,
-    phone: document.getElementById('formPhone').value,
-    message: document.getElementById('formMessage').value
-  };
-  
-  // Show loading state
-  submitBtn.disabled = true;
-  submitBtn.innerHTML = '<div class="loading"></div>';
-  formStatus.textContent = 'Enviando...';
-  formStatus.className = 'text-sm text-center text-forbody-silver';
-  
-  try {
-    // Simulate API call (replace with actual endpoint)
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // Success response
-    submitBtn.disabled = false;
-    submitBtn.innerHTML = '<i class="fas fa-check"></i> Enviado com sucesso!';
-    submitBtn.classList.add('bg-green-600');
-    formStatus.textContent = 'Obrigado! Nossa equipe entrará em contato em breve.';
-    formStatus.className = 'text-sm text-center text-green-400 font-medium';
-    
-    // Reset form
-    contactForm.reset();
-    
-    // Reset button after 3s
-    setTimeout(() => {
-      submitBtn.innerHTML = '<span>Enviar Consulta</span><i class="fas fa-paper-plane"></i>';
-      submitBtn.classList.remove('bg-green-600');
-      submitBtn.disabled = false;
-      formStatus.textContent = '';
-    }, 3000);
-    
-  } catch (error) {
-    // Error response
-    submitBtn.disabled = false;
-    submitBtn.innerHTML = '<i class="fas fa-times"></i> Erro ao enviar';
-    submitBtn.classList.add('bg-red-600');
-    formStatus.textContent = 'Erro ao enviar. Tente novamente.';
-    formStatus.className = 'text-sm text-center text-red-400';
-    
-    // Reset button after 3s
-    setTimeout(() => {
-      submitBtn.innerHTML = '<span>Enviar Consulta</span><i class="fas fa-paper-plane"></i>';
-      submitBtn.classList.remove('bg-red-600');
-      submitBtn.disabled = false;
-    }, 3000);
-  }
-});
-
-// ========================================
-// 5. CTA BUTTONS
-// ========================================
-
-const ctaButtons = document.querySelectorAll('.cta-button');
-
-ctaButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    // Scroll to contact form
-    const footer = document.getElementById('footer');
-    footer.scrollIntoView({ behavior: 'smooth' });
-  });
-});
-
-// ========================================
-// 6. SMOOTH SCROLL BEHAVIOR
-// ========================================
-
+// 5. SMOOTH SCROLL
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', function (e) {
     const href = this.getAttribute('href');
@@ -206,54 +125,70 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
-// ========================================
-// 7. PERFORMANCE OPTIMIZATIONS
-// ========================================
+// 6. FIREBASE DYNAMIC CONTENT SIMULATION (Placeholder)
+// In a real scenario, this would import Firebase SDK and fetch from Firestore.
+async function fetchTestimonials() {
+  const container = document.getElementById('testimonials-container');
+  if (!container) return;
 
-// Lazy load images (if added in future)
-if ('IntersectionObserver' in window) {
-  const imageObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const img = entry.target;
-        img.src = img.dataset.src;
-        img.classList.add('loaded');
-        imageObserver.unobserve(img);
+  try {
+    // Simulate network delay for Firebase fetch
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    // Fallback/Default data (simulate what Firestore would return)
+    const testimonials = [
+      {
+        id: 1,
+        name: "Marcos Silva",
+        time: "Aluno há 1 ano",
+        text: "Nunca consegui manter a rotina de treinos até conhecer a Forbody. O ambiente premium e os professores mudaram minha perspectiva.",
+        initial: "M"
+      },
+      {
+        id: 2,
+        name: "Carla Mendes",
+        time: "Aluna há 6 meses",
+        text: "O app integrado faz toda a diferença. Consigo ver minha evolução de cargas e me sinto muito mais motivada a não faltar.",
+        initial: "C"
+      },
+      {
+        id: 3,
+        name: "Roberto Almeida",
+        time: "Aluno há 2 anos",
+        text: "Estrutura impecável. As aulas coletivas inclusas são excelentes e o maquinário é top de linha. Vale cada centavo do investimento.",
+        initial: "R"
       }
+    ];
+
+    container.innerHTML = ''; // Clear loader
+
+    testimonials.forEach((item, index) => {
+      // Create element dynamically
+      const delay = index * 100;
+      const html = `
+        <div data-aos="fade-up" data-aos-delay="${delay}" class="premium-card p-8 flex flex-col justify-between h-full">
+          <div>
+            <div class="flex text-forbody-red mb-4 text-sm">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </div>
+            <p class="text-forbody-silver italic mb-6 leading-relaxed">"${item.text}"</p>
+          </div>
+          <div class="flex items-center gap-4 mt-auto">
+            <div class="w-12 h-12 bg-gradient-to-br from-forbody-red to-red-900 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+              ${item.initial}
+            </div>
+            <div>
+              <h4 class="text-white font-bold text-sm">${item.name}</h4>
+              <p class="text-forbody-silver text-xs">${item.time}</p>
+            </div>
+          </div>
+        </div>
+      `;
+      container.insertAdjacentHTML('beforeend', html);
     });
-  });
-  
-  document.querySelectorAll('img[data-src]').forEach(img => {
-    imageObserver.observe(img);
-  });
+
+  } catch (error) {
+    console.error("Error fetching testimonials:", error);
+    container.innerHTML = `<p class="text-red-500 text-center col-span-full">Erro ao carregar depoimentos.</p>`;
+  }
 }
-
-// ========================================
-// 8. CONSOLE EASTER EGG
-// ========================================
-
-console.log('%c🏋️ Forbody V2 - Premium Fitness Franchise', 'color: #E30613; font-size: 20px; font-weight: bold;');
-console.log('%cHighest Performance. Premium Experience.', 'color: #C0C0C0; font-size: 14px;');
-console.log('%cTecnologia & Inovação 360º', 'color: #F5F5F5; font-size: 12px;');
-
-// ========================================
-// 9. ANALYTICS & TRACKING (Ready for integration)
-// ========================================
-
-// Track section views
-const trackSectionView = (sectionId) => {
-  console.log(`[Analytics] Section viewed: ${sectionId}`);
-  // Replace with actual analytics code (Google Analytics, Mixpanel, etc.)
-};
-
-// Track form submission
-const trackFormSubmit = () => {
-  console.log('[Analytics] Form submitted');
-  // Replace with actual analytics code
-};
-
-// Track CTA clicks
-const trackCTAClick = (buttonText) => {
-  console.log(`[Analytics] CTA clicked: ${buttonText}`);
-  // Replace with actual analytics code
-};
