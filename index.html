@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forbody - Premium Fitness Franchise | High-End Investment</title>
+  <meta name="description" content="Forbody: O ecossistema de performance premium para investidores. Tecnologia 360º, alto ticket médio e rentabilidade superior no setor fitness.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75' fill='%23E30613' font-weight='bold'>F</text></svg>">
+  
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="src/input.css">
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0F0F0F;
+      color: #F5F5F5;
+    }
+  </style>
+</head>
+<body class="bg-forbody-black text-forbody-lightgray">
+
+  <!-- SETOR 01: HEADER COM NAVEGAÇÃO -->
+  <header id="header" class="fixed top-0 left-0 right-0 z-50 glass-effect border-b border-forbody-red border-opacity-20 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <!-- Logo -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-forbody-red rounded-lg flex items-center justify-center text-white font-bold text-lg">
+          F
+        </div>
+        <span class="text-xl font-bold text-white hidden sm:inline">Forbody</span>
+      </div>
+      
+      <!-- Navigation Tabs -->
+      <nav class="hidden md:flex gap-2 items-center">
+        <a href="#inicio" class="nav-tab active px-4 py-2 rounded-lg transition-all duration-300 text-sm font-medium hover:bg-forbody-red hover:bg-opacity-20">
+          Início
+        </a>
+        <a href="#mercado" class="nav-tab px-4 py-2 rounded-lg transition-all duration-300 text-sm font-medium hover:bg-forbody-red hover:bg-opacity-20">
+          Mercado
+        </a>
+        <a href="#metodo" class="nav-tab px-4 py-2 rounded-lg transition-all duration-300 text-sm font-medium hover:bg-forbody-red hover:bg-opacity-20">
+          Método
+        </a>
+        <a href="#tecnologia" class="nav-tab px-4 py-2 rounded-lg transition-all duration-300 text-sm font-medium hover:bg-forbody-red hover:bg-opacity-20">
+          Tecnologia
+        </a>
+        <a href="#faq" class="nav-tab px-4 py-2 rounded-lg transition-all duration-300 text-sm font-medium hover:bg-forbody-red hover:bg-opacity-20">
+          FAQ
+        </a>
+      </nav>
+      
+      <!-- CTA Button -->
+      <button id="ctaHeader" class="cta-button hidden md:block">
+        Comece Agora
+      </button>
+      
+      <!-- Mobile Menu Button -->
+      <button id="mobileMenuBtn" class="md:hidden text-forbody-red">
+        <i class="fas fa-bars text-xl"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="hidden fixed top-16 left-0 right-0 z-40 glass-effect border-b border-forbody-red border-opacity-20 md:hidden">
+    <nav class="flex flex-col gap-2 p-4">
+      <a href="#inicio" class="px-4 py-3 rounded-lg text-sm font-medium hover:bg-forbody-red hover:bg-opacity-20 transition-all">Início</a>
+      <a href="#mercado" class="px-4 py-3 rounded-lg text-sm font-medium hover:bg-forbody-red hover:bg-opacity-20 transition-all">Mercado</a>
+      <a href="#metodo" class="px-4 py-3 rounded-lg text-sm font-medium hover:bg-forbody-red hover:bg-opacity-20 transition-all">Método</a>
+      <a href="#tecnologia" class="px-4 py-3 rounded-lg text-sm font-medium hover:bg-forbody-red hover:bg-opacity-20 transition-all">Tecnologia</a>
+      <a href="#faq" class="px-4 py-3 rounded-lg text-sm font-medium hover:bg-forbody-red hover:bg-opacity-20 transition-all">FAQ</a>
+      <button class="cta-button w-full mt-2">Comece Agora</button>
+    </nav>
+  </div>
+
+  <!-- SETOR 02: HERO -->
+  <section id="inicio" class="pt-32 pb-20 min-h-screen flex items-center justify-center relative overflow-hidden">
+    <!-- Background Gradient -->
+    <div class="absolute inset-0 -z-10">
+      <div class="absolute top-0 right-0 w-96 h-96 bg-forbody-red opacity-10 blur-3xl rounded-full"></div>
+      <div class="absolute bottom-0 left-0 w-96 h-96 bg-forbody-silver opacity-5 blur-3xl rounded-full"></div>
+    </div>
+    
+    <div class="max-w-5xl mx-auto px-6 text-center">
+      <div class="mb-8 inline-block">
+        <span class="badge">
+          <i class="fas fa-rocket mr-2"></i>Premium Fitness Franchise
+        </span>
+      </div>
+      
+      <h1 class="text-5xl md:text-7xl font-black text-white mb-6 leading-tight text-shadow">
+        <span class="text-forbody-red">Performance</span> sem <span class="italic">limites</span>
+      </h1>
+      
+      <p class="text-lg md:text-xl text-forbody-silver max-w-2xl mx-auto mb-12">
+        Forbody é mais que uma academia. É um ecossistema completo de performance que redefine o premium fitness no Brasil. Alto ticket, tecnologia 360º e rentabilidade superior.
+      </p>
+      
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+        <button class="cta-button text-lg">
+          Solicitar Demo
+        </button>
+        <button class="px-8 py-4 border-2 border-forbody-silver rounded-lg font-bold hover:border-forbody-red hover:text-forbody-red transition-all">
+          Conhecer Diferencial
+        </button>
+      </div>
+      
+      <!-- Stats Row -->
+      <div class="grid grid-cols-3 gap-4 md:gap-8 text-center">
+        <div class="reveal">
+          <div class="text-3xl md:text-4xl font-black text-forbody-red">+40%</div>
+          <div class="text-sm text-forbody-silver mt-2">Ticket Médio</div>
+        </div>
+        <div class="reveal" style="transition-delay: 0.2s">
+          <div class="text-3xl md:text-4xl font-black text-forbody-red">360º</div>
+          <div class="text-sm text-forbody-silver mt-2">Suporte Tech</div>
+        </div>
+        <div class="reveal" style="transition-delay: 0.4s">
+          <div class="text-3xl md:text-4xl font-black text-forbody-red">500+</div>
+          <div class="text-sm text-forbody-silver mt-2">Academias Ativas</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SETOR 03: INDICADORES (MÉTRICAS) -->
+  <section id="mercado" class="py-20 bg-forbody-darkgray">
+    <div class="max-w-7xl mx-auto px-6">
+      <h2 class="text-4xl md:text-5xl font-black text-white mb-4 text-center">
+        <span class="text-forbody-red">Mercado</span> em Expansão
+      </h2>
+      <p class="text-forbody-silver text-center max-w-2xl mx-auto mb-16">
+        O setor fitness premium cresceu 45% no último ano. Forbody captura essa demanda com modelo único.
+      </p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Card 01 -->
+        <div class="reveal card-hover p-8 glass-effect rounded-xl border border-forbody-red border-opacity-30 hover:border-forbody-red">
+          <div class="icon-wrapper mb-6 mx-auto" style="background: rgba(227, 6, 19, 0.15); border-color: rgba(227, 6, 19, 0.4);">
+            <i class="fas fa-chart-line text-forbody-red text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3 text-center">ROI de 180%</h3>
+          <p class="text-forbody-silver text-center text-sm">
+            Retorno garantido em 18-24 meses com modelo de receita recorrente e escalável.
+          </p>
+        </div>
+        
+        <!-- Card 02 -->
+        <div class="reveal card-hover p-8 glass-effect rounded-xl border border-forbody-red border-opacity-30 hover:border-forbody-red" style="transition-delay: 0.15s">
+          <div class="icon-wrapper mb-6 mx-auto" style="background: rgba(227, 6, 19, 0.15); border-color: rgba(227, 6, 19, 0.4);">
+            <i class="fas fa-users text-forbody-red text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3 text-center">3.5K+ Membros</h3>
+          <p class="text-forbody-silver text-center text-sm">
+            Média de 3.500 membros premium por unidade, gerando receita mensal exponencial.
+          </p>
+        </div>
+        
+        <!-- Card 03 -->
+        <div class="reveal card-hover p-8 glass-effect rounded-xl border border-forbody-red border-opacity-30 hover:border-forbody-red" style="transition-delay: 0.3s">
+          <div class="icon-wrapper mb-6 mx-auto" style="background: rgba(227, 6, 19, 0.15); border-color: rgba(227, 6, 19, 0.4);">
+            <i class="fas fa-crown text-forbody-red text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3 text-center">Premium Segment</h3>
+          <p class="text-forbody-silver text-center text-sm">
+            Posicionado no top 5% do mercado com clientela de alta renda e perfil premium.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SETOR 04: SOBRE (BRAND EQUITY) -->
+  <section id="metodo" class="py-20">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <!-- Content -->
+        <div class="reveal">
+          <span class="badge mb-4">Nossa Filosofia</span>
+          <h2 class="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+            <span class="text-forbody-red">Ecossistema</span> de <span class="italic">Performance</span>
+          </h2>
+          <p class="text-forbody-silver text-lg mb-6">
+            Forbody não é uma academia comum. Nós construímos um ecossistema completo onde tecnologia, coaching premium e infraestrutura se convergem para máxima performance.
+          </p>
+          
+          <div class="space-y-4 mb-8">
+            <div class="flex gap-4 items-start">
+              <div class="text-forbody-red text-xl mt-1">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-white">Coaching AI Integrado</h4>
+                <p class="text-forbody-silver text-sm">Inteligência artificial personaliza treinos em tempo real</p>
+              </div>
+            </div>
+            <div class="flex gap-4 items-start">
+              <div class="text-forbody-red text-xl mt-1">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-white">App Exclusivo</h4>
+                <p class="text-forbody-silver text-sm">Monitoramento 24/7 de performance e evolução</p>
+              </div>
+            </div>
+            <div class="flex gap-4 items-start">
+              <div class="text-forbody-red text-xl mt-1">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-white">Comunidade Premium</h4>
+                <p class="text-forbody-silver text-sm">Rede de investidores e influencers fitness</p>
+              </div>
+            </div>
+          </div>
+          
+          <button class="cta-button">Explorar Detalhes</button>
+        </div>
+        
+        <!-- Visual Element -->
+        <div class="reveal grid grid-cols-2 gap-6" style="transition-delay: 0.2s">
+          <div class="glass-effect p-8 rounded-xl border border-forbody-red border-opacity-30 text-center col-span-2">
+            <div class="text-4xl font-black text-forbody-red mb-2">CEO Vision</div>
+            <p class="text-sm text-forbody-silver">
+              "Forbody redefiniu o que é possível no fitness premium. Somos parceiros de sucesso, não apenas fornecedores."
+            </p>
+          </div>
+          
+          <div class="glass-effect p-6 rounded-xl border border-forbody-silver border-opacity-20">
+            <i class="fas fa-dumbbell text-forbody-red text-3xl mb-3"></i>
+            <h5 class="font-bold text-white mb-2">Equipamento Topo</h5>
+            <p class="text-xs text-forbody-silver">Máquinas premium de última geração</p>
+          </div>
+          
+          <div class="glass-effect p-6 rounded-xl border border-forbody-silver border-opacity-20">
+            <i class="fas fa-heart text-forbody-red text-3xl mb-3"></i>
+            <h5 class="font-bold text-white mb-2">Wellness Integrado</h5>
+            <p class="text-xs text-forbody-silver">Nutrição, fisiologia e mental health</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SETOR 05: ECOSSISTEMA (TECNOLOGIA) -->
+  <section id="tecnologia" class="py-20 bg-forbody-darkgray">
+    <div class="max-w-7xl mx-auto px-6">
+      <h2 class="text-4xl md:text-5xl font-black text-white mb-4 text-center">
+        <span class="text-forbody-red">Ecossistema</span> <span class="italic">Tecnológico</span>
+      </h2>
+      <p class="text-forbody-silver text-center max-w-2xl mx-auto mb-16">
+        Três pilares de inovação que diferenciam Forbody no mercado
+      </p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- App Forbody -->
+        <div class="reveal card-hover group">
+          <div class="glass-effect p-8 rounded-xl border border-forbody-red border-opacity-30 h-full relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-forbody-red opacity-5 blur-2xl group-hover:opacity-15 transition-opacity"></div>
+            
+            <div class="icon-wrapper mb-6" style="background: linear-gradient(135deg, #E30613, #8B0000); border: none;">
+              <i class="fas fa-mobile-alt text-white text-2xl"></i>
+            </div>
+            
+            <h3 class="text-2xl font-bold text-white mb-3">App Forbody</h3>
+            <p class="text-forbody-silver mb-6">
+              Aplicativo mobile com IA integrada para personalização total de treinos e análise biométrica em tempo real.
+            </p>
+            
+            <ul class="space-y-2 text-sm">
+              <li class="flex gap-2 items-center text-forbody-silver">
+                <span class="text-forbody-red">✓</span> Treinos personalizados
+              </li>
+              <li class="flex gap-2 items-center text-forbody-silver">
+                <span class="text-forbody-red">✓</span> Monitoramento 24/7
+              </li>
+              <li class="flex gap-2 items-center text-forbody-silver">
+                <span class="text-forbody-red">✓</span> Integração com wearables
+              </li>
+              <li class="flex gap-2 items-center text-forbody-silver">
+                <span class="text-forbody-red">✓</span> Comunidade integrada
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <!-- Coach AI -->
+        <div class="reveal card-hover group" style="transition-delay: 0.15s">
+          <div class="glass-effect p-8 rounded-xl border border-forbody-red border-opacity-30 h-full relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-forbody-red opacity-5 blur-2xl group-hover:opacity-15 transition-opacity"></div>
+            
+            <div class="icon-wrapper mb-6" style="background: linear-gradient(135deg, #E30613, #8B0000); border: none;">
+              <i class="fas fa-brain text-white text-2xl"></i>
+            </div>
+            
+            <h3 class="text-2xl font-bold text-white mb-3">Coach AI</h3>
+            <p class="text-forbody-silver mb-6">
+              Assistente de inteligência artificial que ajusta treinos com base em biomecânica, progressão e performance contínua.
+            </p>
+            
+            <ul class="space-y-2 text-sm">
+              <li class="flex gap-2 items-center text-forbody-silver">
+                <span class="text-forbody-red">✓</span> Machine Learning avançado
+              </li>
+              <li class="flex gap-2 items-center text-forbody-silver">
+                <span class="text-forbody-red">✓</span> Análise biomecânica
+              </li>
+              <li class="flex gap-2 items-center text-forbody-silver">
+                <span class="text-forbody-red">✓</span> Recomendações em tempo real
+              </li>
+              <li class="flex gap-2 items-center text-forbody-silver">
+                <span class="text-forbody-red">✓</span> Relatórios inteligentes
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <!-- Shop Tech -->
+        <div class="reveal card-hover group" style="transition-delay: 0.3s">
+          <div class="glass-effect p-8 rounded-xl border border-forbody-red border-opacity-30 h-full relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-forbody-red opacity-5 blur-2xl group-hover:opacity-15 transition-opacity"></div>
+            
+            <div class="icon-wrapper mb-6" style="background: linear-gradient(135deg, #E30613, #8B0000); border: none;">
+              <i class="fas fa-shopping-bag text-white text-2xl"></i>
+            </div>
+            
+            <h3 class="text-2xl font-bold text-white mb-3">Shop Tech</h3>
+            <p class="text-forbody-silver mb-6">
+              Marketplace integrado com wearables premium, suplementos científicos e equipamentos exclusivos Forbody.
+            </p>
+            
+            <ul class="space-y-2 text-sm">
+              <li class="flex gap-2 items-center text-forbody-silver">
+                <span class="text-forbody-red">✓</span> Wearables premium
+              </li>
+              <li class="flex gap-2 items-center text-forbody-silver">
+                <span class="text-forbody-red">✓</span> Suplementos certificados
+              </li>
+              <li class="flex gap-2 items-center text-forbody-silver">
+                <span class="text-forbody-red">✓</span> Receita recorrente
+              </li>
+              <li class="flex gap-2 items-center text-forbody-silver">
+                <span class="text-forbody-red">✓</span> Margem de 40%+
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SETOR 06: FAQ -->
+  <section id="faq" class="py-20">
+    <div class="max-w-3xl mx-auto px-6">
+      <h2 class="text-4xl md:text-5xl font-black text-white mb-4 text-center">
+        Perguntas <span class="text-forbody-red">Frequentes</span>
+      </h2>
+      <p class="text-forbody-silver text-center mb-16">
+        Dúvidas sobre o investimento em Forbody? Aqui estão as respostas
+      </p>
+      
+      <div class="space-y-4">
+        <!-- FAQ Item 1 -->
+        <div class="faq-item reveal glass-effect rounded-xl border border-forbody-red border-opacity-30 overflow-hidden">
+          <button class="faq-toggle w-full px-8 py-6 flex items-center justify-between hover:bg-forbody-red hover:bg-opacity-10 transition-all text-left">
+            <span class="font-bold text-white pr-4">Qual é o investimento inicial?</span>
+            <i class="fas fa-plus text-forbody-red text-xl flex-shrink-0"></i>
+          </button>
+          <div class="faq-content hidden px-8 pb-6 text-forbody-silver">
+            <p>O investimento inicial varia de R$ 800.000 a R$ 1.5M conforme localização e tamanho da unidade. Disponibilizamos opções de financiamento com parceiros.</p>
+          </div>
+        </div>
+        
+        <!-- FAQ Item 2 -->
+        <div class="faq-item reveal glass-effect rounded-xl border border-forbody-red border-opacity-30 overflow-hidden" style="transition-delay: 0.1s">
+          <button class="faq-toggle w-full px-8 py-6 flex items-center justify-between hover:bg-forbody-red hover:bg-opacity-10 transition-all text-left">
+            <span class="font-bold text-white pr-4">Quando inicio o retorno financeiro?</span>
+            <i class="fas fa-plus text-forbody-red text-xl flex-shrink-0"></i>
+          </button>
+          <div class="faq-content hidden px-8 pb-6 text-forbody-silver">
+            <p>Com o modelo Forbody, você começa a gerar receita desde os primeiros meses. O payback é projetado para 18-24 meses, com crescimento acelerado após esse período.</p>
+          </div>
+        </div>
+        
+        <!-- FAQ Item 3 -->
+        <div class="faq-item reveal glass-effect rounded-xl border border-forbody-red border-opacity-30 overflow-hidden" style="transition-delay: 0.2s">
+          <button class="faq-toggle w-full px-8 py-6 flex items-center justify-between hover:bg-forbody-red hover:bg-opacity-10 transition-all text-left">
+            <span class="font-bold text-white pr-4">Qual é o suporte que Forbody oferece?</span>
+            <i class="fas fa-plus text-forbody-red text-xl flex-shrink-0"></i>
+          </button>
+          <div class="faq-content hidden px-8 pb-6 text-forbody-silver">
+            <p>Oferecemos suporte 360º: consultoria de implantação, treinamento de equipe, marketing digital, tecnologia integrada, atualização contínua do software e coaching estratégico mensal.</p>
+          </div>
+        </div>
+        
+        <!-- FAQ Item 4 -->
+        <div class="faq-item reveal glass-effect rounded-xl border border-forbody-red border-opacity-30 overflow-hidden" style="transition-delay: 0.3s">
+          <button class="faq-toggle w-full px-8 py-6 flex items-center justify-between hover:bg-forbody-red hover:bg-opacity-10 transition-all text-left">
+            <span class="font-bold text-white pr-4">Preciso ter experiência no ramo fitness?</span>
+            <i class="fas fa-plus text-forbody-red text-xl flex-shrink-0"></i>
+          </button>
+          <div class="faq-content hidden px-8 pb-6 text-forbody-silver">
+            <p>Não é necessário. Nossos franqueados vêm de diversas áreas. O que importa é comprometimento com a marca e disposição para aprender. Fornecemos todo treinamento.</p>
+          </div>
+        </div>
+        
+        <!-- FAQ Item 5 -->
+        <div class="faq-item reveal glass-effect rounded-xl border border-forbody-red border-opacity-30 overflow-hidden" style="transition-delay: 0.4s">
+          <button class="faq-toggle w-full px-8 py-6 flex items-center justify-between hover:bg-forbody-red hover:bg-opacity-10 transition-all text-left">
+            <span class="font-bold text-white pr-4">Como funcionam as royalties?</span>
+            <i class="fas fa-plus text-forbody-red text-xl flex-shrink-0"></i>
+          </button>
+          <div class="faq-content hidden px-8 pb-6 text-forbody-silver">
+            <p>Royalties de 7% sobre a receita bruta mensal, com bônus por meta atingida. A partir do segundo ano, há descontos progressivos para unidades de alto desempenho.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SETOR 07: FOOTER COM FORMULÁRIO -->
+  <footer id="footer" class="bg-forbody-darkgray py-20 border-t border-forbody-red border-opacity-20">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+        <!-- Contact Form -->
+        <div class="reveal">
+          <h3 class="text-3xl font-black text-white mb-2">Pronto para <span class="text-forbody-red">transformar</span>?</h3>
+          <p class="text-forbody-silver mb-8">
+            Deixe seus dados e nossa equipe entrará em contato para uma consultoria personalizada sem compromisso.
+          </p>
+          
+          <form id="contactForm" class="space-y-4">
+            <input type="text" id="formName" placeholder="Seu nome completo" required class="w-full">
+            <input type="email" id="formEmail" placeholder="seu@email.com" required class="w-full">
+            <input type="tel" id="formPhone" placeholder="(11) 99999-9999" class="w-full">
+            <textarea id="formMessage" placeholder="Conte-nos sobre seu interesse..." rows="4" class="w-full"></textarea>
+            
+            <button type="submit" class="cta-button w-full text-lg font-bold flex items-center justify-center gap-2">
+              <span id="submitText">Enviar Consulta</span>
+              <i class="fas fa-paper-plane"></i>
+            </button>
+            
+            <p id="formStatus" class="text-sm text-center text-forbody-silver"></p>
+          </form>
+        </div>
+        
+        <!-- Links & Social -->
+        <div class="reveal space-y-8" style="transition-delay: 0.2s">
+          <div>
+            <h4 class="font-bold text-white mb-4">Navegação</h4>
+            <ul class="space-y-2 text-forbody-silver">
+              <li><a href="#inicio" class="hover:text-forbody-red transition-all">Início</a></li>
+              <li><a href="#mercado" class="hover:text-forbody-red transition-all">Mercado</a></li>
+              <li><a href="#metodo" class="hover:text-forbody-red transition-all">Método</a></li>
+              <li><a href="#tecnologia" class="hover:text-forbody-red transition-all">Tecnologia</a></li>
+              <li><a href="#faq" class="hover:text-forbody-red transition-all">FAQ</a></li>
+            </ul>
+          </div>
+          
+          <div>
+            <h4 class="font-bold text-white mb-4">Contato</h4>
+            <ul class="space-y-2 text-forbody-silver text-sm">
+              <li class="flex gap-3 items-center">
+                <i class="fas fa-envelope text-forbody-red w-5"></i>
+                <a href="mailto:investimentos@forbody.com.br">investimentos@forbody.com.br</a>
+              </li>
+              <li class="flex gap-3 items-center">
+                <i class="fas fa-phone text-forbody-red w-5"></i>
+                <a href="tel:+551133334444">(11) 3333-4444</a>
+              </li>
+              <li class="flex gap-3 items-center">
+                <i class="fas fa-map-marker-alt text-forbody-red w-5"></i>
+                <span>São Paulo, SP - Brasil</span>
+              </li>
+            </ul>
+          </div>
+          
+          <div>
+            <h4 class="font-bold text-white mb-4">Redes Sociais</h4>
+            <div class="flex gap-4">
+              <a href="#" class="w-10 h-10 bg-forbody-red rounded-lg flex items-center justify-center text-white hover:bg-forbody-silver transition-all">
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a href="#" class="w-10 h-10 bg-forbody-red rounded-lg flex items-center justify-center text-white hover:bg-forbody-silver transition-all">
+                <i class="fab fa-linkedin"></i>
+              </a>
+              <a href="#" class="w-10 h-10 bg-forbody-red rounded-lg flex items-center justify-center text-white hover:bg-forbody-silver transition-all">
+                <i class="fab fa-youtube"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Bottom Bar -->
+      <div class="border-t border-forbody-red border-opacity-20 pt-8 flex flex-col md:flex-row items-center justify-between text-forbody-silver text-sm">
+        <p>&copy; 2024 Forbody. Todos os direitos reservados.</p>
+        <div class="flex gap-6 mt-4 md:mt-0">
+          <a href="#" class="hover:text-forbody-red transition-all">Política de Privacidade</a>
+          <a href="#" class="hover:text-forbody-red transition-all">Termos de Serviço</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="src/script.js"></script>
+</body>
+</html>
