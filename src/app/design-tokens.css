@@ -1,0 +1,72 @@
+@layer base {
+  :root {
+    /* --- PALETA FORBODY --- */
+    --fb-red-explosive: #e30613; /* B2C: Vermelho puro e agressivo */
+    --fb-red-luxury: #99040d;    /* B2B: Vinho/Vermelho fechado e sério */
+    --fb-red-warm: #ff4d58;      /* Unidade: Vermelho suave e acolhedor */
+    
+    --fb-black-deep: #050505;    /* B2C: Escuro profundo */
+    --fb-graphite: #141414;      /* B2B: Cinza corporativo luxuoso */
+    --fb-surface: #ffffff;       /* Unidade: Clean/Claro */
+    
+    --fb-text-silver: #a1a1aa;
+
+    /* --- TOKENS DE SOMBRA & GLOW --- */
+    --glow-explosive: 0 0 40px rgba(227, 6, 19, 0.4);
+    --glow-explosive-hover: 0 0 60px rgba(227, 6, 19, 0.6);
+    
+    --shadow-luxury: 0 20px 40px rgba(0, 0, 0, 0.8);
+    --shadow-luxury-glow: 0 0 30px rgba(153, 4, 13, 0.2);
+    
+    --shadow-welcoming: 0 10px 30px rgba(0, 0, 0, 0.08);
+  }
+}
+
+@layer utilities {
+  /* EFEITOS B2C (Alunos) */
+  .glow-b2c {
+    box-shadow: var(--glow-explosive);
+  }
+  .glow-b2c:hover {
+    box-shadow: var(--glow-explosive-hover);
+  }
+  .text-gradient-b2c {
+    @apply text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-400 drop-shadow-2xl;
+  }
+
+  /* EFEITOS B2B (Investidores) */
+  .shadow-b2b {
+    box-shadow: var(--shadow-luxury);
+  }
+  .glow-b2b:hover {
+    box-shadow: var(--shadow-luxury-glow);
+  }
+
+  /* EFEITOS UNIDADE (Comunidade) */
+  .shadow-unit {
+    box-shadow: var(--shadow-welcoming);
+  }
+
+  /* ANIMAÇÕES REUTILIZÁVEIS */
+  .animate-fade-in-up {
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .animate-zoom-in {
+    animation: zoomIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
+@keyframes fadeInUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+@keyframes zoomIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
