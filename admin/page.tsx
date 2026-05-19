@@ -1,8 +1,8 @@
 import React from 'react';
-import { apiService } from '@/services/api.service';
 import Link from 'next/link';
-import UnitActionsClient from './UnitActionsClient';
-import { UnitStatus, UnitListItem } from '@/types/unit.types';
+import { apiService } from '@/api.service';
+import UnitActionsClient from '@/app/UnitActionsClient';
+import { UnitStatus, UnitListItem } from '@/unit.types';
 
 type StatusUI = {
   color: string;
