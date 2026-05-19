@@ -2,7 +2,7 @@
 
 import { googleService } from '@/services/google.service';
 import { revalidatePath } from 'next/cache';
-import { ActionResponse } from './api.types';
+import { ActionResponse } from '@/types/api.types';
 
 export async function handleGoogleSync(unitId: string, placeId: string, unitSlug: string): Promise<ActionResponse> {
   try {
