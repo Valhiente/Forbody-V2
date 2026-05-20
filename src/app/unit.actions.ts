@@ -1,12 +1,12 @@
 'use server'
 
-import { googleService } from '@/services/google.service';
+import { syncGooglePlaceData } from './google';
 import { revalidatePath } from 'next/cache';
-import { ActionResponse } from '@/types/api.types';
+import type { ActionResponse } from '@/api.types';
 
 export async function handleGoogleSync(unitId: string, placeId: string, unitSlug: string): Promise<ActionResponse> {
   try {
-    await googleService.syncGooglePlaceData(unitId, placeId);
+    await syncGooglePlaceData(unitId, placeId);
     
     // Invalida o cache estático para que o site B2C e Admin mostrem a nota nova
     revalidatePath('/admin/unidades');

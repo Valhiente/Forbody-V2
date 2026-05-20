@@ -1,5 +1,5 @@
 import React from 'react';
-import { Differential } from '@/types';
+import type { Differential } from '@/app';
 
 export default function FeatureItem({ feature }: { feature: Differential }) {
   return (

@@ -1,4 +1,4 @@
-import { Modality, Testimonial, Plan, Unit } from '@/types';
+import type { Modality, Testimonial, Plan, Unit } from './index';
 
 // Central de Dados (Simula o futuro CMS/Banco de Dados)
 

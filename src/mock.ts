@@ -1,4 +1,4 @@
-import { Modality, Testimonial, Plan, Metric, Differential, Promotion, Unit } from '@/types';
+import type { Modality, Testimonial, Plan, Metric, Differential, Promotion, Unit } from '@/app/index';
 
 // ==========================================
 // BASE DE DADOS SIMULADA (MOCK DB - SUPABASE READY)
