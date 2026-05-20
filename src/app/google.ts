@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from './server';
 
 /**
  * INTEGRAÇÃO GOOGLE PLACES API
@@ -27,7 +27,7 @@ export async function syncGooglePlaceData(unitId: string, placeId: string) {
   const { rating, user_ratings_total } = data.result;
 
   // 2. Sincronização com Supabase (Persistência)
-  const supabase = createClient();
+  const supabase = await createClient();
   const { error } = await supabase
     .from('units')
     .update({
