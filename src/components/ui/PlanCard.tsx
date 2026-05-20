@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Plan } from '@/app';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency } from '@/utils';
 
 export default function PlanCard({ plan }: { plan: Plan }) {
   const isHighlighted = plan.isHighlighted;
