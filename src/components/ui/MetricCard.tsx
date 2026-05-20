@@ -1,5 +1,5 @@
 import React from 'react';
-import { Metric } from '@/types';
+import { Metric } from '@/app';
 
 export default function MetricCard({ metric }: { metric: Metric }) {
   return (
