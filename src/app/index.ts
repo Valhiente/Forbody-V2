@@ -55,8 +55,13 @@ export interface Unit {
   googleReviewsCount: number;
   address: string;
   whatsapp: string;
+  instagram?: string;
+  mapEmbedUrl?: string;
+  businessHours?: {
+    day: string;
+    hours: string;
+  }[];
 }
-
 // --- B2B TYPES (Investidores) ---
 export interface Metric {
   id: string;
