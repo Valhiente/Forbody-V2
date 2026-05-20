@@ -61,6 +61,13 @@ export interface Unit {
     day: string;
     hours: string;
   }[];
+  galleryUrls?: string[];
+  teachers?: {
+    name: string;
+    role: string;
+    avatarUrl: string;
+  }[];
+}
 }
 // --- B2B TYPES (Investidores) ---
 export interface Metric {
