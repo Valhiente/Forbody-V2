@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plan } from '@/app';
+import type { Plan } from '@/app';
 import { formatCurrency } from '@/lib/utils';
 
 export default function PlanCard({ plan }: { plan: Plan }) {
