@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modality } from '@/types';
+import { Modality } from '@/app';
 
 export default function ModalityCard({ modality }: { modality: Modality }) {
   return (
