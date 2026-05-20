@@ -1,14 +1,14 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
-import { Database } from '@/types/database.types';
+import type { Database } from '@/database.types';
 
 /**
  * Client do Supabase projetado EXCLUSIVAMENTE para Server Components, 
  * API Routes e Server Actions. Manipula cookies de sessão com segurança.
  * Utilizado para SSR ultra-rápido nas páginas dinâmicas das unidades.
  */
-export function createClient() {
-  const cookieStore = cookies();
+export async function createClient() {
+  const cookieStore = await cookies();
 
   return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
