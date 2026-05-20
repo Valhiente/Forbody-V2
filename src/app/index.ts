@@ -68,7 +68,6 @@ export interface Unit {
     avatarUrl: string;
   }[];
 }
-}
 // --- B2B TYPES (Investidores) ---
 export interface Metric {
   id: string;
