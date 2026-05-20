@@ -1,5 +1,5 @@
 import React from 'react';
-import { Testimonial } from '@/types';
+import { Testimonial } from '@/app';
 
 export default function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   return (
