@@ -27,3 +27,4 @@ export type Database = {
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
   };
+};
