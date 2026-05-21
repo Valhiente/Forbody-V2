@@ -51,12 +51,19 @@ export interface Unit {
   city: string;
   state: string;
   evoId: number;
+  evoUnitId?: number;
   googleReviewsScore: number;
   googleReviewsCount: number;
   address: string;
   whatsapp: string;
   instagram?: string;
   mapEmbedUrl?: string;
+  salesUrl?: string;
+  studentAreaUrl?: string;
+  checkoutUrl?: string;
+  locationUrl?: string;
+  status?: 'active' | 'coming_soon';
+  googlePlaceId?: string | null;
   businessHours?: {
     day: string;
     hours: string;
