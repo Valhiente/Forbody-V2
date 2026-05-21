@@ -20,7 +20,7 @@ export default function Navbar() {
 
   const navLinks = [
     { name: 'Home', path: '/' },
-    { name: 'Unidades', path: '/unidades/ribeirao-preto-centro' }, // Link temporário para a unidade dinâmica de exemplo
+    { name: 'Unidades', path: '/unidades/triunfo' },
     { name: 'Investidor', path: '/investidor' },
   ];
 
