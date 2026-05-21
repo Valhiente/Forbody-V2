@@ -2,8 +2,10 @@ import React from 'react';
 import type { Unit } from '../../index';
 import { unitsData } from '../../data';
 
-export function generateStaticParams() {
-  return unitsData.map((u: Unit) => ({ slug: u.slug }));
+export async function generateStaticParams() {
+  return unitsData.map((unit) => ({
+    slug: unit.slug,
+  }));
 }
 
 export default function UnitPage({ params }: { params: { slug: string } }) {
