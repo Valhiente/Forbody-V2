@@ -19,10 +19,10 @@ export default function HomePage() {
 
         <div className="mt-10 flex flex-col gap-4 sm:flex-row">
           <Link
-            href="/unidades/triunfo"
+            href="/unidades"
             className="rounded-full bg-red-600 px-8 py-4 text-sm font-bold uppercase tracking-widest text-white transition hover:bg-red-700"
           >
-            Ver unidade
+            Ver unidades
           </Link>
 
           <Link

@@ -22,7 +22,7 @@ export default function Footer() {
             <h4 className="text-white font-bold uppercase tracking-widest text-xs mb-6">Navegação</h4>
             <ul className="space-y-4 text-sm text-gray-500">
               <li><Link href="/" className="hover:text-red-600 transition-colors">Home</Link></li>
-              <li><Link href="/unidades/triunfo" className="hover:text-red-600 transition-colors">Unidades</Link></li>
+              <li><Link href="/unidades" className="hover:text-red-600 transition-colors">Unidades</Link></li>
               <li><Link href="/franquias" className="hover:text-red-600 transition-colors">Seja um Franqueado</Link></li>
             </ul>
           </div>

@@ -1,6 +1,6 @@
 import React from 'react';
-import type { Unit } from '../../index';
-import { unitsData } from '../../data';
+import type { Unit } from '@/app/index';
+import { unitsData } from '@/app/data';
 
 export async function generateStaticParams() {
   return unitsData.map((unit) => ({
@@ -8,8 +8,9 @@ export async function generateStaticParams() {
   }));
 }
 
-export default function UnitPage({ params }: { params: { slug: string } }) {
-  const unit = unitsData.find((u) => u.slug === params.slug) as Unit | undefined;
+export default async function UnitPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const unit = unitsData.find((u) => u.slug === slug) as Unit | undefined;
 
   if (!unit) {
     return <div className="min-h-screen flex items-center justify-center text-gray-500">Unidade não encontrada.</div>;

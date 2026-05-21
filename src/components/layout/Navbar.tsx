@@ -20,7 +20,7 @@ export default function Navbar() {
 
   const navLinks = [
     { name: 'Home', path: '/' },
-    { name: 'Unidades', path: '/unidades/triunfo' },
+    { name: 'Unidades', path: '/unidades' },
     { name: 'Investidor', path: '/investidor' },
   ];
 
