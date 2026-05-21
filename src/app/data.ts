@@ -105,7 +105,7 @@ export const unitsData: Unit[] = [
     businessHours: [],
     galleryUrls: [],
     teachers: [],
-    googlePlaceId: ''
+    googlePlaceId: 'ChIJXZTIhbq_uZQRvvgjq08MRcc'
   },
   {
     id: 'u-barao',
@@ -128,7 +128,7 @@ export const unitsData: Unit[] = [
     businessHours: [],
     galleryUrls: [],
     teachers: [],
-    googlePlaceId: ''
+    googlePlaceId: 'ChIJwVOXprm_uZQREFsgGHIf8y4'
   },
   {
     id: 'u-vila-virginia',
@@ -151,7 +151,7 @@ export const unitsData: Unit[] = [
     businessHours: [],
     galleryUrls: [],
     teachers: [],
-    googlePlaceId: ''
+    googlePlaceId: 'ChIJjx8pfwC_uZQRt8MeuNMo8aA'
   },
   {
     id: 'u-portinari',
@@ -174,7 +174,7 @@ export const unitsData: Unit[] = [
     businessHours: [],
     galleryUrls: [],
     teachers: [],
-    googlePlaceId: ''
+    googlePlaceId: 'ChIJNegEDqjBuZQRsXJxQT9NpTo'
   },
   {
     id: 'u-nova-rp-1',
