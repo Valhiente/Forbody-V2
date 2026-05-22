@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { apiService } from '@/api.service';
 import UnitActionsClient from '@/app/UnitActionsClient';
-import AdminSyncClient from '@/app/AdminSyncClient';
+import AdminSyncClient from '@/app/admin/components/AdminSyncClient';
 import { UnitStatus, UnitListItem } from '@/unit.types';
 
 type StatusUI = {

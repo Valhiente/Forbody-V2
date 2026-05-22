@@ -1,3 +1,5 @@
+"use server"
+
 import { unitsData } from '@/app/data';
 import * as Google from '@/app/google';
 

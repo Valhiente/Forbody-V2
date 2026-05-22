@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { triggerSyncAllGoogleReviews } from '@/app/unit.actions';
+import { triggerSyncAllGoogleReviews } from '@/app/admin/actions';
 
 export default function AdminSyncClient() {
   const [loading, setLoading] = useState(false);
