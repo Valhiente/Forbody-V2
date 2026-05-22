@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { apiService } from '@/api.service';
 import UnitActionsClient from '@/app/UnitActionsClient';
+import AdminSyncClient from '@/app/AdminSyncClient';
 import { UnitStatus, UnitListItem } from '@/unit.types';
 
 type StatusUI = {
@@ -30,10 +31,13 @@ export default async function AdminUnidadesPage() {
           <h1 className="text-3xl font-black italic uppercase tracking-widest text-white mb-2">Gestão de <span className="text-red-600">Unidades</span></h1>
           <p className="text-gray-500 text-sm">Controle de ativação, edição e informações operacionais das franquias.</p>
         </div>
-        <Link href="/admin/unidades/nova" className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold uppercase tracking-widest text-xs transition-colors flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          <AdminSyncClient />
+          <Link href="/admin/unidades/nova" className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold uppercase tracking-widest text-xs transition-colors flex items-center gap-2">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
           Nova Unidade
         </Link>
+        </div>
       </div>
 
       <div className="bg-[#0a0a0a] border border-white/5 overflow-hidden">

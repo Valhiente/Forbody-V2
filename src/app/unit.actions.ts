@@ -30,3 +30,9 @@ export async function syncAllGoogleReviews() {
 }
 
 export default syncAllGoogleReviews;
+
+// Server action wrapper for client components in the admin area
+export async function triggerSyncAllGoogleReviews() {
+  'use server'
+  return await syncAllGoogleReviews();
+}
