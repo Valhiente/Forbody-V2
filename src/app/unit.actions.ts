@@ -1,19 +1,32 @@
-'use server'
+import { unitsData } from '@/app/data';
+import * as Google from '@/app/google';
 
-import { syncGooglePlaceData } from './google';
-import { revalidatePath } from 'next/cache';
-import type { ActionResponse } from '@/api.types';
+export async function syncAllGoogleReviews() {
+  let synced = 0;
+  let failed = 0;
 
-export async function handleGoogleSync(unitId: string, placeId: string, unitSlug: string): Promise<ActionResponse> {
-  try {
-    await syncGooglePlaceData(unitId, placeId);
-    
-    // Invalida o cache estático para que o site B2C e Admin mostrem a nota nova
-    revalidatePath('/admin/unidades');
-    revalidatePath(`/unidades/${unitSlug}`);
-    
-    return { success: true, message: 'Google Places sincronizado com sucesso.' };
-  } catch (error: any) {
-    return { success: false, message: 'Falha na sincronização com o Google.', error: error.message };
+  for (const unit of unitsData) {
+    // ignore coming_soon units
+    if (unit.status === 'coming_soon') continue;
+    // ignore units without googlePlaceId
+    if (!unit.googlePlaceId) continue;
+
+    try {
+      await Google.syncGooglePlaceData(unit.id, unit.googlePlaceId);
+      synced++;
+    } catch (err) {
+      // log and continue with other units
+      // eslint-disable-next-line no-console
+      console.error(`syncAllGoogleReviews error for ${unit.id}`, err);
+      failed++;
+    }
   }
+
+  return {
+    success: true,
+    synced,
+    failed,
+  } as const;
 }
+
+export default syncAllGoogleReviews;
