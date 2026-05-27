@@ -76,13 +76,13 @@ export async function loginAdmin(formData: FormData) {
       path: '/',
       maxAge: 24 * 60 * 60, // 24 horas em segundos
     });
-
-    // Redirecionar para admin
-    redirect('/admin');
   } catch (error) {
     console.error('Login error:', error);
     return { error: 'Erro ao fazer login. Tente novamente.' };
   }
+
+  // Redirecionar após sucesso
+  redirect('/admin');
 }
 
 export async function validateAdminSession(): Promise<boolean> {
