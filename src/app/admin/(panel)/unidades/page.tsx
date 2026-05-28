@@ -89,10 +89,10 @@ const sections: AdminSection[] = [
 export default function AdminUnidadesPage() {
   const getStatusBadge = (status: string | undefined) => {
     const statusMap: Record<string, { label: string; color: string }> = {
-      active: { label: '✅ Ativa', color: 'bg-green-600/20 text-green-400' },
-      coming_soon: { label: '🚀 Em breve', color: 'bg-yellow-600/20 text-yellow-400' },
+      active: { label: 'ATIVA', color: 'bg-green-600/20 text-green-400' },
+      coming_soon: { label: 'EM BREVE', color: 'bg-yellow-600/20 text-yellow-400' },
     };
-    return statusMap[status || 'active'] || { label: '❓ Desconhecido', color: 'bg-gray-600/20 text-gray-400' };
+    return statusMap[status || 'active'] || { label: 'DESCONHECIDO', color: 'bg-gray-600/20 text-gray-400' };
   };
 
   return (
@@ -143,7 +143,7 @@ export default function AdminUnidadesPage() {
       <div className="space-y-4">
         <div className="rounded-3xl border border-white/10 bg-[#111] p-6">
           <h2 className="text-2xl font-black text-white">Unidades Cadastradas</h2>
-          <p className="mt-2 text-sm text-gray-400">Lista de todas as academias da rede ForBody</p>
+          <p className="mt-2 text-sm text-gray-400">Lista de todas as academias da rede ForBody ({unitsData.length} unidades)</p>
         </div>
 
         <div className="overflow-x-auto rounded-3xl border border-white/10 bg-[#0a0a0a] shadow-xl shadow-black/40">
