@@ -1,33 +1,117 @@
-const cards = [
-  { title: 'Avaliações', description: 'Monitorar comentários e classificações do público.' },
-  { title: 'Respostas', description: 'Responder dúvidas e feedbacks diretamente do painel.' },
-  { title: 'Métricas', description: 'Visão geral de reputação, avaliações e tendências.' },
-];
+import AdminSyncClient from '@/app/admin/components/AdminSyncClient';
+import { unitsData } from '@/app/data';
+
+const getStats = () => {
+  const unitsWithPlace = unitsData.filter((u) => u.googlePlaceId && u.googlePlaceId.length > 0 && u.status !== 'coming_soon');
+  const totalUnitsWithPlace = unitsWithPlace.length;
+  const totalReviews = unitsWithPlace.reduce((s, u) => s + (u.googleReviewsCount ?? 0), 0);
+  const avgScore = unitsWithPlace.length ? +(unitsWithPlace.reduce((s, u) => s + (u.googleReviewsScore ?? 0), 0) / unitsWithPlace.length).toFixed(2) : 0;
+  return { totalUnitsWithPlace, totalReviews, avgScore };
+};
 
 export default function AdminReviewsPage() {
+  const stats = getStats();
+
   return (
     <div className="space-y-8">
-      <div className="rounded-3xl border border-white/10 bg-[#111] p-8 shadow-xl shadow-black/20">
-        <p className="text-xs font-bold uppercase tracking-[0.36em] text-red-600">Admin / Reviews</p>
-        <h1 className="mt-4 text-4xl font-black text-white">Feedback e Reviews</h1>
-        <p className="mt-3 max-w-2xl text-sm text-gray-400">
-          Acompanhe a reputação da rede ForBody e monitore a experiência dos clientes nas unidades.
-        </p>
-      </div>
+      <header className="rounded-3xl border border-white/10 bg-[#0b0b0b] p-8 shadow-lg">
+        <p className="text-xs font-bold uppercase tracking-widest text-red-500">Admin / Reviews</p>
+        <h1 className="mt-4 text-4xl font-extrabold text-white">Google Reviews</h1>
+        <p className="mt-3 max-w-3xl text-sm text-gray-400">Sincronize avaliações e acompanhe a reputação das unidades ForBody.</p>
+      </header>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        {cards.map((card) => (
-          <div key={card.title} className="rounded-3xl border border-white/10 bg-[#0d0d0d] p-6 shadow-sm shadow-black/20">
-            <h2 className="text-xl font-bold text-white">{card.title}</h2>
-            <p className="mt-3 text-sm text-gray-400">{card.description}</p>
+      <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="rounded-2xl border border-white/6 bg-[#0f0f10] p-5">
+          <p className="text-sm text-gray-400">Unidades com Place ID</p>
+          <div className="mt-2 text-2xl font-bold text-white">{stats.totalUnitsWithPlace}</div>
+        </div>
+
+        <div className="rounded-2xl border border-white/6 bg-[#0f0f10] p-5">
+          <p className="text-sm text-gray-400">Média geral Google</p>
+          <div className="mt-2 text-2xl font-bold text-white">{stats.avgScore}</div>
+        </div>
+
+        <div className="rounded-2xl border border-white/6 bg-[#0f0f10] p-5">
+          <p className="text-sm text-gray-400">Total de avaliações</p>
+          <div className="mt-2 text-2xl font-bold text-white">{stats.totalReviews}</div>
+        </div>
+
+        <div className="rounded-2xl border border-white/6 bg-[#0f0f10] p-5">
+          <p className="text-sm text-gray-400">Última sincronização</p>
+          <div className="mt-2 text-sm font-medium text-gray-300">manual / em breve</div>
+        </div>
+      </section>
+
+      <section className="rounded-3xl border border-white/6 bg-[#0b0b0b] p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-lg font-bold text-white">Sincronização manual</h2>
+            <p className="mt-1 text-sm text-gray-400">Atualize as notas e avaliações das unidades usando os Place IDs cadastrados.</p>
           </div>
-        ))}
-      </div>
+          <div>
+            {/* AdminSyncClient é um client component */}
+            <AdminSyncClient />
+          </div>
+        </div>
+      </section>
 
-      <div className="rounded-3xl border border-red-600/20 bg-[#111] p-6 text-sm text-gray-400">
-        <p className="font-semibold text-white">Próximos passos:</p>
-        <p>Integração com review feeds, análises de satisfação e respostas automáticas.</p>
-      </div>
+      <section className="rounded-3xl border border-white/6 bg-[#0b0b0b] p-6">
+        <h3 className="text-xl font-bold text-white">Unidades</h3>
+        <p className="mt-1 text-sm text-gray-400">Lista por unidade com status de integração do Google.</p>
+
+        <div className="mt-6 overflow-x-auto">
+          <table className="w-full table-auto text-sm">
+            <thead>
+              <tr className="text-left text-xs uppercase text-gray-400">
+                <th className="px-3 py-2">Unidade</th>
+                <th className="px-3 py-2">Status</th>
+                <th className="px-3 py-2">Google Place ID</th>
+                <th className="px-3 py-2">Nota Google</th>
+                <th className="px-3 py-2">Avaliações</th>
+                <th className="px-3 py-2">Integração</th>
+                <th className="px-3 py-2">Ação</th>
+              </tr>
+            </thead>
+            <tbody className="mt-2">
+              {unitsData.map((u) => {
+                const hasPlace = Boolean(u.googlePlaceId && u.googlePlaceId.length > 0);
+                const integrationLabel = hasPlace ? 'Configurado' : 'Pendente';
+                const integrationClass = hasPlace ? 'bg-green-600' : u.status === 'coming_soon' ? 'bg-gray-600' : 'bg-yellow-500';
+
+                return (
+                  <tr key={u.id} className="border-t border-white/6">
+                    <td className="px-3 py-4 text-white">{u.name}</td>
+                    <td className="px-3 py-4 text-gray-300">{u.status}</td>
+                    <td className="px-3 py-4 text-gray-300">{u.googlePlaceId || '—'}</td>
+                    <td className="px-3 py-4 text-gray-300">{u.googleReviewsScore ?? '—'}</td>
+                    <td className="px-3 py-4 text-gray-300">{u.googleReviewsCount ?? 0}</td>
+                    <td className="px-3 py-4">
+                      <span className={`${integrationClass} inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold text-white`}>{integrationLabel}</span>
+                    </td>
+                    <td className="px-3 py-4">
+                      <button disabled className="rounded-md bg-white/5 px-3 py-1 text-sm text-gray-300" aria-disabled>
+                        Ação
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="grid gap-6 lg:grid-cols-2">
+        <div className="rounded-3xl border border-white/6 bg-[#0b0b0b] p-6">
+          <h3 className="text-lg font-bold text-white">Alertas e recomendações</h3>
+          <ul className="mt-3 space-y-2 text-sm text-gray-400">
+            <li>- O Place ID precisa estar cadastrado em cada unidade para integração com Google.</li>
+            <li>- A variável `GOOGLE_PLACES_API_KEY` deve estar configurada na Vercel/ambiente.</li>
+            <li>- A sincronização é manual por enquanto; logs detalhados serão adicionados depois.</li>
+            <li>- Não há endpoints públicos nem alterações na função Google nesta etapa.</li>
+          </ul>
+        </div>
+      </section>
     </div>
   );
 }
