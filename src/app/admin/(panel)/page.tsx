@@ -16,16 +16,24 @@ export default function AdminDashboardPage() {
 
   const quickActions = [
     { title: 'Editar site', href: '/admin/site' },
-    { title: 'Nova campanha', href: '/admin/marketing' },
     { title: 'Gerenciar unidades', href: '/admin/unidades' },
+    { title: 'Criar campanha', href: '/admin/marketing' },
     { title: 'Sincronizar reviews', href: '/admin/reviews' },
-    { title: 'Configurações', href: '/admin/settings' },
+    { title: 'Ver usuários', href: '/admin/users' },
+    { title: 'Abrir configurações', href: '/admin/settings' },
+  ];
+
+  const alerts = [
+    { text: 'Unidade em breve aguardando ativação', badge: 'Em breve', badgeColor: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
+    { text: 'Google Reviews pendente em unidades futuras', badge: 'Pendente', badgeColor: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' },
+    { text: 'Campanhas em planejamento', badge: 'Atenção', badgeColor: 'bg-orange-500/10 text-orange-400 border-orange-500/20' },
+    { text: 'Configurações técnicas pendentes', badge: 'OK', badgeColor: 'bg-green-500/10 text-green-400 border-green-500/20' },
   ];
 
   return (
     <div className="space-y-8 pb-12">
-      {/* 1. Cabeçalho */}
-      <div className="rounded-3xl border border-white/10 bg-[#111] p-8 shadow-xl shadow-black/20 flex flex-col md:flex-row gap-6 justify-between items-start md:items-center">
+      {/* 1. Cabeçalho e Filtros Visuais */}
+      <div className="rounded-3xl border border-white/10 bg-[#111] p-8 shadow-xl shadow-black/20 flex flex-col xl:flex-row gap-6 justify-between items-start xl:items-center">
         <div>
           <h1 className="text-4xl font-black text-white">Dashboard</h1>
           <p className="mt-3 text-sm text-gray-400">
@@ -33,57 +41,68 @@ export default function AdminDashboardPage() {
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
-          <select className="bg-[#0d0d0d] border border-white/10 text-white text-sm rounded-lg px-4 py-2 focus:ring-red-600 focus:border-red-600 outline-none">
+          <select className="bg-[#0d0d0d] border border-white/10 text-gray-300 text-sm rounded-xl px-4 py-2.5 focus:ring-red-600 focus:border-red-600 outline-none hover:border-white/20 transition-colors">
             <option>Todas as unidades</option>
+            {activeUnits.map(u => (
+              <option key={u.id}>{u.name}</option>
+            ))}
           </select>
-          <select className="bg-[#0d0d0d] border border-white/10 text-white text-sm rounded-lg px-4 py-2 focus:ring-red-600 focus:border-red-600 outline-none">
+          <select className="bg-[#0d0d0d] border border-white/10 text-gray-300 text-sm rounded-xl px-4 py-2.5 focus:ring-red-600 focus:border-red-600 outline-none hover:border-white/20 transition-colors">
             <option>Período atual</option>
+            <option>Últimos 7 dias</option>
+            <option>Últimos 30 dias</option>
           </select>
-          <select className="bg-[#0d0d0d] border border-white/10 text-white text-sm rounded-lg px-4 py-2 focus:ring-red-600 focus:border-red-600 outline-none">
+          <select className="bg-[#0d0d0d] border border-white/10 text-gray-300 text-sm rounded-xl px-4 py-2.5 focus:ring-red-600 focus:border-red-600 outline-none hover:border-white/20 transition-colors">
             <option>Comparar com mês anterior</option>
+            <option>Sem comparação</option>
+            <option>Ano anterior</option>
           </select>
         </div>
       </div>
 
-      {/* 2. Cards principais */}
-      <div className="grid gap-6 grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-        <div className="rounded-2xl border border-white/10 bg-[#0d0d0d] p-6">
-          <p className="text-xs font-bold uppercase tracking-wider text-gray-400">Unidades Ativas</p>
-          <p className="mt-2 text-3xl font-black text-white">{activeCount}</p>
-        </div>
-        <div className="rounded-2xl border border-white/10 bg-[#0d0d0d] p-6">
-          <p className="text-xs font-bold uppercase tracking-wider text-gray-400">Em Breve</p>
-          <p className="mt-2 text-3xl font-black text-red-500">{comingSoonCount}</p>
-        </div>
-        <div className="rounded-2xl border border-white/10 bg-[#0d0d0d] p-6">
-          <p className="text-xs font-bold uppercase tracking-wider text-gray-400">Média Google</p>
-          <div className="mt-2 flex items-baseline gap-2">
-            <p className="text-3xl font-black text-white">{averageReviewScore}</p>
-            <span className="text-xs text-gray-500">({totalReviewsCount})</span>
+      {/* 5. Cards principais KPIs */}
+      <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+        {[
+          { label: 'Unidades Ativas', value: activeCount, trend: '+0%', trendColor: 'text-gray-500' },
+          { label: 'Em Breve', value: comingSoonCount, trend: '+3', trendColor: 'text-green-500', isHighlight: true },
+          { label: 'Média Google', value: averageReviewScore, subtitle: `(${totalReviewsCount} avaliações)`, trend: '+0.1', trendColor: 'text-green-500' },
+          { label: 'Campanhas', value: '3', trend: '-1', trendColor: 'text-red-400' },
+          { label: 'Leads (Est.)', value: '450', trend: '+12%', trendColor: 'text-green-500' },
+          { label: 'Alunos (Est.)', value: '3.2k', trend: '+5%', trendColor: 'text-green-500' },
+        ].map((kpi, i) => (
+          <div key={i} className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#0d0d0d] p-5 hover:border-red-600/30 transition-colors">
+            <div className="absolute top-0 left-0 w-1 h-full bg-red-600/0 group-hover:bg-red-600/80 transition-colors"></div>
+            <div className="flex justify-between items-start mb-2">
+              <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-gray-400">{kpi.label}</p>
+              <span className={`text-[10px] font-bold ${kpi.trendColor}`}>{kpi.trend}</span>
+            </div>
+            <div className="mt-1 flex items-baseline gap-2">
+              <p className={`text-2xl sm:text-3xl font-black ${kpi.isHighlight ? 'text-red-500' : 'text-white'}`}>{kpi.value}</p>
+              {kpi.subtitle && <span className="text-xs text-gray-500 hidden sm:inline-block">{kpi.subtitle}</span>}
+            </div>
           </div>
-        </div>
-        <div className="rounded-2xl border border-white/10 bg-[#0d0d0d] p-6">
-          <p className="text-xs font-bold uppercase tracking-wider text-gray-400">Campanhas Ativas</p>
-          <p className="mt-2 text-3xl font-black text-white">3</p>
-        </div>
-        <div className="rounded-2xl border border-white/10 bg-[#0d0d0d] p-6">
-          <p className="text-xs font-bold uppercase tracking-wider text-gray-400">Leads (Est.)</p>
-          <p className="mt-2 text-3xl font-black text-white">450</p>
-        </div>
-        <div className="rounded-2xl border border-white/10 bg-[#0d0d0d] p-6">
-          <p className="text-xs font-bold uppercase tracking-wider text-gray-400">Alunos (Est.)</p>
-          <p className="mt-2 text-3xl font-black text-white">3.2k</p>
-        </div>
+        ))}
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* 3. Gráfico visual placeholder */}
-        <div className="rounded-3xl border border-white/10 bg-[#111] p-8 lg:col-span-2 shadow-xl shadow-black/20">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-bold text-white">Leads por mês</h2>
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-red-600">Projeção</span>
+        {/* 6. Gráfico visual placeholder */}
+        <div className="rounded-3xl border border-white/10 bg-[#111] p-6 sm:p-8 lg:col-span-2 shadow-xl shadow-black/20 flex flex-col">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+            <div>
+              <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                Leads por mês
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em] px-2 py-0.5 rounded-full bg-red-600/10 text-red-500 border border-red-600/20">Projeção</span>
+              </h2>
+            </div>
+            {/* Seletor visual de tipo de gráfico */}
+            <div className="flex bg-[#0d0d0d] border border-white/10 rounded-lg p-1 self-start sm:self-auto">
+              <button className="px-3 py-1.5 text-xs font-bold bg-white/10 text-white rounded-md">Barras</button>
+              <button className="px-3 py-1.5 text-xs font-bold text-gray-500 hover:text-gray-300">Linha</button>
+              <button className="px-3 py-1.5 text-xs font-bold text-gray-500 hover:text-gray-300">Distribuição</button>
+            </div>
           </div>
-          <div className="h-48 flex items-end justify-between gap-2 sm:gap-6 mt-4">
+          
+          <div className="flex-1 min-h-[200px] flex items-end justify-between gap-2 sm:gap-6 mt-4">
             {/* Fake bars */}
             {[
               { label: 'Jan', height: '40%' },
@@ -93,29 +112,54 @@ export default function AdminDashboardPage() {
               { label: 'Mai', height: '65%' },
               { label: 'Jun', height: '90%' }
             ].map((bar, i) => (
-              <div key={i} className="flex-1 flex flex-col justify-end items-center group">
+              <div key={i} className="flex-1 flex flex-col justify-end items-center group h-full">
                 <div 
-                  className="w-full bg-red-600/20 group-hover:bg-red-600 transition-colors rounded-t-md" 
+                  className="w-full bg-red-600/20 group-hover:bg-red-600/80 border-t-2 border-red-600/0 group-hover:border-red-500 transition-all rounded-t-md relative" 
                   style={{ height: bar.height }}
-                ></div>
-                <span className="text-xs font-bold text-gray-500 mt-3">{bar.label}</span>
+                >
+                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-[#222] text-white text-[10px] px-2 py-1 rounded border border-white/10 transition-opacity pointer-events-none whitespace-nowrap">
+                    {bar.height}
+                  </div>
+                </div>
+                <span className="text-xs font-bold text-gray-500 mt-3 group-hover:text-gray-300 transition-colors">{bar.label}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* 6. Relatórios e ações rápidas */}
-        <div className="rounded-3xl border border-white/10 bg-[#111] p-8 shadow-xl shadow-black/20">
+        {/* 3. Alertas visuais */}
+        <div className="rounded-3xl border border-white/10 bg-[#111] p-6 sm:p-8 shadow-xl shadow-black/20 flex flex-col">
+          <h2 className="text-xl font-bold text-white mb-6">Alertas Inteligentes</h2>
+          <div className="flex flex-col gap-3 flex-1">
+            {alerts.map((alert, i) => (
+              <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-[#0d0d0d] border border-white/5">
+                <div className={`mt-0.5 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider border whitespace-nowrap ${alert.badgeColor}`}>
+                  {alert.badge}
+                </div>
+                <p className="text-sm text-gray-400 leading-snug">{alert.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* 4. Navegação rápida (Ações Rápidas - Cards Clicáveis) */}
+        <div className="rounded-3xl border border-white/10 bg-[#111] p-6 sm:p-8 shadow-xl shadow-black/20 lg:col-span-2">
           <h2 className="text-xl font-bold text-white mb-6">Ações Rápidas</h2>
-          <div className="flex flex-col gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
             {quickActions.map((action, i) => (
               <Link 
                 key={i}
                 href={action.href}
-                className="flex items-center justify-between p-4 rounded-xl bg-[#0d0d0d] border border-white/5 hover:border-red-600/30 hover:bg-red-600/10 transition-colors group"
+                className="flex flex-col items-center justify-center text-center p-4 sm:p-6 rounded-2xl bg-[#0d0d0d] border border-white/5 hover:border-red-600/30 hover:bg-red-600/5 transition-all group h-full"
               >
-                <span className="text-sm font-bold text-gray-300 group-hover:text-white">{action.title}</span>
-                <span className="text-red-600" aria-hidden>→</span>
+                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mb-3 group-hover:bg-red-600/10 group-hover:text-red-500 text-gray-400 transition-colors">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <span className="text-xs sm:text-sm font-bold text-gray-300 group-hover:text-white transition-colors">{action.title}</span>
               </Link>
             ))}
           </div>
@@ -123,95 +167,60 @@ export default function AdminDashboardPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* 4. Ranking por unidade */}
-        <div className="rounded-3xl border border-white/10 bg-[#111] p-8 shadow-xl shadow-black/20">
-          <h2 className="text-xl font-bold text-white mb-6">Desempenho por Unidade</h2>
-          <div className="space-y-5">
-            {[
-              { name: 'Triunfo', percent: 85, color: 'bg-red-600' },
-              { name: 'Barão do Bananal', percent: 70, color: 'bg-red-600/80' },
-              { name: 'Vila Virgínia', percent: 60, color: 'bg-red-600/60' },
-              { name: 'Portinari', percent: 45, color: 'bg-red-600/40' },
-              { name: 'Novas Unidades', percent: 10, color: 'bg-gray-700', label: 'Em breve' }
-            ].map((unit, i) => (
-              <div key={i}>
-                <div className="flex justify-between text-xs font-bold mb-2">
-                  <span className="text-gray-300">{unit.name}</span>
-                  {unit.label ? (
-                    <span className="text-gray-500">{unit.label}</span>
-                  ) : (
-                    <span className="text-gray-400">{unit.percent}%</span>
-                  )}
-                </div>
-                <div className="w-full bg-[#0d0d0d] h-2 rounded-full overflow-hidden">
-                  <div className={`h-full ${unit.color} rounded-full`} style={{ width: `${unit.percent}%` }}></div>
-                </div>
-              </div>
-            ))}
+        {/* 7. Escalabilidade automática */}
+        <div className="rounded-3xl border border-white/10 bg-[#111] p-6 sm:p-8 shadow-xl shadow-black/20 relative overflow-hidden group flex flex-col justify-between">
+          <div className="absolute inset-0 bg-gradient-to-br from-red-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+          <div>
+            <h2 className="text-xl font-bold text-white mb-2">Escalabilidade do Painel</h2>
+            <p className="text-sm text-gray-400 mb-6">
+              O painel ajusta seus recursos automaticamente conforme a rede cresce.
+            </p>
           </div>
-        </div>
-
-        {/* 5. Distribuição por unidade */}
-        <div className="rounded-3xl border border-white/10 bg-[#111] p-8 shadow-xl shadow-black/20">
-          <h2 className="text-xl font-bold text-white mb-6">Participação por Unidade</h2>
-          <div className="h-full min-h-[200px] flex items-center justify-center">
-            {/* Visual placeholder blocks */}
-            <div className="w-full grid grid-cols-4 grid-rows-2 gap-2 h-32">
-              <div className="col-span-2 row-span-2 bg-red-600/30 border border-red-600/50 rounded-xl flex items-center justify-center p-4">
-                <span className="text-xs font-bold text-red-200 text-center">Triunfo<br/>35%</span>
-              </div>
-              <div className="col-span-1 row-span-2 bg-red-600/20 border border-red-600/30 rounded-xl flex items-center justify-center p-2">
-                <span className="text-xs font-bold text-red-200/70 text-center">Barão<br/>25%</span>
-              </div>
-              <div className="col-span-1 row-span-1 bg-white/10 border border-white/10 rounded-xl flex items-center justify-center p-2">
-                <span className="text-xs font-bold text-gray-400 text-center">V. Vir.<br/>20%</span>
-              </div>
-              <div className="col-span-1 row-span-1 bg-white/5 border border-white/5 rounded-xl flex items-center justify-center p-2">
-                <span className="text-xs font-bold text-gray-500 text-center">Port.<br/>15%</span>
-              </div>
+          
+          <div>
+            <div className="inline-flex items-center gap-3 px-4 py-2.5 bg-red-600/10 border border-red-600/20 rounded-xl mb-6">
+              <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.6)]"></div>
+              <span className="text-xs font-bold uppercase tracking-wider text-red-400">
+                Modo atual: Inicial
+              </span>
+            </div>
+            
+            <div className="space-y-3">
+              {[
+                { label: 'Gatilho 10+ unidades', desc: 'Ranking avançado' },
+                { label: 'Gatilho 15+ unidades', desc: 'Comparação regional' },
+                { label: 'Gatilho 20+ unidades', desc: 'Alertas automáticos' },
+              ].map((item, i) => (
+                <div key={i} className="flex justify-between items-center p-3 rounded-lg bg-[#0d0d0d] border border-white/5">
+                  <span className="text-xs font-bold text-gray-300">{item.label}</span>
+                  <span className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">{item.desc}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* 7. Escalabilidade automática */}
-        <div className="rounded-3xl border border-white/10 bg-[#111] p-8 shadow-xl shadow-black/20 relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-br from-red-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          <h2 className="text-xl font-bold text-white mb-2">Escalabilidade do Painel</h2>
-          <p className="text-sm text-gray-400 mb-6">
-            O painel se adapta conforme a rede cresce.
-          </p>
-          <div className="inline-flex items-center gap-3 px-4 py-2 bg-red-600/10 border border-red-600/20 rounded-lg">
-            <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
-            <span className="text-xs font-bold uppercase tracking-wider text-red-400">
-              Status atual: Modo inicial ativo
-            </span>
-          </div>
-          <div className="mt-6 flex text-xs text-gray-500 justify-between border-t border-white/5 pt-4">
-            <span className="text-white font-bold">Até 7 unidades (Atual)</span>
-            <span>10+ (Avançado)</span>
-            <span>15+ (Regional)</span>
-            <span>20+ (Alertas)</span>
-          </div>
-        </div>
-
-        {/* 8. Sistema “adormecido” */}
-        <div className="rounded-3xl border border-white/10 bg-[#111] p-8 shadow-xl shadow-black/20">
-          <div className="flex justify-between items-start mb-6">
+        {/* 8. Módulos em espera */}
+        <div className="rounded-3xl border border-white/10 bg-[#111] p-6 sm:p-8 shadow-xl shadow-black/20 flex flex-col">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-6 gap-3">
             <h2 className="text-xl font-bold text-white">Módulos Inteligentes em Espera</h2>
-            <span className="px-3 py-1 bg-gray-800 border border-white/10 rounded-full text-[10px] font-bold uppercase tracking-widest text-gray-400">Em espera</span>
+            <span className="px-3 py-1 bg-gray-800/50 border border-white/10 rounded-full text-[10px] font-bold uppercase tracking-widest text-gray-400 self-start">Em espera</span>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <p className="text-sm text-gray-400 mb-6">
+            Módulos em desenvolvimento ou aguardando ativação para uso futuro.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 flex-1 content-start">
             {[
               'Ranking avançado',
               'Comparação regional',
-              'Alertas automáticos',
-              'Automação de campanhas'
+              'Automação de campanhas',
+              'Alertas de performance',
+              'Integração Meta Ads',
+              'Integração WhatsApp'
             ].map((module, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-[#0d0d0d] border border-white/5 opacity-60">
-                <div className="w-1.5 h-1.5 rounded-full bg-gray-600"></div>
-                <span className="text-xs font-bold text-gray-400">{module}</span>
+              <div key={i} className="flex items-center gap-3 p-3.5 rounded-xl bg-[#0d0d0d] border border-white/5 opacity-70 hover:opacity-100 transition-opacity group">
+                <div className="w-1.5 h-1.5 rounded-full bg-gray-600 group-hover:bg-red-500/50 transition-colors"></div>
+                <span className="text-xs font-bold text-gray-400 group-hover:text-gray-300 transition-colors">{module}</span>
               </div>
             ))}
           </div>
