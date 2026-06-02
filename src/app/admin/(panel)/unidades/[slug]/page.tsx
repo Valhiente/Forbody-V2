@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 
 import Button from '@/components/ui/Button';
-import { unitsData } from '@/app/data';
+import { getUnitBySlug } from '@/services/units.service';
 import type { Unit } from '@/app/index';
 
 const statusLabels: Record<string, { label: string; color: string }> = {
@@ -21,8 +21,8 @@ const getIntegrationText = (unit: Unit) => ({
   site: Boolean(unit.slug),
 });
 
-export default function AdminUnitDetailPage({ params }: { params: { slug: string } }) {
-  const unit = unitsData.find((item) => item.slug === params.slug);
+export default async function AdminUnitDetailPage({ params }: { params: { slug: string } }) {
+  const unit = await getUnitBySlug(params.slug);
   if (!unit) notFound();
 
   const statusBadge = getStatusBadge(unit.status);

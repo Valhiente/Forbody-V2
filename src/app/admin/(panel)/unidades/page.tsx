@@ -1,4 +1,4 @@
-import { unitsData } from '@/app/data';
+import { getUnits } from '@/services/units.service';
 import Button from '@/components/ui/Button';
 import UnitsTableClient from '@/app/admin/(panel)/unidades/UnitsTableClient';
 
@@ -93,18 +93,19 @@ const getStatusBadge = (status: string | undefined) => {
   return statusMap[status || 'active'] || { label: 'DESCONHECIDO', color: 'bg-gray-600/20 text-gray-400' };
 };
 
-const getAverageRating = () => {
+const getAverageRating = (unitsData: any[]) => {
   const ratedUnits = unitsData.filter((unit) => typeof unit.googleReviewsScore === 'number' && unit.googleReviewsScore > 0);
   if (!ratedUnits.length) return 'N/A';
   const average = ratedUnits.reduce((sum, unit) => sum + unit.googleReviewsScore, 0) / ratedUnits.length;
   return average.toFixed(1);
 };
 
-export default function AdminUnidadesPage() {
+export default async function AdminUnidadesPage() {
+  const unitsData = await getUnits();
   const activeCount = unitsData.filter((unit) => unit.status === 'active').length;
   const comingSoonCount = unitsData.filter((unit) => unit.status === 'coming_soon').length;
   const totalCount = unitsData.length;
-  const averageRating = getAverageRating();
+  const averageRating = getAverageRating(unitsData);
 
   return (
     <div className="space-y-8">
