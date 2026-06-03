@@ -1,11 +1,13 @@
 'use client'
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import type { Unit } from '@/app/index';
 import { updateUnitAction } from './actions';
 import Button from '@/components/ui/Button';
 
 export default function UnitEditForm({ unit }: { unit: Unit }) {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
@@ -22,6 +24,7 @@ export default function UnitEditForm({ unit }: { unit: Unit }) {
 
     if (result.success) {
       setMessage({ type: 'success', text: 'Unidade atualizada com sucesso!' });
+      router.refresh();
     } else {
       setMessage({ type: 'error', text: result.error || 'Erro ao atualizar unidade.' });
     }

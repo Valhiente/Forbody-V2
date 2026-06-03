@@ -67,7 +67,9 @@ export async function updateUnit(id: string, payload: Partial<Unit>): Promise<{ 
       return { success: false, error: 'Supabase admin não configurado. Verifique SUPABASE_SERVICE_ROLE_KEY.' };
     }
 
-    const updates: any = {};
+    const updates: any = {
+      updated_at: new Date().toISOString()
+    };
     
     if (payload.name !== undefined) updates.name = payload.name;
     if (payload.city !== undefined) updates.city = payload.city;

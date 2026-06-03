@@ -4,6 +4,18 @@ import { updateUnit } from '@/services/units.service';
 import { revalidatePath } from 'next/cache';
 import type { Unit } from '@/app/index';
 
+const normalizeText = (value: FormDataEntryValue | null): string | undefined => {
+  if (value === null) return undefined;
+  return value.toString().trim();
+};
+
+const normalizeUrl = (value: FormDataEntryValue | null): string | undefined => {
+  if (value === null) return undefined;
+  const trimmed = value.toString().trim();
+  if (trimmed === '#' || trimmed === '') return '';
+  return trimmed;
+};
+
 export async function updateUnitAction(formData: FormData) {
   const id = formData.get('id') as string;
   const slug = formData.get('slug') as string;
@@ -13,17 +25,17 @@ export async function updateUnitAction(formData: FormData) {
   }
 
   const payload: Partial<Unit> = {
-    name: (formData.get('name') as string) || undefined,
-    city: (formData.get('city') as string) || undefined,
-    state: (formData.get('state') as string) || undefined,
-    address: (formData.get('address') as string) || undefined,
+    name: normalizeText(formData.get('name')),
+    city: normalizeText(formData.get('city')),
+    state: normalizeText(formData.get('state')),
+    address: normalizeText(formData.get('address')),
     status: (formData.get('status') as 'active' | 'coming_soon' | 'maintenance' | 'hidden') || undefined,
-    whatsapp: (formData.get('whatsapp') as string) || undefined,
-    instagram: (formData.get('instagram') as string) || undefined,
-    salesUrl: (formData.get('salesUrl') as string) || undefined,
-    studentAreaUrl: (formData.get('studentAreaUrl') as string) || undefined,
-    locationUrl: (formData.get('locationUrl') as string) || undefined,
-    googlePlaceId: (formData.get('googlePlaceId') as string) || undefined,
+    whatsapp: normalizeText(formData.get('whatsapp')),
+    instagram: normalizeText(formData.get('instagram')),
+    salesUrl: normalizeUrl(formData.get('salesUrl')),
+    studentAreaUrl: normalizeUrl(formData.get('studentAreaUrl')),
+    locationUrl: normalizeUrl(formData.get('locationUrl')),
+    googlePlaceId: normalizeText(formData.get('googlePlaceId')),
   };
 
   const result = await updateUnit(id, payload);
