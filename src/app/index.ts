@@ -62,7 +62,7 @@ export interface Unit {
   studentAreaUrl?: string;
   checkoutUrl?: string;
   locationUrl?: string;
-  status?: 'active' | 'coming_soon';
+  status?: 'active' | 'coming_soon' | 'maintenance' | 'hidden';
   googlePlaceId?: string | null;
   businessHours?: {
     day: string;

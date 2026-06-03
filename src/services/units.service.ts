@@ -58,3 +58,42 @@ export async function getUnitBySlug(slug: string): Promise<Unit | undefined> {
   const units = await getUnits();
   return units.find((unit) => unit.slug === slug);
 }
+
+export async function updateUnit(id: string, payload: Partial<Unit>): Promise<{ success: boolean; error?: string }> {
+  try {
+    const supabase = await createClient();
+    
+    if (!supabase) {
+      return { success: false, error: 'Supabase não está configurado.' };
+    }
+
+    const updates: any = {};
+    
+    if (payload.name !== undefined) updates.name = payload.name;
+    if (payload.city !== undefined) updates.city = payload.city;
+    if (payload.state !== undefined) updates.state = payload.state;
+    if (payload.address !== undefined) updates.address = payload.address;
+    if (payload.status !== undefined) updates.status = payload.status;
+    if (payload.whatsapp !== undefined) updates.whatsapp = payload.whatsapp;
+    if (payload.instagram !== undefined) updates.instagram = payload.instagram;
+    if (payload.salesUrl !== undefined) updates.sales_url = payload.salesUrl;
+    if (payload.studentAreaUrl !== undefined) updates.student_area_url = payload.studentAreaUrl;
+    if (payload.locationUrl !== undefined) updates.location_url = payload.locationUrl;
+    if (payload.googlePlaceId !== undefined) updates.google_place_id = payload.googlePlaceId;
+
+    const { error } = await supabase
+      .from('units')
+      .update(updates)
+      .eq('id', id);
+
+    if (error) {
+      console.warn('Erro ao atualizar unidade no Supabase:', error.message);
+      return { success: false, error: `Não foi possível salvar no Supabase. Verifique políticas/RLS ou chave server-side. Detalhes: ${error.message}` };
+    }
+
+    return { success: true };
+  } catch (err: any) {
+    console.warn('Erro inesperado ao atualizar unidade:', err);
+    return { success: false, error: `Não foi possível salvar no Supabase. Verifique políticas/RLS ou chave server-side. Detalhes: ${err.message}` };
+  }
+}

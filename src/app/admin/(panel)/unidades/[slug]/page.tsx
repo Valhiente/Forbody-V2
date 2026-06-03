@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import { getUnitBySlug } from '@/services/units.service';
 import type { Unit } from '@/app/index';
+import UnitEditForm from './UnitEditForm';
 
 const statusLabels: Record<string, { label: string; color: string }> = {
   active: { label: 'ATIVA', color: 'bg-green-600/20 text-green-400' },
@@ -41,7 +42,10 @@ export default async function AdminUnitDetailPage({ params }: { params: { slug: 
         </div>
       </div>
 
+      <UnitEditForm unit={unit} />
+
       <div className="grid gap-6 lg:grid-cols-2">
+
         <div className="rounded-3xl border border-white/10 bg-[#0a0a0a] p-6 shadow-xl shadow-black/40">
           <h2 className="text-xl font-black text-white">Dados Básicos</h2>
           <div className="mt-4 space-y-3 text-sm text-gray-300">
