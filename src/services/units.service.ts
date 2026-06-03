@@ -2,6 +2,62 @@ import { createClient, createSupabaseAdminClient } from '@/lib/supabase/server';
 import { unitsData } from '@/app/data';
 import type { Unit } from '@/app/index';
 
+export async function createUnit(payload: Partial<Unit>): Promise<{ success: boolean; error?: string; id?: string }> {
+  try {
+    const supabaseAdmin = await createSupabaseAdminClient();
+    
+    if (!supabaseAdmin) {
+      return { success: false, error: 'Supabase admin não configurado. Verifique SUPABASE_SERVICE_ROLE_KEY.' };
+    }
+
+    if (!payload.name || !payload.slug) {
+      return { success: false, error: 'Nome e slug são obrigatórios.' };
+    }
+
+    const id = `u-${payload.slug}`;
+
+    const newUnit: any = {
+      id,
+      slug: payload.slug,
+      name: payload.name,
+      city: payload.city || 'Ribeirão Preto',
+      state: payload.state || 'SP',
+      address: payload.address || '',
+      status: payload.status || 'coming_soon',
+      whatsapp: payload.whatsapp || '',
+      instagram: payload.instagram || '',
+      sales_url: payload.salesUrl || '',
+      student_area_url: payload.studentAreaUrl || '',
+      location_url: payload.locationUrl || '',
+      google_place_id: payload.googlePlaceId || '',
+      google_reviews_score: 0,
+      google_reviews_count: 0,
+      business_hours: [],
+      gallery_urls: [],
+      teachers: [],
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+
+    const { error } = await supabaseAdmin
+      .from('units')
+      .insert([newUnit]);
+
+    if (error) {
+      console.warn('Erro ao criar unidade no Supabase:', error.message);
+      if (error.code === '23505') { // Unique violation
+        return { success: false, error: 'Já existe uma unidade com este slug ou ID.' };
+      }
+      return { success: false, error: `Não foi possível salvar no Supabase. Detalhes: ${error.message}` };
+    }
+
+    return { success: true, id };
+  } catch (err: any) {
+    console.warn('Erro inesperado ao criar unidade:', err);
+    return { success: false, error: `Não foi possível salvar no Supabase. Detalhes: ${err.message}` };
+  }
+}
+
 export async function getUnits(): Promise<Unit[]> {
   try {
     const supabase = await createClient();
