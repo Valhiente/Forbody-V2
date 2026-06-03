@@ -22,8 +22,9 @@ const getIntegrationText = (unit: Unit) => ({
   site: Boolean(unit.slug),
 });
 
-export default async function AdminUnitDetailPage({ params }: { params: { slug: string } }) {
-  const unit = await getUnitBySlug(params.slug);
+export default async function AdminUnitDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const unit = await getUnitBySlug(slug);
   if (!unit) notFound();
 
   const statusBadge = getStatusBadge(unit.status);
