@@ -34,3 +34,31 @@ export async function createClient() {
     }
   )
 }
+
+/**
+ * Usar somente em Server Actions/Server Components para operações administrativas.
+ * Bypassa RLS (Row Level Security).
+ */
+export async function createSupabaseAdminClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+  if (!supabaseUrl || !supabaseServiceKey) {
+    return null
+  }
+
+  // Admin client não precisa de controle de sessão via cookies neste contexto
+  return createServerClient(
+    supabaseUrl,
+    supabaseServiceKey,
+    {
+      cookies: {
+        getAll() {
+          return []
+        },
+        setAll() {}
+      }
+    }
+  )
+}
+

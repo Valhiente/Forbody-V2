@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createClient, createSupabaseAdminClient } from '@/lib/supabase/server';
 import { unitsData } from '@/app/data';
 import type { Unit } from '@/app/index';
 
@@ -61,10 +61,10 @@ export async function getUnitBySlug(slug: string): Promise<Unit | undefined> {
 
 export async function updateUnit(id: string, payload: Partial<Unit>): Promise<{ success: boolean; error?: string }> {
   try {
-    const supabase = await createClient();
+    const supabaseAdmin = await createSupabaseAdminClient();
     
-    if (!supabase) {
-      return { success: false, error: 'Supabase não está configurado.' };
+    if (!supabaseAdmin) {
+      return { success: false, error: 'Supabase admin não configurado. Verifique SUPABASE_SERVICE_ROLE_KEY.' };
     }
 
     const updates: any = {};
@@ -81,7 +81,7 @@ export async function updateUnit(id: string, payload: Partial<Unit>): Promise<{ 
     if (payload.locationUrl !== undefined) updates.location_url = payload.locationUrl;
     if (payload.googlePlaceId !== undefined) updates.google_place_id = payload.googlePlaceId;
 
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('units')
       .update(updates)
       .eq('id', id);
@@ -97,3 +97,4 @@ export async function updateUnit(id: string, payload: Partial<Unit>): Promise<{ 
     return { success: false, error: `Não foi possível salvar no Supabase. Verifique políticas/RLS ou chave server-side. Detalhes: ${err.message}` };
   }
 }
+
