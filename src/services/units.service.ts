@@ -115,6 +115,61 @@ export async function getUnitBySlug(slug: string): Promise<Unit | undefined> {
   return units.find((unit) => unit.slug === slug);
 }
 
+export async function getAdminUnits(): Promise<Unit[]> {
+  try {
+    const supabaseAdmin = await createSupabaseAdminClient();
+    
+    // Se o supabase admin não foi inicializado, usar mock
+    if (!supabaseAdmin) {
+      return unitsData;
+    }
+
+    const { data, error } = await supabaseAdmin.from('units').select('*');
+    
+    if (error) {
+      console.warn('Erro ao buscar unidades do Supabase (Admin):', error.message);
+      return unitsData;
+    }
+
+    if (data && data.length > 0) {
+      return data.map((item: any) => ({
+        id: item.id,
+        slug: item.slug,
+        name: item.name,
+        city: item.city,
+        state: item.state,
+        evoId: item.evo_id,
+        evoUnitId: item.evo_unit_id,
+        googleReviewsScore: item.google_reviews_score,
+        googleReviewsCount: item.google_reviews_count,
+        address: item.address,
+        whatsapp: item.whatsapp,
+        instagram: item.instagram,
+        mapEmbedUrl: item.map_embed_url,
+        salesUrl: item.sales_url,
+        studentAreaUrl: item.student_area_url,
+        checkoutUrl: item.checkout_url,
+        locationUrl: item.location_url,
+        status: item.status,
+        googlePlaceId: item.google_place_id,
+        businessHours: item.business_hours,
+        galleryUrls: item.gallery_urls,
+        teachers: item.teachers,
+      })) as Unit[];
+    }
+
+    return unitsData;
+  } catch (err) {
+    console.warn('Erro inesperado ao buscar unidades (Admin):', err);
+    return unitsData;
+  }
+}
+
+export async function getAdminUnitBySlug(slug: string): Promise<Unit | undefined> {
+  const units = await getAdminUnits();
+  return units.find((unit) => unit.slug === slug);
+}
+
 export async function updateUnit(id: string, payload: Partial<Unit>): Promise<{ success: boolean; error?: string }> {
   try {
     const supabaseAdmin = await createSupabaseAdminClient();

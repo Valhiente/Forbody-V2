@@ -1,4 +1,4 @@
-import { getUnits } from '@/services/units.service';
+import { getAdminUnits } from '@/services/units.service';
 import Button from '@/components/ui/Button';
 import UnitsTableClient from '@/app/admin/(panel)/unidades/UnitsTableClient';
 import UnitCreateForm from './UnitCreateForm';
@@ -102,7 +102,7 @@ const getAverageRating = (unitsData: any[]) => {
 };
 
 export default async function AdminUnidadesPage() {
-  const unitsData = await getUnits();
+  const unitsData = await getAdminUnits();
   const activeCount = unitsData.filter((unit) => unit.status === 'active').length;
   const comingSoonCount = unitsData.filter((unit) => unit.status === 'coming_soon').length;
   const totalCount = unitsData.length;

@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 
 import Button from '@/components/ui/Button';
-import { getUnitBySlug } from '@/services/units.service';
+import { getAdminUnitBySlug } from '@/services/units.service';
 import type { Unit } from '@/app/index';
 import UnitEditForm from './UnitEditForm';
 
@@ -24,7 +24,7 @@ const getIntegrationText = (unit: Unit) => ({
 
 export default async function AdminUnitDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const unit = await getUnitBySlug(slug);
+  const unit = await getAdminUnitBySlug(slug);
   if (!unit) notFound();
 
   const statusBadge = getStatusBadge(unit.status);

@@ -1,8 +1,8 @@
 import Link from 'next/link';
-import { getUnits } from '@/services/units.service';
+import { getAdminUnits } from '@/services/units.service';
 
 export default async function AdminDashboardPage() {
-  const unitsData = await getUnits();
+  const unitsData = await getAdminUnits();
   
   const activeUnits = unitsData.filter(u => u.status === 'active');
   const comingSoonUnits = unitsData.filter(u => u.status === 'coming_soon');
