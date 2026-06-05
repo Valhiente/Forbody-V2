@@ -1,6 +1,7 @@
 import { getUnits } from '@/services/units.service';
 import Button from '@/components/ui/Button';
 import UnitsTableClient from '@/app/admin/(panel)/unidades/UnitsTableClient';
+import UnitCreateForm from './UnitCreateForm';
 
 interface AdminSection {
   id: string;
@@ -133,6 +134,9 @@ export default async function AdminUnidadesPage() {
           </div>
         ))}
       </div>
+
+      {/* Unit Create Form */}
+      <UnitCreateForm />
 
       {/* Management Sections Grid */}
       <div className="grid gap-6 lg:grid-cols-2">
