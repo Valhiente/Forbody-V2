@@ -3,21 +3,11 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { Unit } from '@/app/index';
+import { getUnitStatus, getUnitStatusBadgeClasses, getUnitStatusLabel } from '@/utils/unit-status';
 
 interface UnitsTableClientProps {
   units: Unit[];
 }
-
-const statusLabels: Record<string, { label: string; color: string }> = {
-  active: { label: 'ATIVA', color: 'bg-green-600/20 text-green-400' },
-  coming_soon: { label: 'EM BREVE', color: 'bg-yellow-600/20 text-yellow-400' },
-  maintenance: { label: 'MANUTENÇÃO', color: 'bg-orange-600/20 text-orange-400' },
-  hidden: { label: 'OCULTA', color: 'bg-gray-600/20 text-gray-400' },
-};
-
-const getStatusBadge = (status?: string) => {
-  return statusLabels[status || ''] || { label: 'DESCONHECIDO', color: 'bg-gray-600/20 text-gray-400' };
-};
 
 const getIntegrationBadges = (unit: Unit) => {
   return [
@@ -33,11 +23,12 @@ export default function UnitsTableClient({ units }: UnitsTableClientProps) {
 
   const filteredUnits = useMemo(() => {
     const query = search.trim().toLowerCase();
+
     return units.filter((unit) => {
       const matchesText =
         unit.name.toLowerCase().includes(query) || unit.city.toLowerCase().includes(query);
 
-      const matchesStatus = status === 'all' || unit.status === status;
+      const matchesStatus = status === 'all' || getUnitStatus(unit.status) === status;
       return matchesText && matchesStatus;
     });
   }, [search, status, units]);
@@ -68,10 +59,10 @@ export default function UnitsTableClient({ units }: UnitsTableClientProps) {
                 className="bg-transparent text-sm text-white outline-none"
               >
                 <option value="all">Todos</option>
-                <option value="active">ATIVA</option>
-                <option value="coming_soon">EM BREVE</option>
-                <option value="maintenance">MANUTENÇÃO</option>
-                <option value="hidden">OCULTA</option>
+                <option value="active">Ativas</option>
+                <option value="coming_soon">Em breve</option>
+                <option value="maintenance">Em manutenção</option>
+                <option value="hidden">Ocultas</option>
               </select>
             </label>
           </div>
@@ -92,7 +83,6 @@ export default function UnitsTableClient({ units }: UnitsTableClientProps) {
           </thead>
           <tbody>
             {filteredUnits.map((unit, idx) => {
-              const statusBadge = getStatusBadge(unit.status);
               const integrations = getIntegrationBadges(unit);
 
               return (
@@ -103,8 +93,8 @@ export default function UnitsTableClient({ units }: UnitsTableClientProps) {
                   <td className="px-6 py-4 text-sm font-semibold text-white">{unit.name}</td>
                   <td className="px-6 py-4 text-sm text-gray-300">{unit.city}, {unit.state}</td>
                   <td className="px-6 py-4">
-                    <span className={`inline-flex rounded-full px-3 py-1 text-xs font-bold ${statusBadge.color}`}>
-                      {statusBadge.label}
+                    <span className={`inline-flex rounded-full border px-3 py-1 text-xs font-bold ${getUnitStatusBadgeClasses(unit.status)}`}>
+                      {getUnitStatusLabel(unit.status)}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-300">
