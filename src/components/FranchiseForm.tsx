@@ -2,8 +2,6 @@
 
 import React, { useState } from 'react';
 
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mjknoabd';
-
 type FormStatus = 'idle' | 'loading' | 'success' | 'error';
 
 interface FranchiseLeadFormData {
@@ -29,7 +27,8 @@ function validateName(name: string) {
 }
 
 function validateEmail(email: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim().toLowerCase());
+  return /^[^\s@]+@[^
+\s@]+\.[^\s@]+$/.test(email.trim().toLowerCase());
 }
 
 function validatePhone(phone: string) {
@@ -52,6 +51,15 @@ function buildErrorMessage(formData: FranchiseLeadFormData) {
   return errors.join(' ');
 }
 
+function formatPhone(value: string) {
+  const digits = value.replace(/\D/g, '').slice(0, 11);
+
+  if (digits.length <= 2) return digits.length ? `(${digits}` : '';
+  if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+
+  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+}
+
 export default function FranchiseForm() {
   const [formData, setFormData] = useState<FranchiseLeadFormData>(initialFormData);
   const [status, setStatus] = useState<FormStatus>('idle');
@@ -62,7 +70,7 @@ export default function FranchiseForm() {
 
     setFormData((currentData) => ({
       ...currentData,
-      [name]: value,
+      [name]: name === 'whatsapp' ? formatPhone(value) : value,
     }));
   };
 
@@ -78,37 +86,38 @@ export default function FranchiseForm() {
     }
 
     setStatus('loading');
-    setFeedbackMessage('Enviando...');
-
-    const payload = new FormData();
-    payload.append('Nome Completo', formData.name.trim());
-    payload.append('Email', formData.email.trim());
-    payload.append('Telefone', formData.whatsapp.trim());
-    payload.append('Cidade/Estado', formData.city.trim());
-    payload.append('Capital Estimado', formData.capital.trim());
-    payload.append('Mensagem', formData.message.trim());
-    payload.append('Origem', 'Forbody-V2 /franquias');
+    setFeedbackMessage('Enviando proposta...');
 
     try {
-      const response = await fetch(FORMSPREE_ENDPOINT, {
+      const response = await fetch('/api/franquia', {
         method: 'POST',
-        body: payload,
         headers: {
-          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          whatsapp: formData.whatsapp.trim(),
+          city: formData.city.trim(),
+          capital: formData.capital.trim(),
+          message: formData.message.trim(),
+          origin: 'Forbody-V2 /franquias',
+        }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Formspree request failed');
+        throw new Error(data.error || 'Erro ao enviar proposta.');
       }
 
       setStatus('success');
-      setFeedbackMessage(`Obrigado, ${formData.name.trim()}! Proposta enviada com sucesso.`);
+      setFeedbackMessage(`Obrigado, ${formData.name.trim()}! Sua proposta foi enviada com sucesso.`);
       setFormData(initialFormData);
     } catch (error) {
       console.error(error);
       setStatus('error');
-      setFeedbackMessage('Erro de conexão. Tente novamente.');
+      setFeedbackMessage(error instanceof Error ? error.message : 'Erro de conexão. Tente novamente.');
     }
   };
 
@@ -172,9 +181,11 @@ export default function FranchiseForm() {
             className="w-full bg-[#111] border border-gray-800 rounded px-4 py-3.5 text-white focus:outline-none focus:border-red-600 focus:bg-[#141414] transition-colors appearance-none"
           >
             <option value="">Selecione...</option>
-            <option value="ate-250k">Até R$ 250.000</option>
-            <option value="250k-500k">R$ 250.000 a R$ 500.000</option>
-            <option value="acima-500k">Acima de R$ 500.000</option>
+            <option value="Até R$ 50.000">Até R$ 50.000</option>
+            <option value="R$ 50.000 a R$ 100.000">R$ 50.000 a R$ 100.000</option>
+            <option value="R$ 100.000 a R$ 200.000">R$ 100.000 a R$ 200.000</option>
+            <option value="R$ 200.000 a R$ 500.000">R$ 200.000 a R$ 500.000</option>
+            <option value="Mais de R$ 500.000">Mais de R$ 500.000</option>
           </select>
         </div>
       </div>
@@ -194,15 +205,15 @@ export default function FranchiseForm() {
       </div>
 
       <div>
-        <label htmlFor="message" className="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-widest">Mensagem / Dúvidas</label>
+        <label htmlFor="message" className="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-widest">Apresentação Pessoal / Dúvidas</label>
         <textarea
           id="message"
           name="message"
           value={formData.message}
           onChange={handleChange}
-          rows={4}
+          rows={5}
           className="w-full resize-none bg-[#111] border border-gray-800 rounded px-4 py-3.5 text-white focus:outline-none focus:border-red-600 focus:bg-[#141414] transition-colors"
-          placeholder="Conte um pouco sobre seu interesse na franquia ForBody"
+          placeholder="Conte um pouco sobre sua trajetória profissional e seu interesse na franquia ForBody"
         />
       </div>
 
