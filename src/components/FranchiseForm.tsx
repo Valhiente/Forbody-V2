@@ -27,8 +27,8 @@ function validateName(name: string) {
 }
 
 function validateEmail(email: string) {
-  return /^[^\s@]+@[^
-\s@]+\.[^\s@]+$/.test(email.trim().toLowerCase());
+  const emailPattern = new RegExp('^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$');
+  return emailPattern.test(email.trim().toLowerCase());
 }
 
 function validatePhone(phone: string) {
