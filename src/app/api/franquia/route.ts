@@ -54,19 +54,79 @@ function buildLeadEmailHtml(data: Required<FranchiseLeadPayload>) {
   `;
 }
 
+async function saveLeadToSupabase(data: Required<FranchiseLeadPayload>) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !serviceRoleKey) {
+    console.error('Supabase lead save skipped: missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY.');
+    return { success: false, skipped: true };
+  }
+
+  const response = await fetch(`${supabaseUrl}/rest/v1/franchise_leads`, {
+    method: 'POST',
+    headers: {
+      apikey: serviceRoleKey,
+      Authorization: `Bearer ${serviceRoleKey}`,
+      'Content-Type': 'application/json',
+      Prefer: 'return=minimal',
+    },
+    body: JSON.stringify({
+      full_name: data.name,
+      email: data.email,
+      phone: data.whatsapp,
+      city_state: data.city,
+      estimated_capital: data.capital,
+      message: data.message || null,
+      origin: data.origin,
+      status: 'new',
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error('Supabase franchise lead save error:', errorText);
+    return { success: false, skipped: false };
+  }
+
+  return { success: true, skipped: false };
+}
+
+async function sendLeadEmail(data: Required<FranchiseLeadPayload>) {
+  const resendApiKey = process.env.RESEND_API_KEY;
+  const toEmail = process.env.FRANCHISE_LEAD_TO_EMAIL || 'robertovalhiente@gmail.com';
+  const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+
+  if (!resendApiKey) {
+    return { success: false, error: 'Envio indisponível. RESEND_API_KEY não configurada.', status: 503 };
+  }
+
+  const response = await fetch(RESEND_API_URL, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${resendApiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: fromEmail,
+      to: [toEmail],
+      reply_to: data.email,
+      subject: `Novo lead de franquia — ${data.name}`,
+      html: buildLeadEmailHtml(data),
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error('Resend error:', errorText);
+    return { success: false, error: 'Não foi possível enviar o lead.', status: 502 };
+  }
+
+  return { success: true };
+}
+
 export async function POST(request: Request) {
   try {
-    const resendApiKey = process.env.RESEND_API_KEY;
-    const toEmail = process.env.FRANCHISE_LEAD_TO_EMAIL || 'robertovalhiente@gmail.com';
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'Forbody Franquias <onboarding@resend.dev>';
-
-    if (!resendApiKey) {
-      return NextResponse.json(
-        { error: 'Envio indisponível. RESEND_API_KEY não configurada.' },
-        { status: 503 },
-      );
-    }
-
     const body = (await request.json()) as FranchiseLeadPayload;
 
     const data: Required<FranchiseLeadPayload> = {
@@ -91,28 +151,24 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: errors.join(' ') }, { status: 400 });
     }
 
-    const response = await fetch(RESEND_API_URL, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${resendApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: fromEmail,
-        to: [toEmail],
-        reply_to: data.email,
-        subject: `Novo lead de franquia — ${data.name}`,
-        html: buildLeadEmailHtml(data),
-      }),
-    });
+    const leadSaveResult = await saveLeadToSupabase(data);
+    const emailResult = await sendLeadEmail(data);
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Resend error:', errorText);
-      return NextResponse.json({ error: 'Não foi possível enviar o lead.' }, { status: 502 });
+    if (!emailResult.success) {
+      return NextResponse.json(
+        {
+          error: emailResult.error,
+          leadSaved: leadSaveResult.success,
+        },
+        { status: emailResult.status || 502 },
+      );
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({
+      success: true,
+      leadSaved: leadSaveResult.success,
+      leadSaveSkipped: leadSaveResult.skipped,
+    });
   } catch (error) {
     console.error('Franchise lead API error:', error);
     return NextResponse.json({ error: 'Erro interno ao enviar lead.' }, { status: 500 });
