@@ -121,8 +121,8 @@ export default function HomePage() {
               <Link href="/unidades" className="rounded-sm bg-red-600 px-8 py-4 text-center text-sm font-black uppercase tracking-[0.22em] text-white shadow-[0_0_34px_rgba(220,38,38,0.28)] transition duration-300 hover:bg-red-700 hover:shadow-[0_0_46px_rgba(220,38,38,0.42)]">
                 Escolher unidade
               </Link>
-              <Link href="#estrutura" className="group rounded-sm border border-white/15 bg-white/[0.04] px-8 py-4 text-center text-sm font-black uppercase tracking-[0.22em] text-white backdrop-blur-xl transition duration-300 hover:border-red-600 hover:bg-red-600/10">
-                Conhecer estrutura
+              <Link href="#planos" className="group rounded-sm border border-white/15 bg-white/[0.04] px-8 py-4 text-center text-sm font-black uppercase tracking-[0.22em] text-white backdrop-blur-xl transition duration-300 hover:border-red-600 hover:bg-red-600/10">
+                Ver planos
                 <span className="ml-2 inline-block text-red-500 transition group-hover:translate-x-1">→</span>
               </Link>
             </div>
@@ -140,70 +140,47 @@ export default function HomePage() {
             <div className="absolute -inset-8 bg-red-600/10 blur-[90px]" />
             <div className="relative min-h-[560px] overflow-hidden border border-white/10 bg-[#080808]/90 shadow-2xl shadow-red-950/30 backdrop-blur-xl">
               <div className="absolute inset-x-0 top-0 h-1 bg-red-600" />
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1600&q=90')] bg-cover bg-center opacity-38 grayscale" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/72 to-black/10" />
+              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1600&q=90')] bg-cover bg-center opacity-30 grayscale" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/78 to-black/30" />
               <div className="absolute right-6 top-6 border border-red-600/40 bg-black/60 px-4 py-2 text-xs font-black uppercase tracking-[0.22em] text-red-300 backdrop-blur-xl">
-                Para alunos
+                Planos Forbody
               </div>
 
               <div className="relative flex h-full min-h-[560px] flex-col justify-end p-6 sm:p-8">
-                <div className="mb-8 max-w-md">
-                  <p className="text-xs font-black uppercase tracking-[0.34em] text-red-500">treino, energia e evolução</p>
+                <div className="mb-7 max-w-lg">
+                  <p className="text-xs font-black uppercase tracking-[0.34em] text-red-500">comece agora</p>
                   <h2 className="mt-4 text-4xl font-black uppercase leading-none tracking-[-0.05em] text-white sm:text-5xl">
-                    Musculação, aulas e estrutura em um só lugar.
+                    Red ou Black. Escolha sua rotina.
                   </h2>
                   <p className="mt-5 text-sm leading-relaxed text-zinc-300">
-                    A Home agora fala primeiro com quem quer treinar, conhecer a academia e encontrar a unidade ideal.
+                    Planos em destaque logo na primeira tela para o aluno decidir rápido e avançar para a unidade.
                   </p>
                 </div>
 
-                <div className="grid gap-4 sm:grid-cols-3">
-                  {studentStats.map((card) => (
-                    <div key={card.label} className="border border-white/10 bg-white/[0.06] p-5 backdrop-blur-xl transition duration-300 hover:-translate-y-2 hover:border-red-600/50 hover:bg-red-600/10">
-                      <p className="text-3xl font-black text-white">{card.value}</p>
-                      <p className="mt-2 text-[10px] font-black uppercase tracking-[0.2em] text-red-400">{card.label}</p>
-                      <p className="mt-3 text-xs leading-relaxed text-zinc-400">{card.description}</p>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {planCards.map((plan) => (
+                    <div key={plan.name} className={`border p-5 backdrop-blur-xl transition duration-300 hover:-translate-y-2 ${plan.featured ? "border-red-600/60 bg-red-600/12" : "border-white/10 bg-white/[0.06] hover:border-red-600/50 hover:bg-red-600/10"}`}>
+                      <div className="mb-4 flex items-center justify-between gap-3">
+                        <p className="text-lg font-black uppercase tracking-[-0.04em] text-white">{plan.name.replace("Plano ", "")}</p>
+                        <span className="text-[9px] font-black uppercase tracking-[0.18em] text-red-300">{plan.tag}</span>
+                      </div>
+                      <p className="text-[10px] font-black uppercase tracking-[0.24em] text-zinc-500">A partir de</p>
+                      <p className="mt-1 text-3xl font-black tracking-[-0.07em] text-white">{plan.highlight.replace("A partir de ", "")}</p>
+                      <p className="mt-4 text-xs leading-relaxed text-zinc-400">{plan.description}</p>
                     </div>
                   ))}
                 </div>
+
+                <p className="mt-5 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500">
+                  Valores referentes aos planos de 12 meses. Consulte condições na unidade.
+                </p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="estrutura" className="px-5 py-24 sm:px-8 lg:px-12">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-12 grid gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-end">
-            <div>
-              <p className="border-l-4 border-red-600 pl-4 text-xs font-black uppercase tracking-[0.34em] text-red-500">Vitrine para o aluno</p>
-              <h2 className="mt-6 text-4xl font-black uppercase leading-[0.92] tracking-[-0.06em] text-white sm:text-6xl">
-                Tudo que o aluno procura em uma academia.
-              </h2>
-            </div>
-            <p className="max-w-3xl text-base leading-relaxed text-zinc-300 sm:text-lg">
-              A Home passa a apresentar a Forbody como academia completa: estrutura, acompanhamento, aulas, preço acessível e produtos para a rotina de treino.
-            </p>
-          </div>
-
-          <div className="grid gap-5 lg:grid-cols-3">
-            {showcaseCards.map((block) => (
-              <article key={block.title} className="group relative min-h-[520px] overflow-hidden border border-white/10 bg-black/40 transition duration-500 hover:-translate-y-2 hover:border-red-600/60">
-                <div className="absolute inset-0 bg-cover bg-center opacity-30 grayscale transition duration-500 group-hover:scale-105 group-hover:opacity-44" style={{ backgroundImage: `url(${block.image})` }} />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/76 to-black/20" />
-                <div className="absolute inset-x-0 top-0 h-1 bg-red-600 opacity-0 transition group-hover:opacity-100" />
-                <div className="relative flex min-h-[520px] flex-col justify-end p-7">
-                  <p className="text-xs font-black uppercase tracking-[0.3em] text-red-500">{block.eyebrow}</p>
-                  <h3 className="mt-5 text-3xl font-black uppercase leading-none tracking-[-0.05em] text-white">{block.title}</h3>
-                  <p className="mt-5 text-sm leading-relaxed text-zinc-300">{block.description}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="px-5 py-24 sm:px-8 lg:px-12">
+      <section id="planos" className="px-5 py-24 sm:px-8 lg:px-12">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
             <div>
@@ -254,6 +231,37 @@ export default function HomePage() {
           <p className="mt-6 text-center text-xs font-bold uppercase tracking-[0.18em] text-zinc-500">
             Valores referentes aos planos de 12 meses. Consulte condições na unidade escolhida.
           </p>
+        </div>
+      </section>
+
+      <section id="estrutura" className="px-5 py-24 sm:px-8 lg:px-12">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 grid gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-end">
+            <div>
+              <p className="border-l-4 border-red-600 pl-4 text-xs font-black uppercase tracking-[0.34em] text-red-500">Vitrine para o aluno</p>
+              <h2 className="mt-6 text-4xl font-black uppercase leading-[0.92] tracking-[-0.06em] text-white sm:text-6xl">
+                Tudo que o aluno procura em uma academia.
+              </h2>
+            </div>
+            <p className="max-w-3xl text-base leading-relaxed text-zinc-300 sm:text-lg">
+              A Home passa a apresentar a Forbody como academia completa: estrutura, acompanhamento, aulas, preço acessível e produtos para a rotina de treino.
+            </p>
+          </div>
+
+          <div className="grid gap-5 lg:grid-cols-3">
+            {showcaseCards.map((block) => (
+              <article key={block.title} className="group relative min-h-[520px] overflow-hidden border border-white/10 bg-black/40 transition duration-500 hover:-translate-y-2 hover:border-red-600/60">
+                <div className="absolute inset-0 bg-cover bg-center opacity-30 grayscale transition duration-500 group-hover:scale-105 group-hover:opacity-44" style={{ backgroundImage: `url(${block.image})` }} />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/76 to-black/20" />
+                <div className="absolute inset-x-0 top-0 h-1 bg-red-600 opacity-0 transition group-hover:opacity-100" />
+                <div className="relative flex min-h-[520px] flex-col justify-end p-7">
+                  <p className="text-xs font-black uppercase tracking-[0.3em] text-red-500">{block.eyebrow}</p>
+                  <h3 className="mt-5 text-3xl font-black uppercase leading-none tracking-[-0.05em] text-white">{block.title}</h3>
+                  <p className="mt-5 text-sm leading-relaxed text-zinc-300">{block.description}</p>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
