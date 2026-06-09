@@ -100,11 +100,11 @@ export default function HomePage() {
             </div>
 
             <h1 className="max-w-5xl text-5xl font-black uppercase leading-[0.88] tracking-[-0.08em] text-white sm:text-7xl lg:text-8xl xl:text-9xl">
-              Seu treino merece <span className="block text-red-600">uma estrutura forte.</span>
+              Forbody, feita para <span className="block text-red-600">cada etapa da sua vida.</span>
             </h1>
 
             <p className="mt-8 max-w-2xl text-base leading-relaxed text-zinc-300 sm:text-lg">
-              A Forbody é uma vitrine para quem quer treinar melhor: equipamentos, profissionais, aulas coletivas, planos acessíveis e tudo o que ajuda o aluno a evoluir.
+              Na Forbody, ajudamos você a conquistar seus objetivos, porque cada conquista sua também é nossa.
             </p>
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
