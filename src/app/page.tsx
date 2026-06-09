@@ -46,22 +46,32 @@ const showcaseCards = [
   },
 ];
 
-const studentBenefits = [
+const planCards = [
   {
-    title: "Planos que cabem no bolso",
-    description: "Opções comerciais pensadas para facilitar a entrada do aluno e manter a rotina de treino ativa.",
+    name: "Plano Red",
+    highlight: "A partir de R$ 99,90",
+    description: "Musculação com apoio técnico e acesso ao aplicativo.",
+    tag: "Melhor entrada",
+    featured: false,
+    benefits: [
+      "Musculação",
+      "Treino personalizado com apoio técnico dos professores",
+      "Acesso ao aplicativo",
+    ],
   },
   {
-    title: "Acessórios e produtos",
-    description: "Itens que o aluno pode adquirir para complementar treino, rotina e experiência dentro da Forbody.",
-  },
-  {
-    title: "Ambiente organizado",
-    description: "Espaços com visual forte, estrutura clara e comunicação direta para o aluno se sentir no lugar certo.",
-  },
-  {
-    title: "Atendimento próximo",
-    description: "Uma academia precisa receber bem. A Home passa a mostrar acolhimento, clareza e presença humana.",
+    name: "Plano Black",
+    highlight: "A partir de R$ 109,90",
+    description: "Plano completo para quem quer aproveitar mais a Forbody.",
+    tag: "Mais completo",
+    featured: true,
+    benefits: [
+      "Musculação",
+      "Aulas coletivas",
+      "Avaliação com bioimpedância a cada 90 dias",
+      "5 convidados por mês",
+      "Acesso às outras unidades",
+    ],
   },
 ];
 
@@ -194,30 +204,56 @@ export default function HomePage() {
       </section>
 
       <section className="px-5 py-24 sm:px-8 lg:px-12">
-        <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="relative min-h-[520px] overflow-hidden border border-white/10 bg-[#080808]">
-            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1605296867424-35fc25c9212a?auto=format&fit=crop&w=1400&q=90')] bg-cover bg-center opacity-40 grayscale" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/68 to-black/10" />
-            <div className="relative flex min-h-[520px] flex-col justify-end p-8 lg:p-10">
-              <p className="text-xs font-black uppercase tracking-[0.34em] text-red-500">Planos Forbody</p>
-              <h2 className="mt-5 text-4xl font-black uppercase leading-[0.9] tracking-[-0.06em] text-white sm:text-5xl">
-                Planos que cabem no bolso e ajudam você a começar.
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+            <div>
+              <p className="border-l-4 border-red-600 pl-4 text-xs font-black uppercase tracking-[0.34em] text-red-500">Planos Forbody</p>
+              <h2 className="mt-6 text-4xl font-black uppercase leading-[0.92] tracking-[-0.06em] text-white sm:text-6xl">
+                Escolha o plano que combina com sua rotina.
               </h2>
-              <p className="mt-6 text-base leading-relaxed text-zinc-300">
-                Quando os planos oficiais forem adicionados, essa área será a vitrine comercial principal para o aluno comparar e escolher.
-              </p>
             </div>
+            <p className="max-w-3xl text-base leading-relaxed text-zinc-300 sm:text-lg">
+              Dois caminhos para começar: Red para quem quer musculação com apoio técnico, e Black para quem quer a experiência completa da Forbody.
+            </p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            {studentBenefits.map((benefit, index) => (
-              <div key={benefit.title} className="group border border-white/10 bg-white/[0.03] p-7 transition duration-300 hover:-translate-y-2 hover:border-red-600/50 hover:bg-red-600/10">
-                <span className="text-sm font-black text-red-500">0{index + 1}</span>
-                <h3 className="mt-6 text-2xl font-black uppercase leading-none tracking-[-0.04em] text-white">{benefit.title}</h3>
-                <p className="mt-5 text-sm leading-relaxed text-zinc-300">{benefit.description}</p>
-              </div>
+          <div className="grid gap-5 lg:grid-cols-2">
+            {planCards.map((plan) => (
+              <article key={plan.name} className={`relative overflow-hidden border bg-[#080808] p-8 transition duration-300 hover:-translate-y-2 sm:p-10 ${plan.featured ? "border-red-600/60 shadow-[0_0_80px_rgba(220,38,38,0.18)]" : "border-white/10 hover:border-red-600/50"}`}>
+                <div className="absolute inset-x-0 top-0 h-1 bg-red-600" />
+                <div className="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-red-600/14 blur-[90px]" />
+                <div className="relative">
+                  <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+                    <h3 className="text-3xl font-black uppercase tracking-[-0.05em] text-white sm:text-4xl">{plan.name}</h3>
+                    <span className="border border-red-600/50 bg-red-600/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-red-300">{plan.tag}</span>
+                  </div>
+
+                  <p className="text-sm font-black uppercase tracking-[0.24em] text-zinc-400">{plan.description}</p>
+                  <div className="mt-7 border border-white/10 bg-white/[0.04] p-6">
+                    <p className="text-xs font-black uppercase tracking-[0.28em] text-red-500">A partir de</p>
+                    <p className="mt-2 text-5xl font-black uppercase tracking-[-0.07em] text-white sm:text-6xl">{plan.highlight.replace("A partir de ", "")}</p>
+                  </div>
+
+                  <ul className="mt-8 space-y-4">
+                    {plan.benefits.map((benefit) => (
+                      <li key={benefit} className="flex gap-3 text-sm leading-relaxed text-zinc-300">
+                        <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-red-600 shadow-[0_0_16px_rgba(220,38,38,0.8)]" />
+                        {benefit}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Link href="/unidades" className={`mt-9 inline-flex w-full justify-center rounded-sm px-8 py-4 text-center text-xs font-black uppercase tracking-[0.24em] transition ${plan.featured ? "bg-red-600 text-white hover:bg-red-700" : "border border-white/15 bg-white/[0.04] text-white hover:border-red-600 hover:bg-red-600/10"}`}>
+                    Escolher {plan.name.replace("Plano ", "")}
+                  </Link>
+                </div>
+              </article>
             ))}
           </div>
+
+          <p className="mt-6 text-center text-xs font-bold uppercase tracking-[0.18em] text-zinc-500">
+            Valores referentes aos planos de 12 meses. Consulte condições na unidade escolhida.
+          </p>
         </div>
       </section>
 
