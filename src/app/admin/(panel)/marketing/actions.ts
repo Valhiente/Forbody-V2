@@ -85,14 +85,32 @@ export async function updateMarketingManagerAction(formData: FormData): Promise<
     });
 
     await upsertSection(supabase, {
+      section_key: 'home_photos',
+      title: 'Fotos da Home',
+      subtitle: 'Imagens',
+      description: 'Imagens usadas nos blocos visuais da Home.',
+      sort_order: 2,
+      is_active: true,
+    });
+
+    await upsertSection(supabase, {
       section_key: 'home_plans',
       title: text(formData.get('plansTitle')),
       subtitle: text(formData.get('plansSubtitle')),
       description: text(formData.get('plansDescription')),
       button_label: text(formData.get('plansButtonLabel')),
       button_href: text(formData.get('plansButtonHref')),
-      sort_order: 2,
+      sort_order: 3,
       is_active: true,
+    });
+
+    await upsertSection(supabase, {
+      section_key: 'home_promotions',
+      title: text(formData.get('promoTitle')) || 'Promoções',
+      subtitle: 'Promoções',
+      description: text(formData.get('promoDescription')),
+      sort_order: 4,
+      is_active: checkbox(formData.get('promoActive')),
     });
 
     const photos = [
