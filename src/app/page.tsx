@@ -86,6 +86,7 @@ const unitPreview = [
   "Triunfo",
   "Barão do Bananal",
   "Vila Virgínia",
+  "Candido Portinari,"
 ];
 
 export default function HomePage() {
@@ -153,7 +154,7 @@ export default function HomePage() {
                     Red ou Black. Escolha sua rotina.
                   </h2>
                   <p className="mt-5 text-sm leading-relaxed text-zinc-300">
-                    Planos em destaque logo na primeira tela para o aluno decidir rápido e avançar para a unidade.
+                    Planos para que decida rápido e encontre a sua unidade.
                   </p>
                 </div>
 
@@ -240,11 +241,11 @@ export default function HomePage() {
             <div>
               <p className="border-l-4 border-red-600 pl-4 text-xs font-black uppercase tracking-[0.34em] text-red-500">Vitrine para o aluno</p>
               <h2 className="mt-6 text-4xl font-black uppercase leading-[0.92] tracking-[-0.06em] text-white sm:text-6xl">
-                Tudo que o aluno procura em uma academia.
+                Tudo que o você procura em uma academia.
               </h2>
             </div>
             <p className="max-w-3xl text-base leading-relaxed text-zinc-300 sm:text-lg">
-              A Home passa a apresentar a Forbody como academia completa: estrutura, acompanhamento, aulas, preço acessível e produtos para a rotina de treino.
+              Apresentamos para nossos alunos a Forbody como uma academia completa: estrutura, acompanhamento, aulas, preço acessível e produtos para a rotina de treino e dia a dia.
             </p>
           </div>
 
@@ -283,7 +284,7 @@ export default function HomePage() {
               Da primeira visita ao primeiro treino.
             </h2>
             <p className="mt-6 text-base leading-relaxed text-zinc-300">
-              Cada seção da Home passa a ajudar o aluno a entender a Forbody e avançar para uma unidade.
+              Cada seção aqui foi pensada para te ajudar, caro aluno a entender a Forbody e avançar para uma unidade.
             </p>
 
             <div className="mt-10 space-y-4">
@@ -310,7 +311,7 @@ export default function HomePage() {
               Encontre uma Forbody perto de você.
             </h2>
             <p className="mt-6 max-w-2xl text-base leading-relaxed text-zinc-300">
-              A Home direciona o aluno para o caminho mais importante: escolher uma unidade e iniciar o contato.
+              O caminho mais importante: escolher uma unidade e iniciar o contato.
             </p>
 
             <div className="mt-10 grid gap-3 sm:grid-cols-3">
@@ -347,7 +348,7 @@ export default function HomePage() {
                 A Forbody está pronta para receber você.
               </h2>
               <p className="mt-6 max-w-2xl text-base font-medium leading-relaxed text-white/82">
-                Escolha sua unidade, conheça a estrutura e dê o próximo passo para começar a treinar.
+                Escolha sua unidade, e dê o próximo passo para começar a treinar.
               </p>
             </div>
             <div className="flex flex-col gap-4">
@@ -355,7 +356,7 @@ export default function HomePage() {
                 Escolher unidade
               </Link>
               <Link href="#estrutura" className="rounded-sm border border-white/35 px-8 py-4 text-center text-xs font-black uppercase tracking-[0.24em] text-white transition hover:bg-white/10">
-                Ver estrutura
+                Ver unidade
               </Link>
             </div>
           </div>
