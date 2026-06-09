@@ -25,6 +25,34 @@ const pillars = [
   "Franquia escalável",
 ];
 
+const experienceBlocks = [
+  {
+    eyebrow: "Para alunos",
+    title: "Treino direto, ambiente forte e acompanhamento de verdade.",
+    description: "A Forbody nasce para facilitar a decisão do aluno: encontrar a unidade, entender a estrutura e começar a treinar sem complicação.",
+    image: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1200&q=90",
+  },
+  {
+    eyebrow: "Para unidades",
+    title: "Padrão de comunicação para fortalecer cada academia.",
+    description: "A presença digital ajuda cada unidade a comunicar endereço, canais, ofertas e diferenciais com mais clareza.",
+    image: "https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=1200&q=90",
+  },
+  {
+    eyebrow: "Para expansão",
+    title: "Estrutura preparada para atrair novos franqueados.",
+    description: "A página de franquias conecta interessados à marca e registra os leads para relacionamento futuro.",
+    image: "https://images.unsplash.com/photo-1558611848-73f7eb4001a1?auto=format&fit=crop&w=1200&q=90",
+  },
+];
+
+const conversionSteps = [
+  "Aluno encontra a unidade mais próxima",
+  "Entende a proposta da Forbody",
+  "Clica no canal certo",
+  "Começa a jornada com a academia",
+];
+
 export default function HomePage() {
   return (
     <main className="min-h-screen overflow-hidden bg-[#030303] text-white">
@@ -104,6 +132,79 @@ export default function HomePage() {
                   ))}
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-5 py-24 sm:px-8 lg:px-12">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 grid gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-end">
+            <div>
+              <p className="border-l-4 border-red-600 pl-4 text-xs font-black uppercase tracking-[0.34em] text-red-500">Experiência Forbody</p>
+              <h2 className="mt-6 text-4xl font-black uppercase leading-[0.92] tracking-[-0.06em] text-white sm:text-6xl">
+                Uma academia com comunicação de rede.
+              </h2>
+            </div>
+            <p className="max-w-3xl text-base leading-relaxed text-zinc-300 sm:text-lg">
+              A Home precisa vender rápido: mostrar força, orientar o aluno, abrir caminho para unidades e preparar a expansão de franquias com clareza.
+            </p>
+          </div>
+
+          <div className="grid gap-5 lg:grid-cols-3">
+            {experienceBlocks.map((block) => (
+              <article key={block.title} className="group relative min-h-[520px] overflow-hidden border border-white/10 bg-black/40 transition duration-500 hover:-translate-y-2 hover:border-red-600/60">
+                <div className="absolute inset-0 bg-cover bg-center opacity-28 grayscale transition duration-500 group-hover:scale-105 group-hover:opacity-42" style={{ backgroundImage: `url(${block.image})` }} />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/76 to-black/20" />
+                <div className="absolute inset-x-0 top-0 h-1 bg-red-600 opacity-0 transition group-hover:opacity-100" />
+                <div className="relative flex min-h-[520px] flex-col justify-end p-7">
+                  <p className="text-xs font-black uppercase tracking-[0.3em] text-red-500">{block.eyebrow}</p>
+                  <h3 className="mt-5 text-3xl font-black uppercase leading-none tracking-[-0.05em] text-white">{block.title}</h3>
+                  <p className="mt-5 text-sm leading-relaxed text-zinc-300">{block.description}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative px-5 py-24 sm:px-8 lg:px-12">
+        <div className="absolute inset-x-0 top-1/2 h-px bg-gradient-to-r from-transparent via-red-600/50 to-transparent" />
+        <div className="relative mx-auto grid max-w-7xl overflow-hidden border border-white/10 bg-[#080808] lg:grid-cols-[0.95fr_1.05fr]">
+          <div className="relative min-h-[460px] overflow-hidden">
+            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1605296867424-35fc25c9212a?auto=format&fit=crop&w=1400&q=90')] bg-cover bg-center opacity-36 grayscale" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/50 to-[#080808]" />
+            <div className="absolute bottom-8 left-8 border-l-4 border-red-600 bg-black/55 px-5 py-4 backdrop-blur-xl">
+              <p className="text-[10px] font-black uppercase tracking-[0.32em] text-zinc-400">Forbody Academia</p>
+              <p className="mt-2 text-3xl font-black uppercase tracking-[-0.06em] text-white">Movimento real.</p>
+            </div>
+          </div>
+
+          <div className="p-8 sm:p-10 lg:p-14">
+            <p className="text-xs font-black uppercase tracking-[0.34em] text-red-500">Caminho de conversão</p>
+            <h2 className="mt-6 text-4xl font-black uppercase leading-[0.94] tracking-[-0.06em] text-white sm:text-5xl">
+              Menos clique perdido. Mais ação no lugar certo.
+            </h2>
+            <p className="mt-6 text-base leading-relaxed text-zinc-300">
+              Cada seção da Home passa a trabalhar para uma decisão: escolher unidade, entender a marca ou avançar para franquias.
+            </p>
+
+            <div className="mt-10 space-y-4">
+              {conversionSteps.map((step, index) => (
+                <div key={step} className="flex items-center gap-4 border border-white/10 bg-white/[0.03] p-4 transition hover:border-red-600/50 hover:bg-red-600/10">
+                  <span className="flex h-10 w-10 items-center justify-center bg-red-600 text-sm font-black text-white">0{index + 1}</span>
+                  <p className="text-sm font-black uppercase tracking-[0.12em] text-zinc-200">{step}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+              <Link href="/unidades" className="rounded-sm bg-red-600 px-7 py-4 text-center text-xs font-black uppercase tracking-[0.22em] text-white transition hover:bg-red-700">
+                Ver unidades
+              </Link>
+              <Link href="/franquias" className="rounded-sm border border-white/15 px-7 py-4 text-center text-xs font-black uppercase tracking-[0.22em] text-white transition hover:border-red-600 hover:bg-red-600/10">
+                Conhecer franquias
+              </Link>
             </div>
           </div>
         </div>
