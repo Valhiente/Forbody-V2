@@ -39,9 +39,9 @@ const experienceBlocks = [
     image: "https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=1200&q=90",
   },
   {
-    eyebrow: "Para expansão",
-    title: "Estrutura preparada para atrair novos franqueados.",
-    description: "A página de franquias conecta interessados à marca e registra os leads para relacionamento futuro.",
+    eyebrow: "Para a marca",
+    title: "Forbody mais forte em cada ponto de contato.",
+    description: "A Home passa a apresentar a academia com mais clareza, energia e direção comercial para quem quer começar a treinar.",
     image: "https://images.unsplash.com/photo-1558611848-73f7eb4001a1?auto=format&fit=crop&w=1200&q=90",
   },
 ];
@@ -51,6 +51,31 @@ const conversionSteps = [
   "Entende a proposta da Forbody",
   "Clica no canal certo",
   "Começa a jornada com a academia",
+];
+
+const homeHighlights = [
+  {
+    title: "Estrutura completa",
+    description: "A Home apresenta a Forbody como academia forte, organizada e pronta para receber novos alunos.",
+  },
+  {
+    title: "Caminho simples",
+    description: "O visitante entende rápido onde clicar, qual unidade procurar e como iniciar o contato.",
+  },
+  {
+    title: "Marca memorável",
+    description: "Preto, grafite e vermelho trabalham juntos para criar presença visual sem depender de nomes extras.",
+  },
+  {
+    title: "Comunicação direta",
+    description: "Frases curtas, CTAs claros e blocos objetivos ajudam a transformar atenção em ação.",
+  },
+];
+
+const unitPreview = [
+  "Triunfo",
+  "Barão do Bananal",
+  "Vila Virgínia",
 ];
 
 export default function HomePage() {
@@ -210,22 +235,87 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="px-6 pb-24 sm:px-8 lg:px-12">
-        <div className="mx-auto max-w-7xl border border-white/10 bg-white/[0.03] p-8 backdrop-blur-xl sm:p-10 lg:p-12">
-          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
-            <div>
-              <p className="text-xs font-black uppercase tracking-[0.32em] text-red-500">Forbody Academia</p>
-              <h2 className="mt-5 text-3xl font-black uppercase tracking-[-0.04em] text-white sm:text-5xl">
-                Visual forte. Experiência simples. Conversão direta.
+      <section className="px-5 py-24 sm:px-8 lg:px-12">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
+            <div className="lg:sticky lg:top-28">
+              <p className="border-l-4 border-red-600 pl-4 text-xs font-black uppercase tracking-[0.34em] text-red-500">Por que Forbody</p>
+              <h2 className="mt-6 text-4xl font-black uppercase leading-[0.92] tracking-[-0.06em] text-white sm:text-6xl">
+                A marca precisa ser simples. A presença precisa ser forte.
               </h2>
+              <p className="mt-6 text-base leading-relaxed text-zinc-300">
+                Nada de nomes extras. A comunicação reforça uma única lembrança: Forbody Academia.
+              </p>
             </div>
-            <div className="grid gap-4 sm:grid-cols-3">
-              {['Aluno encontra unidade', 'Investidor entende franquia', 'Marca transmite presença'].map((item, index) => (
-                <div key={item} className="border border-white/10 bg-black/30 p-6 transition duration-300 hover:border-red-600/50 hover:bg-red-600/10">
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              {homeHighlights.map((highlight, index) => (
+                <div key={highlight.title} className="group border border-white/10 bg-white/[0.03] p-7 transition duration-300 hover:-translate-y-2 hover:border-red-600/50 hover:bg-red-600/10">
                   <span className="text-sm font-black text-red-500">0{index + 1}</span>
-                  <h3 className="mt-5 text-lg font-black uppercase leading-tight text-white">{item}</h3>
+                  <h3 className="mt-6 text-2xl font-black uppercase leading-none tracking-[-0.04em] text-white">{highlight.title}</h3>
+                  <p className="mt-5 text-sm leading-relaxed text-zinc-300">{highlight.description}</p>
                 </div>
               ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-5 py-24 sm:px-8 lg:px-12">
+        <div className="mx-auto grid max-w-7xl overflow-hidden border border-white/10 bg-[#080808] lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="p-8 sm:p-10 lg:p-14">
+            <p className="text-xs font-black uppercase tracking-[0.34em] text-red-500">Unidades Forbody</p>
+            <h2 className="mt-6 text-4xl font-black uppercase leading-[0.94] tracking-[-0.06em] text-white sm:text-5xl">
+              Encontre uma Forbody perto de você.
+            </h2>
+            <p className="mt-6 max-w-2xl text-base leading-relaxed text-zinc-300">
+              A Home agora direciona o aluno para o caminho mais importante: escolher uma unidade e iniciar o contato.
+            </p>
+
+            <div className="mt-10 grid gap-3 sm:grid-cols-3">
+              {unitPreview.map((unit) => (
+                <div key={unit} className="border border-white/10 bg-black/35 px-5 py-5 transition hover:border-red-600/50 hover:bg-red-600/10">
+                  <p className="text-sm font-black uppercase tracking-[0.18em] text-white">{unit}</p>
+                </div>
+              ))}
+            </div>
+
+            <Link href="/unidades" className="mt-10 inline-flex rounded-sm bg-red-600 px-8 py-4 text-xs font-black uppercase tracking-[0.22em] text-white transition hover:bg-red-700">
+              Ver todas as unidades
+            </Link>
+          </div>
+
+          <div className="relative min-h-[420px] overflow-hidden">
+            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1534258936925-c58bed479fcb?auto=format&fit=crop&w=1200&q=90')] bg-cover bg-center opacity-42 grayscale" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/52 to-transparent" />
+            <div className="absolute bottom-8 left-8 right-8 border border-white/10 bg-black/60 p-6 backdrop-blur-xl">
+              <p className="text-[10px] font-black uppercase tracking-[0.32em] text-red-500">Forbody</p>
+              <h3 className="mt-3 text-3xl font-black uppercase leading-none tracking-[-0.05em] text-white">Mais perto. Mais direto. Mais forte.</h3>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 pb-24 sm:px-8 lg:px-12">
+        <div className="relative mx-auto max-w-7xl overflow-hidden border border-red-600/30 bg-red-600 px-8 py-14 text-white shadow-[0_0_80px_rgba(220,38,38,0.22)] sm:p-12 lg:p-16">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_20%,rgba(255,255,255,0.24),transparent_26%),linear-gradient(135deg,rgba(0,0,0,0.18),rgba(0,0,0,0.45))]" />
+          <div className="relative grid gap-10 lg:grid-cols-[1fr_0.65fr] lg:items-center">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.34em] text-white/80">Comece pela unidade</p>
+              <h2 className="mt-5 text-4xl font-black uppercase leading-[0.9] tracking-[-0.06em] text-white sm:text-6xl">
+                A Forbody está pronta para receber você.
+              </h2>
+              <p className="mt-6 max-w-2xl text-base font-medium leading-relaxed text-white/82">
+                Escolha sua unidade, veja os canais de contato e dê o próximo passo para começar a treinar.
+              </p>
+            </div>
+            <div className="flex flex-col gap-4">
+              <Link href="/unidades" className="rounded-sm bg-black px-8 py-4 text-center text-xs font-black uppercase tracking-[0.24em] text-white transition hover:bg-zinc-950">
+                Escolher unidade
+              </Link>
+              <Link href="/" className="rounded-sm border border-white/35 px-8 py-4 text-center text-xs font-black uppercase tracking-[0.24em] text-white transition hover:bg-white/10">
+                Voltar ao topo
+              </Link>
             </div>
           </div>
         </div>
