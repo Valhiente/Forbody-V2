@@ -12,6 +12,10 @@ function text(value: FormDataEntryValue | null): string {
   return typeof value === 'string' ? value.trim() : '';
 }
 
+function checkbox(value: FormDataEntryValue | null): boolean {
+  return value === 'on';
+}
+
 function lines(value: FormDataEntryValue | null): string[] {
   return text(value)
     .split('\n')
@@ -31,6 +35,16 @@ async function upsertSection(supabase: any, payload: Record<string, unknown>) {
   const { error } = await supabase
     .from('site_marketing_sections')
     .upsert(payload, { onConflict: 'section_key' });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+async function upsertItem(supabase: any, payload: Record<string, unknown>) {
+  const { error } = await supabase
+    .from('site_marketing_items')
+    .upsert(payload, { onConflict: 'section_key,item_key' });
 
   if (error) {
     throw new Error(error.message);
@@ -79,6 +93,36 @@ export async function updateMarketingManagerAction(formData: FormData): Promise<
       button_href: text(formData.get('plansButtonHref')),
       sort_order: 2,
       is_active: true,
+    });
+
+    const photos = [
+      { key: 'main', field: 'photoMain', title: 'Foto principal', order: 1 },
+      { key: 'card_1', field: 'photoCard1', title: 'Foto card 1', order: 2 },
+      { key: 'card_2', field: 'photoCard2', title: 'Foto card 2', order: 3 },
+      { key: 'card_3', field: 'photoCard3', title: 'Foto card 3', order: 4 },
+    ];
+
+    await Promise.all(
+      photos.map((photo) =>
+        upsertItem(supabase, {
+          section_key: 'home_photos',
+          item_key: photo.key,
+          title: photo.title,
+          image_url: text(formData.get(photo.field)) || null,
+          sort_order: photo.order,
+          is_active: true,
+        })
+      )
+    );
+
+    await upsertItem(supabase, {
+      section_key: 'home_promotions',
+      item_key: 'main',
+      title: text(formData.get('promoTitle')),
+      description: text(formData.get('promoDescription')),
+      badge: text(formData.get('promoValue')),
+      is_active: checkbox(formData.get('promoActive')),
+      sort_order: 1,
     });
 
     await upsertPlan(supabase, {
