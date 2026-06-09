@@ -1,75 +1,75 @@
 import Link from "next/link";
 
-const performanceCards = [
+const studentStats = [
   {
-    value: "24/7",
-    label: "Presença digital",
-    description: "Estrutura preparada para captação, matrícula, unidades e expansão da rede.",
+    value: "01",
+    label: "Estrutura completa",
+    description: "Academias bem equipadas para musculação, cardio e evolução diária.",
   },
   {
-    value: "+4",
-    label: "Unidades ativas",
-    description: "Base regional forte com arquitetura pronta para crescer como rede nacional.",
+    value: "02",
+    label: "Profissionais presentes",
+    description: "Equipe preparada para orientar, acompanhar e ajudar no seu treino.",
   },
   {
-    value: "RED",
-    label: "Identidade própria",
-    description: "Marca intensa, reconhecível e alinhada em todos os pontos de contato.",
+    value: "03",
+    label: "Aulas coletivas",
+    description: "Mais movimento, energia e variedade para sua rotina não cair no automático.",
   },
 ];
 
 const pillars = [
   "Musculação completa",
-  "Ambiente de presença",
-  "Atendimento próximo",
-  "Franquia escalável",
+  "Bons profissionais",
+  "Aulas coletivas",
+  "Planos acessíveis",
 ];
 
-const experienceBlocks = [
+const showcaseCards = [
   {
-    eyebrow: "Para alunos",
-    title: "Treino direto, ambiente forte e acompanhamento de verdade.",
-    description: "A Forbody nasce para facilitar a decisão do aluno: encontrar a unidade, entender a estrutura e começar a treinar sem complicação.",
-    image: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1200&q=90",
+    eyebrow: "Estrutura",
+    title: "Equipamentos para treinar com mais resultado.",
+    description: "A Forbody oferece uma estrutura pensada para o aluno aproveitar melhor cada treino, com espaços organizados e equipamentos para diferentes objetivos.",
+    image: "https://images.unsplash.com/photo-1534258936925-c58bed479fcb?auto=format&fit=crop&w=1200&q=90",
   },
   {
-    eyebrow: "Para unidades",
-    title: "Padrão de comunicação para fortalecer cada academia.",
-    description: "A presença digital ajuda cada unidade a comunicar endereço, canais, ofertas e diferenciais com mais clareza.",
+    eyebrow: "Profissionais",
+    title: "Orientação para você treinar com mais segurança.",
+    description: "Bons profissionais fazem diferença na experiência do aluno: orientação, presença, correção e apoio para manter constância.",
     image: "https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=1200&q=90",
   },
   {
-    eyebrow: "Para a marca",
-    title: "Forbody mais forte em cada ponto de contato.",
-    description: "A Home passa a apresentar a academia com mais clareza, energia e direção comercial para quem quer começar a treinar.",
-    image: "https://images.unsplash.com/photo-1558611848-73f7eb4001a1?auto=format&fit=crop&w=1200&q=90",
+    eyebrow: "Aulas coletivas",
+    title: "Mais energia para quem gosta de treinar junto.",
+    description: "As aulas coletivas ajudam a criar ritmo, motivação e uma experiência mais completa dentro da academia.",
+    image: "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&q=90",
   },
 ];
 
-const conversionSteps = [
-  "Aluno encontra a unidade mais próxima",
-  "Entende a proposta da Forbody",
-  "Clica no canal certo",
-  "Começa a jornada com a academia",
+const studentBenefits = [
+  {
+    title: "Planos que cabem no bolso",
+    description: "Opções comerciais pensadas para facilitar a entrada do aluno e manter a rotina de treino ativa.",
+  },
+  {
+    title: "Acessórios e produtos",
+    description: "Itens que o aluno pode adquirir para complementar treino, rotina e experiência dentro da Forbody.",
+  },
+  {
+    title: "Ambiente organizado",
+    description: "Espaços com visual forte, estrutura clara e comunicação direta para o aluno se sentir no lugar certo.",
+  },
+  {
+    title: "Atendimento próximo",
+    description: "Uma academia precisa receber bem. A Home passa a mostrar acolhimento, clareza e presença humana.",
+  },
 ];
 
-const homeHighlights = [
-  {
-    title: "Estrutura completa",
-    description: "A Home apresenta a Forbody como academia forte, organizada e pronta para receber novos alunos.",
-  },
-  {
-    title: "Caminho simples",
-    description: "O visitante entende rápido onde clicar, qual unidade procurar e como iniciar o contato.",
-  },
-  {
-    title: "Marca memorável",
-    description: "Preto, grafite e vermelho trabalham juntos para criar presença visual sem depender de nomes extras.",
-  },
-  {
-    title: "Comunicação direta",
-    description: "Frases curtas, CTAs claros e blocos objetivos ajudam a transformar atenção em ação.",
-  },
+const studentJourney = [
+  "Escolha sua unidade",
+  "Conheça a estrutura",
+  "Veja planos e modalidades",
+  "Comece a treinar",
 ];
 
 const unitPreview = [
@@ -83,16 +83,16 @@ export default function HomePage() {
     <main className="min-h-screen overflow-hidden bg-[#030303] text-white">
       <section className="relative min-h-screen overflow-hidden px-5 py-20 sm:px-8 lg:px-12">
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1534367610401-9f5ed68180aa?auto=format&fit=crop&w=1800&q=90')] bg-cover bg-center opacity-25 grayscale" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_35%,rgba(220,38,38,0.34),transparent_28%),linear-gradient(90deg,#030303_0%,rgba(3,3,3,0.88)_36%,rgba(3,3,3,0.48)_68%,#030303_100%)]" />
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,3,3,0.2)_0%,#030303_96%)]" />
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=1800&q=90')] bg-cover bg-center opacity-30 grayscale" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_35%,rgba(220,38,38,0.3),transparent_30%),linear-gradient(90deg,#030303_0%,rgba(3,3,3,0.9)_35%,rgba(3,3,3,0.58)_70%,#030303_100%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,3,3,0.1)_0%,#030303_96%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:82px_82px] opacity-20" />
         </div>
 
         <div className="absolute left-0 top-1/2 h-[42rem] w-[42rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-600/18 blur-[150px]" />
         <div className="absolute bottom-10 right-0 h-[34rem] w-[34rem] translate-x-1/3 rounded-full bg-red-900/25 blur-[150px]" />
 
-        <div className="relative z-10 mx-auto grid min-h-[calc(100vh-10rem)] max-w-7xl items-center gap-14 lg:grid-cols-[1.02fr_0.98fr]">
+        <div className="relative z-10 mx-auto grid min-h-[calc(100vh-10rem)] max-w-7xl items-center gap-14 lg:grid-cols-[1.04fr_0.96fr]">
           <div className="animate-slide-up">
             <div className="mb-7 inline-flex items-center gap-3 border-l-4 border-red-600 bg-white/[0.04] px-5 py-3 text-[10px] font-black uppercase tracking-[0.34em] text-zinc-300 backdrop-blur-xl">
               <span className="h-2 w-2 rounded-full bg-red-600 shadow-[0_0_20px_rgba(220,38,38,0.9)]" />
@@ -100,19 +100,19 @@ export default function HomePage() {
             </div>
 
             <h1 className="max-w-5xl text-5xl font-black uppercase leading-[0.88] tracking-[-0.08em] text-white sm:text-7xl lg:text-8xl xl:text-9xl">
-              Treino forte. <span className="block text-red-600">Marca forte.</span>
+              Seu treino merece <span className="block text-red-600">uma estrutura forte.</span>
             </h1>
 
             <p className="mt-8 max-w-2xl text-base leading-relaxed text-zinc-300 sm:text-lg">
-              A Forbody conecta alunos, unidades e expansão em uma experiência direta, intensa e preparada para crescer como rede de academias.
+              A Forbody é uma vitrine para quem quer treinar melhor: equipamentos, profissionais, aulas coletivas, planos acessíveis e tudo o que ajuda o aluno a evoluir.
             </p>
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
               <Link href="/unidades" className="rounded-sm bg-red-600 px-8 py-4 text-center text-sm font-black uppercase tracking-[0.22em] text-white shadow-[0_0_34px_rgba(220,38,38,0.28)] transition duration-300 hover:bg-red-700 hover:shadow-[0_0_46px_rgba(220,38,38,0.42)]">
                 Escolher unidade
               </Link>
-              <Link href="/franquias" className="group rounded-sm border border-white/15 bg-white/[0.04] px-8 py-4 text-center text-sm font-black uppercase tracking-[0.22em] text-white backdrop-blur-xl transition duration-300 hover:border-red-600 hover:bg-red-600/10">
-                Seja franqueado
+              <Link href="#estrutura" className="group rounded-sm border border-white/15 bg-white/[0.04] px-8 py-4 text-center text-sm font-black uppercase tracking-[0.22em] text-white backdrop-blur-xl transition duration-300 hover:border-red-600 hover:bg-red-600/10">
+                Conhecer estrutura
                 <span className="ml-2 inline-block text-red-500 transition group-hover:translate-x-1">→</span>
               </Link>
             </div>
@@ -130,25 +130,25 @@ export default function HomePage() {
             <div className="absolute -inset-8 bg-red-600/10 blur-[90px]" />
             <div className="relative min-h-[560px] overflow-hidden border border-white/10 bg-[#080808]/90 shadow-2xl shadow-red-950/30 backdrop-blur-xl">
               <div className="absolute inset-x-0 top-0 h-1 bg-red-600" />
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=1600&q=90')] bg-cover bg-center opacity-36 grayscale" />
+              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1600&q=90')] bg-cover bg-center opacity-38 grayscale" />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/72 to-black/10" />
               <div className="absolute right-6 top-6 border border-red-600/40 bg-black/60 px-4 py-2 text-xs font-black uppercase tracking-[0.22em] text-red-300 backdrop-blur-xl">
-                Forbody 10.4
+                Para alunos
               </div>
 
               <div className="relative flex h-full min-h-[560px] flex-col justify-end p-6 sm:p-8">
                 <div className="mb-8 max-w-md">
-                  <p className="text-xs font-black uppercase tracking-[0.34em] text-red-500">rede em expansão</p>
+                  <p className="text-xs font-black uppercase tracking-[0.34em] text-red-500">treino, energia e evolução</p>
                   <h2 className="mt-4 text-4xl font-black uppercase leading-none tracking-[-0.05em] text-white sm:text-5xl">
-                    Presença para vender. Estrutura para crescer.
+                    Musculação, aulas e estrutura em um só lugar.
                   </h2>
                   <p className="mt-5 text-sm leading-relaxed text-zinc-300">
-                    Um site pensado para matrícula, unidade, franquia e posicionamento forte da marca Forbody.
+                    A Home agora fala primeiro com quem quer treinar, conhecer a academia e encontrar a unidade ideal.
                   </p>
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-3">
-                  {performanceCards.map((card) => (
+                  {studentStats.map((card) => (
                     <div key={card.label} className="border border-white/10 bg-white/[0.06] p-5 backdrop-blur-xl transition duration-300 hover:-translate-y-2 hover:border-red-600/50 hover:bg-red-600/10">
                       <p className="text-3xl font-black text-white">{card.value}</p>
                       <p className="mt-2 text-[10px] font-black uppercase tracking-[0.2em] text-red-400">{card.label}</p>
@@ -162,24 +162,24 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="px-5 py-24 sm:px-8 lg:px-12">
+      <section id="estrutura" className="px-5 py-24 sm:px-8 lg:px-12">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 grid gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-end">
             <div>
-              <p className="border-l-4 border-red-600 pl-4 text-xs font-black uppercase tracking-[0.34em] text-red-500">Experiência Forbody</p>
+              <p className="border-l-4 border-red-600 pl-4 text-xs font-black uppercase tracking-[0.34em] text-red-500">Vitrine para o aluno</p>
               <h2 className="mt-6 text-4xl font-black uppercase leading-[0.92] tracking-[-0.06em] text-white sm:text-6xl">
-                Uma academia com comunicação de rede.
+                Tudo que o aluno procura em uma academia.
               </h2>
             </div>
             <p className="max-w-3xl text-base leading-relaxed text-zinc-300 sm:text-lg">
-              A Home precisa vender rápido: mostrar força, orientar o aluno, abrir caminho para unidades e preparar a expansão de franquias com clareza.
+              A Home passa a apresentar a Forbody como academia completa: estrutura, acompanhamento, aulas, preço acessível e produtos para a rotina de treino.
             </p>
           </div>
 
           <div className="grid gap-5 lg:grid-cols-3">
-            {experienceBlocks.map((block) => (
+            {showcaseCards.map((block) => (
               <article key={block.title} className="group relative min-h-[520px] overflow-hidden border border-white/10 bg-black/40 transition duration-500 hover:-translate-y-2 hover:border-red-600/60">
-                <div className="absolute inset-0 bg-cover bg-center opacity-28 grayscale transition duration-500 group-hover:scale-105 group-hover:opacity-42" style={{ backgroundImage: `url(${block.image})` }} />
+                <div className="absolute inset-0 bg-cover bg-center opacity-30 grayscale transition duration-500 group-hover:scale-105 group-hover:opacity-44" style={{ backgroundImage: `url(${block.image})` }} />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/76 to-black/20" />
                 <div className="absolute inset-x-0 top-0 h-1 bg-red-600 opacity-0 transition group-hover:opacity-100" />
                 <div className="relative flex min-h-[520px] flex-col justify-end p-7">
@@ -193,29 +193,57 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="px-5 py-24 sm:px-8 lg:px-12">
+        <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="relative min-h-[520px] overflow-hidden border border-white/10 bg-[#080808]">
+            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1605296867424-35fc25c9212a?auto=format&fit=crop&w=1400&q=90')] bg-cover bg-center opacity-40 grayscale" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/68 to-black/10" />
+            <div className="relative flex min-h-[520px] flex-col justify-end p-8 lg:p-10">
+              <p className="text-xs font-black uppercase tracking-[0.34em] text-red-500">Planos Forbody</p>
+              <h2 className="mt-5 text-4xl font-black uppercase leading-[0.9] tracking-[-0.06em] text-white sm:text-5xl">
+                Planos que cabem no bolso e ajudam você a começar.
+              </h2>
+              <p className="mt-6 text-base leading-relaxed text-zinc-300">
+                Quando os planos oficiais forem adicionados, essa área será a vitrine comercial principal para o aluno comparar e escolher.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            {studentBenefits.map((benefit, index) => (
+              <div key={benefit.title} className="group border border-white/10 bg-white/[0.03] p-7 transition duration-300 hover:-translate-y-2 hover:border-red-600/50 hover:bg-red-600/10">
+                <span className="text-sm font-black text-red-500">0{index + 1}</span>
+                <h3 className="mt-6 text-2xl font-black uppercase leading-none tracking-[-0.04em] text-white">{benefit.title}</h3>
+                <p className="mt-5 text-sm leading-relaxed text-zinc-300">{benefit.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="relative px-5 py-24 sm:px-8 lg:px-12">
         <div className="absolute inset-x-0 top-1/2 h-px bg-gradient-to-r from-transparent via-red-600/50 to-transparent" />
         <div className="relative mx-auto grid max-w-7xl overflow-hidden border border-white/10 bg-[#080808] lg:grid-cols-[0.95fr_1.05fr]">
           <div className="relative min-h-[460px] overflow-hidden">
-            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1605296867424-35fc25c9212a?auto=format&fit=crop&w=1400&q=90')] bg-cover bg-center opacity-36 grayscale" />
+            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1400&q=90')] bg-cover bg-center opacity-38 grayscale" />
             <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/50 to-[#080808]" />
             <div className="absolute bottom-8 left-8 border-l-4 border-red-600 bg-black/55 px-5 py-4 backdrop-blur-xl">
               <p className="text-[10px] font-black uppercase tracking-[0.32em] text-zinc-400">Forbody Academia</p>
-              <p className="mt-2 text-3xl font-black uppercase tracking-[-0.06em] text-white">Movimento real.</p>
+              <p className="mt-2 text-3xl font-black uppercase tracking-[-0.06em] text-white">Rotina real.</p>
             </div>
           </div>
 
           <div className="p-8 sm:p-10 lg:p-14">
-            <p className="text-xs font-black uppercase tracking-[0.34em] text-red-500">Caminho de conversão</p>
+            <p className="text-xs font-black uppercase tracking-[0.34em] text-red-500">Caminho do aluno</p>
             <h2 className="mt-6 text-4xl font-black uppercase leading-[0.94] tracking-[-0.06em] text-white sm:text-5xl">
-              Menos clique perdido. Mais ação no lugar certo.
+              Da primeira visita ao primeiro treino.
             </h2>
             <p className="mt-6 text-base leading-relaxed text-zinc-300">
-              Cada seção da Home passa a trabalhar para uma decisão: escolher unidade, entender a marca ou avançar para franquias.
+              Cada seção da Home passa a ajudar o aluno a entender a Forbody e avançar para uma unidade.
             </p>
 
             <div className="mt-10 space-y-4">
-              {conversionSteps.map((step, index) => (
+              {studentJourney.map((step, index) => (
                 <div key={step} className="flex items-center gap-4 border border-white/10 bg-white/[0.03] p-4 transition hover:border-red-600/50 hover:bg-red-600/10">
                   <span className="flex h-10 w-10 items-center justify-center bg-red-600 text-sm font-black text-white">0{index + 1}</span>
                   <p className="text-sm font-black uppercase tracking-[0.12em] text-zinc-200">{step}</p>
@@ -223,40 +251,9 @@ export default function HomePage() {
               ))}
             </div>
 
-            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <Link href="/unidades" className="rounded-sm bg-red-600 px-7 py-4 text-center text-xs font-black uppercase tracking-[0.22em] text-white transition hover:bg-red-700">
-                Ver unidades
-              </Link>
-              <Link href="/franquias" className="rounded-sm border border-white/15 px-7 py-4 text-center text-xs font-black uppercase tracking-[0.22em] text-white transition hover:border-red-600 hover:bg-red-600/10">
-                Conhecer franquias
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="px-5 py-24 sm:px-8 lg:px-12">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
-            <div className="lg:sticky lg:top-28">
-              <p className="border-l-4 border-red-600 pl-4 text-xs font-black uppercase tracking-[0.34em] text-red-500">Por que Forbody</p>
-              <h2 className="mt-6 text-4xl font-black uppercase leading-[0.92] tracking-[-0.06em] text-white sm:text-6xl">
-                A marca precisa ser simples. A presença precisa ser forte.
-              </h2>
-              <p className="mt-6 text-base leading-relaxed text-zinc-300">
-                Nada de nomes extras. A comunicação reforça uma única lembrança: Forbody Academia.
-              </p>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              {homeHighlights.map((highlight, index) => (
-                <div key={highlight.title} className="group border border-white/10 bg-white/[0.03] p-7 transition duration-300 hover:-translate-y-2 hover:border-red-600/50 hover:bg-red-600/10">
-                  <span className="text-sm font-black text-red-500">0{index + 1}</span>
-                  <h3 className="mt-6 text-2xl font-black uppercase leading-none tracking-[-0.04em] text-white">{highlight.title}</h3>
-                  <p className="mt-5 text-sm leading-relaxed text-zinc-300">{highlight.description}</p>
-                </div>
-              ))}
-            </div>
+            <Link href="/unidades" className="mt-10 inline-flex rounded-sm bg-red-600 px-7 py-4 text-center text-xs font-black uppercase tracking-[0.22em] text-white transition hover:bg-red-700">
+              Ver unidades
+            </Link>
           </div>
         </div>
       </section>
@@ -269,7 +266,7 @@ export default function HomePage() {
               Encontre uma Forbody perto de você.
             </h2>
             <p className="mt-6 max-w-2xl text-base leading-relaxed text-zinc-300">
-              A Home agora direciona o aluno para o caminho mais importante: escolher uma unidade e iniciar o contato.
+              A Home direciona o aluno para o caminho mais importante: escolher uma unidade e iniciar o contato.
             </p>
 
             <div className="mt-10 grid gap-3 sm:grid-cols-3">
@@ -286,7 +283,7 @@ export default function HomePage() {
           </div>
 
           <div className="relative min-h-[420px] overflow-hidden">
-            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1534258936925-c58bed479fcb?auto=format&fit=crop&w=1200&q=90')] bg-cover bg-center opacity-42 grayscale" />
+            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?auto=format&fit=crop&w=1200&q=90')] bg-cover bg-center opacity-42 grayscale" />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/52 to-transparent" />
             <div className="absolute bottom-8 left-8 right-8 border border-white/10 bg-black/60 p-6 backdrop-blur-xl">
               <p className="text-[10px] font-black uppercase tracking-[0.32em] text-red-500">Forbody</p>
@@ -306,15 +303,15 @@ export default function HomePage() {
                 A Forbody está pronta para receber você.
               </h2>
               <p className="mt-6 max-w-2xl text-base font-medium leading-relaxed text-white/82">
-                Escolha sua unidade, veja os canais de contato e dê o próximo passo para começar a treinar.
+                Escolha sua unidade, conheça a estrutura e dê o próximo passo para começar a treinar.
               </p>
             </div>
             <div className="flex flex-col gap-4">
               <Link href="/unidades" className="rounded-sm bg-black px-8 py-4 text-center text-xs font-black uppercase tracking-[0.24em] text-white transition hover:bg-zinc-950">
                 Escolher unidade
               </Link>
-              <Link href="/" className="rounded-sm border border-white/35 px-8 py-4 text-center text-xs font-black uppercase tracking-[0.24em] text-white transition hover:bg-white/10">
-                Voltar ao topo
+              <Link href="#estrutura" className="rounded-sm border border-white/35 px-8 py-4 text-center text-xs font-black uppercase tracking-[0.24em] text-white transition hover:bg-white/10">
+                Ver estrutura
               </Link>
             </div>
           </div>
