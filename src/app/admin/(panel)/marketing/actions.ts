@@ -8,13 +8,7 @@ type ActionResult = {
   error?: string;
 };
 
-type SupabaseError = {
-  message: string;
-};
+type SupabaseAdminClient = NonNullable<Awaited<ReturnType<typeof createSupabaseAdminClient>>>;
 
-type SupabaseWriteResult = {
-  error: SupabaseError | null;
-};
-
-type SupabaseTableWriter = {
-  upsert: (payload: Record<string,
+function text(value: FormDataEntryValue | null): string {
+  return typeof value === 'string' ? value.trim() :
