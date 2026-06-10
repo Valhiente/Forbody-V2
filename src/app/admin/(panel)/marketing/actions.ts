@@ -17,15 +17,4 @@ type SupabaseWriteResult = {
 };
 
 type SupabaseTableWriter = {
-  upsert: (payload: Record<string, unknown>, options?: Record<string, string>) => Promise<SupabaseWriteResult>;
-};
-
-type SupabaseWriter = {
-  from: (table: string) => SupabaseTableWriter;
-};
-
-function text(value: FormDataEntryValue | null): string {
-  return typeof value === 'string' ? value.trim() : '';
-}
-
-function textWithFallback(formData: FormData, name
+  upsert: (payload: Record<string,
