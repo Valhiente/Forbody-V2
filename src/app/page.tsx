@@ -1,13 +1,57 @@
 import Link from "next/link";
+import { createSupabaseAdminClient } from "@/lib/supabase/server";
 
-const pillars = [
+export const dynamic = "force-dynamic";
+
+type MarketingSection = {
+  section_key: string;
+  title: string | null;
+  subtitle: string | null;
+  description: string | null;
+  image_url: string | null;
+  button_label: string | null;
+  button_href: string | null;
+  is_active: boolean | null;
+  sort_order: number | null;
+};
+
+type MarketingItem = {
+  section_key: string;
+  item_key: string;
+  title: string | null;
+  description: string | null;
+  badge: string | null;
+  image_url: string | null;
+  is_active: boolean | null;
+  sort_order: number | null;
+};
+
+type SitePlan = {
+  plan_key: string;
+  name: string | null;
+  price_label: string | null;
+  description: string | null;
+  badge: string | null;
+  benefits: string[] | null;
+  is_featured: boolean | null;
+  is_active: boolean | null;
+  sort_order: number | null;
+};
+
+type HomeMarketingData = {
+  sections: MarketingSection[];
+  items: MarketingItem[];
+  plans: SitePlan[];
+};
+
+const fallbackPillars = [
   "Musculação completa",
   "Bons profissionais",
   "Aulas coletivas",
   "Planos acessíveis",
 ];
 
-const studentStats = [
+const fallbackStudentStats = [
   {
     value: "01",
     label: "Estrutura completa",
@@ -25,7 +69,7 @@ const studentStats = [
   },
 ];
 
-const showcaseCards = [
+const fallbackShowcaseCards = [
   {
     eyebrow: "Estrutura",
     title: "Equipamentos para treinar com mais resultado.",
@@ -52,7 +96,7 @@ const showcaseCards = [
   },
 ];
 
-const planCards = [
+const fallbackPlanCards = [
   {
     name: "Plano Red",
     price: "R$ 99,90",
@@ -90,12 +134,127 @@ const studentJourney = [
 
 const unitPreview = ["Triunfo", "Barão do Bananal", "Vila Virgínia", "Candido Portinari"];
 
-export default function HomePage() {
+function safeText(value: string | null | undefined, fallback: string) {
+  return value && value.trim().length > 0 ? value : fallback;
+}
+
+function normalizePrice(value: string) {
+  return value.replace("A partir de ", "");
+}
+
+async function getHomeMarketingData(): Promise<HomeMarketingData> {
+  try {
+    const supabase = await createSupabaseAdminClient();
+
+    if (!supabase) {
+      return { sections: [], items: [], plans: [] };
+    }
+
+    const [sectionsResult, itemsResult, plansResult] = await Promise.all([
+      supabase
+        .from("site_marketing_sections")
+        .select("section_key,title,subtitle,description,image_url,button_label,button_href,is_active,sort_order")
+        .order("sort_order", { ascending: true }),
+      supabase
+        .from("site_marketing_items")
+        .select("section_key,item_key,title,description,badge,image_url,is_active,sort_order")
+        .order("sort_order", { ascending: true }),
+      supabase
+        .from("site_plans")
+        .select("plan_key,name,price_label,description,badge,benefits,is_featured,is_active,sort_order")
+        .order("sort_order", { ascending: true }),
+    ]);
+
+    return {
+      sections: (sectionsResult.data || []) as MarketingSection[],
+      items: (itemsResult.data || []) as MarketingItem[],
+      plans: (plansResult.data || []) as SitePlan[],
+    };
+  } catch (error) {
+    console.error("Erro ao carregar marketing da Home:", error);
+    return { sections: [], items: [], plans: [] };
+  }
+}
+
+function sectionByKey(sections: MarketingSection[], key: string) {
+  return sections.find((section) => section.section_key === key && section.is_active !== false);
+}
+
+function itemsBySection(items: MarketingItem[], key: string) {
+  return items
+    .filter((item) => item.section_key === key && item.is_active !== false)
+    .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+}
+
+export default async function HomePage() {
+  const marketing = await getHomeMarketingData();
+
+  const heroSection = sectionByKey(marketing.sections, "home_hero");
+  const plansSection = sectionByKey(marketing.sections, "home_plans");
+  const promoSection = sectionByKey(marketing.sections, "home_promotions");
+  const promoItem = itemsBySection(marketing.items, "home_promotions")[0];
+  const photoItems = itemsBySection(marketing.items, "home_photos");
+
+  const hero = {
+    eyebrow: safeText(heroSection?.subtitle, "Forbody Academia"),
+    title: safeText(heroSection?.title, "Forbody, feita para cada etapa da sua vida."),
+    description: safeText(
+      heroSection?.description,
+      "Na Forbody, ajudamos você a conquistar seus objetivos, porque cada conquista sua também é nossa."
+    ),
+    image:
+      heroSection?.image_url ||
+      photoItems.find((item) => item.item_key === "main")?.image_url ||
+      "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=1800&q=90",
+    buttonLabel: safeText(heroSection?.button_label, "Escolher unidade"),
+    buttonHref: safeText(heroSection?.button_href, "/unidades"),
+  };
+
+  const showcaseCards = fallbackShowcaseCards.map((card, index) => {
+    const photo = photoItems.find((item) => item.item_key === `card_${index + 1}`);
+
+    return {
+      ...card,
+      image: photo?.image_url || card.image,
+      title: photo?.title || card.title,
+      description: photo?.description || card.description,
+    };
+  });
+
+  const planCards =
+    marketing.plans.length > 0
+      ? marketing.plans
+          .filter((plan) => plan.is_active !== false)
+          .map((plan, index) => ({
+            name: safeText(plan.name, fallbackPlanCards[index]?.name || "Plano Forbody"),
+            price: normalizePrice(safeText(plan.price_label, fallbackPlanCards[index]?.price || "R$ 99,90")),
+            description: safeText(
+              plan.description,
+              fallbackPlanCards[index]?.description || "Plano Forbody."
+            ),
+            tag: safeText(plan.badge, fallbackPlanCards[index]?.tag || "Forbody"),
+            featured: Boolean(plan.is_featured),
+            benefits:
+              Array.isArray(plan.benefits) && plan.benefits.length > 0
+                ? plan.benefits
+                : fallbackPlanCards[index]?.benefits || [],
+          }))
+      : fallbackPlanCards;
+
+  const mainVisualImage =
+    photoItems.find((item) => item.item_key === "main")?.image_url ||
+    "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1600&q=90";
+
+  const hasPromotion = promoSection?.is_active === true || promoItem?.is_active === true;
+
   return (
     <main className="min-h-screen overflow-hidden bg-[#030303] text-white">
       <section className="relative min-h-screen overflow-hidden px-5 py-20 sm:px-8 lg:px-12">
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=1800&q=90')] bg-cover bg-center opacity-30 grayscale" />
+          <div
+            className="absolute inset-0 bg-cover bg-center opacity-30 grayscale"
+            style={{ backgroundImage: `url(${hero.image})` }}
+          />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_35%,rgba(220,38,38,0.3),transparent_30%),linear-gradient(90deg,#030303_0%,rgba(3,3,3,0.9)_35%,rgba(3,3,3,0.58)_70%,#030303_100%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,3,3,0.1)_0%,#030303_96%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:82px_82px] opacity-20" />
@@ -108,23 +267,23 @@ export default function HomePage() {
           <div className="animate-slide-up">
             <div className="mb-7 inline-flex items-center gap-3 border-l-4 border-red-600 bg-white/[0.04] px-5 py-3 text-[10px] font-black uppercase tracking-[0.34em] text-zinc-300 backdrop-blur-xl">
               <span className="h-2 w-2 rounded-full bg-red-600 shadow-[0_0_20px_rgba(220,38,38,0.9)]" />
-              Forbody Academia
+              {hero.eyebrow}
             </div>
 
             <h1 className="max-w-5xl text-5xl font-black uppercase leading-[0.88] tracking-[-0.08em] text-white sm:text-7xl lg:text-8xl xl:text-9xl">
-              Forbody, feita para <span className="block text-red-600">cada etapa da sua vida.</span>
+              {hero.title}
             </h1>
 
             <p className="mt-8 max-w-2xl text-base leading-relaxed text-zinc-300 sm:text-lg">
-              Na Forbody, ajudamos você a conquistar seus objetivos, porque cada conquista sua também é nossa.
+              {hero.description}
             </p>
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
               <Link
-                href="/unidades"
+                href={hero.buttonHref}
                 className="rounded-sm bg-red-600 px-8 py-4 text-center text-sm font-black uppercase tracking-[0.22em] text-white shadow-[0_0_34px_rgba(220,38,38,0.28)] transition duration-300 hover:bg-red-700 hover:shadow-[0_0_46px_rgba(220,38,38,0.42)]"
               >
-                Escolher unidade
+                {hero.buttonLabel}
               </Link>
 
               <Link
@@ -137,7 +296,7 @@ export default function HomePage() {
             </div>
 
             <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:max-w-2xl">
-              {pillars.map((pillar) => (
+              {fallbackPillars.map((pillar) => (
                 <div
                   key={pillar}
                   className="border border-white/10 bg-black/35 px-5 py-4 text-sm font-black uppercase tracking-[0.14em] text-zinc-200 backdrop-blur-xl transition duration-300 hover:border-red-600/50 hover:bg-red-600/10 hover:text-white"
@@ -152,13 +311,33 @@ export default function HomePage() {
             <div className="absolute -inset-8 bg-red-600/10 blur-[90px]" />
             <div className="relative min-h-[560px] overflow-hidden border border-white/10 bg-[#080808]/90 shadow-2xl shadow-red-950/30 backdrop-blur-xl">
               <div className="absolute inset-x-0 top-0 h-1 bg-red-600" />
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1600&q=90')] bg-cover bg-center opacity-30 grayscale" />
+              <div
+                className="absolute inset-0 bg-cover bg-center opacity-30 grayscale"
+                style={{ backgroundImage: `url(${mainVisualImage})` }}
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/30" />
               <div className="absolute right-6 top-6 border border-red-600/40 bg-black/60 px-4 py-2 text-xs font-black uppercase tracking-[0.22em] text-red-300 backdrop-blur-xl">
                 Planos Forbody
               </div>
 
               <div className="relative flex h-full min-h-[560px] flex-col justify-end p-6 sm:p-8">
+                {hasPromotion ? (
+                  <div className="mb-6 border border-red-600/40 bg-red-600/15 p-5 backdrop-blur-xl">
+                    <p className="text-[10px] font-black uppercase tracking-[0.28em] text-red-300">
+                      {safeText(promoSection?.subtitle, "Promoção ativa")}
+                    </p>
+                    <h2 className="mt-3 text-2xl font-black uppercase tracking-[-0.04em] text-white">
+                      {safeText(promoItem?.title || promoSection?.title, "Promoção Forbody")}
+                    </h2>
+                    <p className="mt-2 text-sm leading-relaxed text-zinc-300">
+                      {safeText(promoItem?.description || promoSection?.description, "Condição especial por tempo limitado.")}
+                    </p>
+                    {promoItem?.badge ? (
+                      <p className="mt-3 text-xl font-black text-red-300">{promoItem.badge}</p>
+                    ) : null}
+                  </div>
+                ) : null}
+
                 <div className="mb-7 max-w-lg">
                   <p className="text-xs font-black uppercase tracking-[0.34em] text-red-500">comece agora</p>
                   <h2 className="mt-4 text-4xl font-black uppercase leading-none tracking-[-0.05em] text-white sm:text-5xl">
@@ -208,14 +387,17 @@ export default function HomePage() {
           <div className="mb-12 grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
             <div>
               <p className="border-l-4 border-red-600 pl-4 text-xs font-black uppercase tracking-[0.34em] text-red-500">
-                Planos Forbody
+                {safeText(plansSection?.subtitle, "Planos Forbody")}
               </p>
               <h2 className="mt-6 text-4xl font-black uppercase leading-[0.92] tracking-[-0.06em] text-white sm:text-6xl">
-                Escolha o plano que combina com sua rotina.
+                {safeText(plansSection?.title, "Escolha o plano que combina com sua rotina.")}
               </h2>
             </div>
             <p className="max-w-3xl text-base leading-relaxed text-zinc-300 sm:text-lg">
-              Dois caminhos para começar: Red para quem quer musculação com apoio técnico, e Black para quem quer a experiência completa da Forbody.
+              {safeText(
+                plansSection?.description,
+                "Dois caminhos para começar: Red para quem quer musculação com apoio técnico, e Black para quem quer a experiência completa da Forbody."
+              )}
             </p>
           </div>
 
@@ -267,7 +449,7 @@ export default function HomePage() {
       <section className="px-5 py-24 sm:px-8 lg:px-12">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-5 lg:grid-cols-3">
-            {studentStats.map((item) => (
+            {fallbackStudentStats.map((item) => (
               <article key={item.value} className="border border-white/10 bg-white/[0.03] p-8 backdrop-blur-xl transition hover:-translate-y-2 hover:border-red-600/50">
                 <p className="text-5xl font-black tracking-[-0.08em] text-red-600">{item.value}</p>
                 <h3 className="mt-6 text-2xl font-black uppercase tracking-[-0.04em] text-white">{item.label}</h3>
@@ -292,7 +474,10 @@ export default function HomePage() {
           <div className="grid gap-5 lg:grid-cols-3">
             {showcaseCards.map((card) => (
               <article key={card.title} className="group relative min-h-[420px] overflow-hidden border border-white/10 bg-[#080808]">
-                <div className="absolute inset-0 bg-cover bg-center opacity-35 grayscale transition duration-500 group-hover:scale-105 group-hover:opacity-45" style={{ backgroundImage: `url(${card.image})` }} />
+                <div
+                  className="absolute inset-0 bg-cover bg-center opacity-35 grayscale transition duration-500 group-hover:scale-105 group-hover:opacity-45"
+                  style={{ backgroundImage: `url(${card.image})` }}
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent" />
                 <div className="relative flex h-full min-h-[420px] flex-col justify-end p-7">
                   <p className="text-xs font-black uppercase tracking-[0.3em] text-red-500">{card.eyebrow}</p>
