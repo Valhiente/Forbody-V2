@@ -9,6 +9,13 @@ type InputProps = {
   helper?: string;
 };
 
+type ImageInputProps = {
+  title: string;
+  fileName: string;
+  urlName: string;
+  helper?: string;
+};
+
 type SectionProps = {
   title: string;
   description: string;
@@ -52,6 +59,46 @@ function Input({
   );
 }
 
+function ImageInput({ title, fileName, urlName, helper }: ImageInputProps) {
+  return (
+    <div className="space-y-4 rounded-3xl border border-zinc-800 bg-zinc-900/50 p-5">
+      <div>
+        <h3 className="text-base font-black text-white">{title}</h3>
+        {helper ? <p className="mt-1 text-xs leading-relaxed text-zinc-500">{helper}</p> : null}
+      </div>
+
+      <div className="space-y-2">
+        <label htmlFor={fileName} className="text-sm font-semibold text-white">
+          Enviar imagem do computador
+        </label>
+        <input
+          id={fileName}
+          name={fileName}
+          type="file"
+          accept="image/*"
+          className="block w-full cursor-pointer rounded-2xl border border-dashed border-zinc-700 bg-black/40 px-4 py-4 text-sm text-zinc-300 file:mr-4 file:rounded-xl file:border-0 file:bg-red-600 file:px-4 file:py-2 file:text-sm file:font-bold file:text-white hover:border-red-600/60"
+        />
+        <p className="text-xs text-zinc-500">
+          Recomendado: JPG, PNG ou WEBP. O arquivo será salvo no Supabase Storage.
+        </p>
+      </div>
+
+      <div className="relative flex items-center gap-3 py-1">
+        <div className="h-px flex-1 bg-zinc-800" />
+        <span className="text-[10px] font-black uppercase tracking-[0.24em] text-zinc-600">ou</span>
+        <div className="h-px flex-1 bg-zinc-800" />
+      </div>
+
+      <Input
+        label="Colar URL manualmente"
+        name={urlName}
+        placeholder="https://..."
+        helper="Use isso se já tiver uma imagem hospedada. Se enviar arquivo e colar URL, o arquivo enviado tem prioridade."
+      />
+    </div>
+  );
+}
+
 function Section({ title, description, children }: SectionProps) {
   return (
     <section className="space-y-6 rounded-3xl border border-zinc-800 bg-zinc-950/90 p-6 shadow-2xl shadow-black/20 backdrop-blur-xl sm:p-8">
@@ -87,7 +134,7 @@ export default function MarketingPage() {
 
           <p className="mt-6 max-w-3xl text-base leading-relaxed text-zinc-400 sm:text-lg">
             Edite banners, frases, promoções, planos e imagens sem precisar abrir o código.
-            Tudo que for salvo aqui será usado futuramente pela Home integrada ao Supabase.
+            Agora você pode enviar imagens direto pelo painel ou manter uma URL manual.
           </p>
         </div>
 
@@ -116,11 +163,11 @@ export default function MarketingPage() {
             helper="Texto curto explicando a proposta da Forbody."
           />
 
-          <Input
-            label="Imagem principal do banner"
-            name="heroImageUrl"
-            placeholder="https://..."
-            helper="Cole a URL da imagem principal usada no banner."
+          <ImageInput
+            title="Imagem principal do banner"
+            fileName="heroImageFile"
+            urlName="heroImageUrl"
+            helper="Imagem grande usada no topo da Home."
           />
 
           <Input
@@ -134,16 +181,16 @@ export default function MarketingPage() {
           title="2. Fotos da Home"
           description="Essas imagens aparecem nos cards e blocos visuais da página inicial."
         >
-          <Input
-            label="Imagem principal"
-            name="photoMain"
-            placeholder="https://..."
+          <ImageInput
+            title="Imagem principal"
+            fileName="photoMainFile"
+            urlName="photoMain"
           />
 
           <div className="grid gap-5 md:grid-cols-3">
-            <Input label="Imagem do card 1" name="photoCard1" placeholder="https://..." />
-            <Input label="Imagem do card 2" name="photoCard2" placeholder="https://..." />
-            <Input label="Imagem do card 3" name="photoCard3" placeholder="https://..." />
+            <ImageInput title="Imagem do card 1" fileName="photoCard1File" urlName="photoCard1" />
+            <ImageInput title="Imagem do card 2" fileName="photoCard2File" urlName="photoCard2" />
+            <ImageInput title="Imagem do card 3" fileName="photoCard3File" urlName="photoCard3" />
           </div>
         </Section>
 
@@ -254,7 +301,7 @@ export default function MarketingPage() {
             <div>
               <p className="text-sm font-semibold text-white">Salvar alterações</p>
               <p className="text-xs text-zinc-500">
-                As alterações serão enviadas para o Supabase.
+                Textos e imagens serão enviados para o Supabase.
               </p>
             </div>
 
