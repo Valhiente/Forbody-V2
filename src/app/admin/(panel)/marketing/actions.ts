@@ -16,6 +16,15 @@ type SupabaseWriteResult = {
   error: SupabaseError | null;
 };
 
+type SupabaseUploadResult = {
+  data: { path: string } | null;
+  error: SupabaseError | null;
+};
+
+type SupabasePublicUrlResult = {
+  data: { publicUrl: string };
+};
+
 type SupabaseUpsertOptions = {
   onConflict?: string;
 };
@@ -27,14 +36,32 @@ type SupabaseTableWriter = {
   ) => Promise<SupabaseWriteResult>;
 };
 
+type SupabaseStorageBucket = {
+  upload: (
+    path: string,
+    file: File,
+    options?: {
+      cacheControl?: string;
+      contentType?: string;
+      upsert?: boolean;
+    }
+  ) => Promise<SupabaseUploadResult>;
+  getPublicUrl: (path: string) => SupabasePublicUrlResult;
+};
+
 type SupabaseWriterClient = {
   from: (table: string) => SupabaseTableWriter;
+  storage: {
+    from: (bucket: string) => SupabaseStorageBucket;
+  };
 };
 
 type PaymentOption = {
   label: string;
   price: string;
 };
+
+const marketingImagesBucket = 'marketing-images';
 
 const fallbackPayments = {
   red: [
@@ -87,6 +114,63 @@ function paymentOptions(
   ].filter((item) => item.price);
 
   return parsed.length > 0 ? parsed : fallback;
+}
+
+function slugFileName(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9.]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .toLowerCase();
+}
+
+function imageFile(formData: FormData, name: string): File | null {
+  const value = formData.get(name);
+
+  if (!(value instanceof File) || value.size === 0) {
+    return null;
+  }
+
+  if (!value.type.startsWith('image/')) {
+    throw new Error('Envie apenas arquivos de imagem nos campos de upload.');
+  }
+
+  return value;
+}
+
+async function resolveImageUrl(
+  supabase: SupabaseWriterClient,
+  formData: FormData,
+  fileField: string,
+  urlField: string,
+  storagePrefix: string
+): Promise<string | null> {
+  const file = imageFile(formData, fileField);
+  const manualUrl = text(formData.get(urlField));
+
+  if (!file) {
+    return manualUrl || null;
+  }
+
+  const extension = file.name.includes('.') ? file.name.split('.').pop() : 'webp';
+  const safeName = slugFileName(file.name.replace(/\.[^.]+$/, '')) || 'imagem';
+  const filePath = `${storagePrefix}/${Date.now()}-${safeName}.${extension}`;
+
+  const { error } = await supabase.storage.from(marketingImagesBucket).upload(filePath, file, {
+    cacheControl: '3600',
+    contentType: file.type,
+    upsert: false,
+  });
+
+  if (error) {
+    throw new Error(`Erro ao enviar imagem para o Supabase Storage: ${error.message}`);
+  }
+
+  const { data } = supabase.storage.from(marketingImagesBucket).getPublicUrl(filePath);
+
+  return data.publicUrl;
 }
 
 async function upsertSection(
@@ -142,6 +226,58 @@ export async function updateMarketingManagerAction(
   }
 
   try {
+    const heroImageUrl = await resolveImageUrl(
+      supabase,
+      formData,
+      'heroImageFile',
+      'heroImageUrl',
+      'home/hero'
+    );
+
+    const photos = [
+      {
+        key: 'main',
+        fileField: 'photoMainFile',
+        urlField: 'photoMain',
+        title: 'Foto principal',
+        order: 1,
+      },
+      {
+        key: 'card_1',
+        fileField: 'photoCard1File',
+        urlField: 'photoCard1',
+        title: 'Foto card 1',
+        order: 2,
+      },
+      {
+        key: 'card_2',
+        fileField: 'photoCard2File',
+        urlField: 'photoCard2',
+        title: 'Foto card 2',
+        order: 3,
+      },
+      {
+        key: 'card_3',
+        fileField: 'photoCard3File',
+        urlField: 'photoCard3',
+        title: 'Foto card 3',
+        order: 4,
+      },
+    ];
+
+    const resolvedPhotos = await Promise.all(
+      photos.map(async (photo) => ({
+        ...photo,
+        imageUrl: await resolveImageUrl(
+          supabase,
+          formData,
+          photo.fileField,
+          photo.urlField,
+          `home/photos/${photo.key}`
+        ),
+      }))
+    );
+
     await upsertSection(supabase, {
       section_key: 'home_hero',
       title: textWithFallback(
@@ -155,7 +291,7 @@ export async function updateMarketingManagerAction(
         'heroDescription',
         'Na Forbody, ajudamos você a conquistar seus objetivos, porque cada conquista sua também é nossa.'
       ),
-      image_url: text(formData.get('heroImageUrl')) || null,
+      image_url: heroImageUrl,
       button_label: textWithFallback(formData, 'heroButtonLabel', 'Escolher unidade'),
       button_href: '/unidades',
       sort_order: 1,
@@ -199,20 +335,13 @@ export async function updateMarketingManagerAction(
       is_active: checkbox(formData.get('promoActive')),
     });
 
-    const photos = [
-      { key: 'main', field: 'photoMain', title: 'Foto principal', order: 1 },
-      { key: 'card_1', field: 'photoCard1', title: 'Foto card 1', order: 2 },
-      { key: 'card_2', field: 'photoCard2', title: 'Foto card 2', order: 3 },
-      { key: 'card_3', field: 'photoCard3', title: 'Foto card 3', order: 4 },
-    ];
-
     await Promise.all(
-      photos.map((photo) =>
+      resolvedPhotos.map((photo) =>
         upsertItem(supabase, {
           section_key: 'home_photos',
           item_key: photo.key,
           title: photo.title,
-          image_url: text(formData.get(photo.field)) || null,
+          image_url: photo.imageUrl,
           sort_order: photo.order,
           is_active: true,
         })
