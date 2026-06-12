@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { createSupabaseAdminClient } from "@/lib/supabase/server";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
+// Home Forbody consumindo Marketing Manager do Supabase com fallback seguro.
 type MarketingSection = {
   section_key: string;
   title: string | null;
@@ -322,19 +323,8 @@ export default async function HomePage() {
 
               <div className="relative flex h-full min-h-[560px] flex-col justify-end p-6 sm:p-8">
                 {hasPromotion ? (
-                  <div className="mb-6 border border-red-600/40 bg-red-600/15 p-5 backdrop-blur-xl">
-                    <p className="text-[10px] font-black uppercase tracking-[0.28em] text-red-300">
-                      {safeText(promoSection?.subtitle, "Promoção ativa")}
-                    </p>
-                    <h2 className="mt-3 text-2xl font-black uppercase tracking-[-0.04em] text-white">
-                      {safeText(promoItem?.title || promoSection?.title, "Promoção Forbody")}
-                    </h2>
-                    <p className="mt-2 text-sm leading-relaxed text-zinc-300">
-                      {safeText(promoItem?.description || promoSection?.description, "Condição especial por tempo limitado.")}
-                    </p>
-                    {promoItem?.badge ? (
-                      <p className="mt-3 text-xl font-black text-red-300">{promoItem.badge}</p>
-                    ) : null}
+                  <div className="mb-5 inline-flex w-fit border border-red-600/40 bg-red-600/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-red-200">
+                    {safeText(promoItem?.badge, safeText(promoSection?.title, "Promoção ativa"))}
                   </div>
                 ) : null}
 
@@ -387,7 +377,7 @@ export default async function HomePage() {
           <div className="mb-12 grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
             <div>
               <p className="border-l-4 border-red-600 pl-4 text-xs font-black uppercase tracking-[0.34em] text-red-500">
-                {safeText(plansSection?.subtitle, "Planos Forbody")}
+                Planos Forbody
               </p>
               <h2 className="mt-6 text-4xl font-black uppercase leading-[0.92] tracking-[-0.06em] text-white sm:text-6xl">
                 {safeText(plansSection?.title, "Escolha o plano que combina com sua rotina.")}
@@ -474,10 +464,7 @@ export default async function HomePage() {
           <div className="grid gap-5 lg:grid-cols-3">
             {showcaseCards.map((card) => (
               <article key={card.title} className="group relative min-h-[420px] overflow-hidden border border-white/10 bg-[#080808]">
-                <div
-                  className="absolute inset-0 bg-cover bg-center opacity-35 grayscale transition duration-500 group-hover:scale-105 group-hover:opacity-45"
-                  style={{ backgroundImage: `url(${card.image})` }}
-                />
+                <div className="absolute inset-0 bg-cover bg-center opacity-35 grayscale transition duration-500 group-hover:scale-105 group-hover:opacity-45" style={{ backgroundImage: `url(${card.image})` }} />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent" />
                 <div className="relative flex h-full min-h-[420px] flex-col justify-end p-7">
                   <p className="text-xs font-black uppercase tracking-[0.3em] text-red-500">{card.eyebrow}</p>
