@@ -1,7 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
 
-const whatsappUrl = 'https://wa.me/5516997261624?text=Olá!%20Quero%20saber%20mais%20sobre%20os%20planos%20da%20Forbody.';
 const instagramUrl = 'https://www.instagram.com/forbodyacademia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==';
 
 export default function Footer() {
@@ -22,9 +21,9 @@ export default function Footer() {
               <Link href="/unidades" className="rounded-sm border border-white/10 px-5 py-3 text-xs font-black uppercase tracking-[0.18em] text-white transition hover:border-red-600 hover:bg-red-600/10">
                 Ver unidades
               </Link>
-              <a href={whatsappUrl} target="_blank" rel="noreferrer" className="rounded-sm bg-red-600 px-5 py-3 text-xs font-black uppercase tracking-[0.18em] text-white transition hover:bg-red-700">
-                Falar no WhatsApp
-              </a>
+              <Link href="/franquias" className="rounded-sm bg-red-600 px-5 py-3 text-xs font-black uppercase tracking-[0.18em] text-white transition hover:bg-red-700">
+                Seja um franqueado
+              </Link>
             </div>
           </div>
 
@@ -34,7 +33,6 @@ export default function Footer() {
               <li><Link href="/" className="hover:text-red-600 transition-colors">Home</Link></li>
               <li><Link href="/unidades" className="hover:text-red-600 transition-colors">Unidades</Link></li>
               <li><Link href="/franquias" className="hover:text-red-600 transition-colors">Seja um franqueado</Link></li>
-              <li><a href={whatsappUrl} target="_blank" rel="noreferrer" className="hover:text-red-600 transition-colors">WhatsApp</a></li>
             </ul>
           </div>
 
@@ -44,10 +42,6 @@ export default function Footer() {
               <li className="flex items-center gap-2">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                 <a href="mailto:contato@forbodyacademia.com.br" className="hover:text-red-600 transition-colors">contato@forbodyacademia.com.br</a>
-              </li>
-              <li className="flex items-center gap-2">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                <a href={whatsappUrl} target="_blank" rel="noreferrer" className="hover:text-red-600 transition-colors">55 (16) 99726-1624</a>
               </li>
             </ul>
             <div className="flex gap-4 mt-6">
@@ -64,6 +58,7 @@ export default function Footer() {
           </p>
           <div className="flex gap-6 text-gray-600 text-xs">
             <Link href="/unidades" className="hover:text-white transition-colors">Unidades</Link>
+            <Link href="/franquias" className="hover:text-white transition-colors">Franquias</Link>
             <a href={instagramUrl} target="_blank" rel="noreferrer" className="hover:text-white transition-colors">Instagram</a>
           </div>
         </div>
