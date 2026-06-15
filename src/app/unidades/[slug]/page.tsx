@@ -11,6 +11,15 @@ import {
   isPubliclyVisible,
 } from '@/utils/unit-status';
 
+function whatsappLink(phone?: string) {
+  if (!phone) return undefined;
+
+  const digits = phone.replace(/\D/g, '');
+  if (!digits) return undefined;
+
+  return `https://wa.me/${digits}`;
+}
+
 export async function generateStaticParams() {
   return unitsData
     .filter(isPubliclyVisible)
@@ -47,6 +56,7 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
       ? unit.mapEmbedUrl
       : undefined;
 
+  const unitWhatsappLink = whatsappLink(unit.whatsapp);
   const showSalesCta = canShowSalesCta(unit);
 
   return (
@@ -56,8 +66,8 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
           <div className="flex flex-col gap-6">
             <span className="inline-flex items-center rounded-full border border-red-600/20 bg-red-600/10 px-4 py-2 text-xs font-black uppercase tracking-[0.36em] text-red-400">UNIDADE FORBODY</span>
             <div className="space-y-4">
-              <h1 className="text-4xl font-black leading-tight sm:text-5xl">ForBody {unit.name}</h1>
-              <p className="max-w-3xl text-base text-slate-300 sm:text-lg">Treino forte, estrutura completa e matrícula em poucos cliques.</p>
+              <h1 className="text-4xl font-black leading-tight sm:text-5xl">Forbody {unit.name}</h1>
+              <p className="max-w-3xl text-base text-slate-300 sm:text-lg">Treino forte, estrutura completa e contato direto com a unidade em poucos cliques.</p>
 
               <span className={`inline-flex rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] ${getUnitStatusBadgeClasses(unit.status)}`}>
                 {getUnitStatusLabel(unit.status)}
@@ -71,7 +81,7 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
 
               {isComingSoon && (
                 <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-slate-300">
-                  Essa unidade será inaugurada em breve. Acompanhe as novidades da ForBody.
+                  Essa unidade será inaugurada em breve. Acompanhe as novidades da Forbody.
                 </div>
               )}
             </div>
@@ -113,12 +123,23 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
             <div className="rounded-[2rem] border border-white/10 bg-[#0a0a0a] p-8 shadow-sm shadow-black/20">
               <h3 className="text-xl font-black text-white">Ações rápidas</h3>
               <div className="mt-6 flex flex-col gap-4">
+                {unitWhatsappLink && !isComingSoon && !isMaintenance && (
+                  <a
+                    href={unitWhatsappLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex w-full items-center justify-center rounded-full bg-red-600 px-6 py-4 text-sm font-black uppercase tracking-[0.16em] text-black transition hover:bg-red-700"
+                  >
+                    Falar com esta unidade
+                  </a>
+                )}
+
                 {showSalesCta && salesLink && (
                   <a
                     href={salesLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex w-full items-center justify-center rounded-full bg-red-600 px-6 py-4 text-sm font-black uppercase tracking-[0.16em] text-black transition hover:bg-red-700"
+                    className="inline-flex w-full items-center justify-center rounded-full border border-red-600/30 bg-red-600/10 px-6 py-4 text-sm font-black uppercase tracking-[0.16em] text-red-300 transition hover:bg-red-600 hover:text-black"
                   >
                     {isComingSoon ? 'Quero ser avisado' : 'Matricule-se Agora'}
                   </a>
@@ -146,7 +167,7 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
                   </a>
                 )}
 
-                {!showSalesCta && (
+                {!showSalesCta && !unitWhatsappLink && (
                   <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-slate-400">
                     Matrículas indisponíveis no momento para esta unidade.
                   </div>
@@ -185,18 +206,29 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
                 {isMaintenance
                   ? 'Estamos preparando melhorias para você.'
                   : isComingSoon
-                    ? 'A próxima ForBody pode estar mais perto do que você imagina.'
+                    ? 'A próxima Forbody pode estar mais perto do que você imagina.'
                     : 'Seu resultado começa hoje.'}
               </h2>
             </div>
 
-            <div>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              {unitWhatsappLink && !isComingSoon && !isMaintenance && (
+                <a
+                  href={unitWhatsappLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center rounded-full bg-red-600 px-8 py-4 text-sm font-black uppercase tracking-[0.16em] text-black transition hover:bg-red-700"
+                >
+                  Falar no WhatsApp
+                </a>
+              )}
+
               {showSalesCta && salesLink ? (
                 <a
                   href={salesLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center rounded-full bg-red-600 px-8 py-4 text-sm font-black uppercase tracking-[0.16em] text-black transition hover:bg-red-700"
+                  className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-8 py-4 text-sm font-black uppercase tracking-[0.16em] text-white transition hover:border-red-600"
                 >
                   {isComingSoon ? 'Quero ser avisado' : 'Começar agora'}
                 </a>
