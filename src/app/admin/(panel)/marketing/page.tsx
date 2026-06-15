@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { redirect } from 'next/navigation';
 import { updateMarketingManagerAction } from './actions';
 
 type InputProps = {
@@ -20,6 +21,13 @@ type SectionProps = {
   title: string;
   description: string;
   children: ReactNode;
+};
+
+type MarketingPageProps = {
+  searchParams?: Promise<{
+    status?: string;
+    message?: string;
+  }>;
 };
 
 function Input({
@@ -112,17 +120,42 @@ function Section({ title, description, children }: SectionProps) {
   );
 }
 
-export default function MarketingPage() {
+export default async function MarketingPage({ searchParams }: MarketingPageProps) {
+  const params = searchParams ? await searchParams : {};
+  const status = params.status;
+  const message = params.message ? decodeURIComponent(params.message) : '';
+
+  async function saveMarketing(formData: FormData) {
+    'use server';
+
+    const result = await updateMarketingManagerAction(formData);
+    const encodedMessage = encodeURIComponent(
+      result.success
+        ? 'Marketing salvo com sucesso. A Home será atualizada pela revalidação da Vercel.'
+        : result.error || 'Não foi possível salvar o marketing.'
+    );
+
+    redirect(`/admin/marketing?status=${result.success ? 'success' : 'error'}&message=${encodedMessage}`);
+  }
+
   return (
     <div className="min-h-screen bg-black px-4 py-8 sm:px-6 lg:px-10">
       <form
-        action={async (formData: FormData) => {
-          'use server';
-
-          await updateMarketingManagerAction(formData);
-        }}
+        action={saveMarketing}
         className="mx-auto max-w-6xl space-y-8"
       >
+        {status && message ? (
+          <div
+            className={`rounded-3xl border px-6 py-5 text-sm font-semibold ${
+              status === 'success'
+                ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
+                : 'border-red-500/40 bg-red-500/10 text-red-200'
+            }`}
+          >
+            {message}
+          </div>
+        ) : null}
+
         <div className="overflow-hidden rounded-[2rem] border border-red-600/20 bg-[radial-gradient(circle_at_top,rgba(220,38,38,0.16),transparent_45%),#090909] p-8 shadow-[0_0_80px_rgba(220,38,38,0.08)] sm:p-10">
           <div className="inline-flex items-center gap-3 border border-red-600/30 bg-red-600/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.32em] text-red-300">
             Gestão de Marketing
