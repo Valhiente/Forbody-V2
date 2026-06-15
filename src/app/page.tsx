@@ -195,10 +195,11 @@ export default async function HomePage() {
   const promoSection = sectionByKey(marketing.sections, "home_promotions");
   const promoItem = itemsBySection(marketing.items, "home_promotions")[0];
   const photoItems = itemsBySection(marketing.items, "home_photos");
+  const carouselItems = itemsBySection(marketing.items, "home_hero_carousel");
 
   const hero = {
     eyebrow: safeText(heroSection?.subtitle, "Forbody Academia"),
-    title: safeText(heroSection?.title, "Forbody, feita para cada etapa da sua vida."),
+    title: safeText(heroSection?.title, "FORBODY"),
     description: safeText(
       heroSection?.description,
       "Na Forbody, ajudamos você a conquistar seus objetivos, porque cada conquista sua também é nossa."
@@ -209,6 +210,42 @@ export default async function HomePage() {
       "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=1800&q=90",
     buttonLabel: safeText(heroSection?.button_label, "Escolher unidade"),
     buttonHref: safeText(heroSection?.button_href, "/unidades"),
+  };
+
+  const heroSlides =
+    carouselItems.length > 0
+      ? carouselItems.map((item, index) => ({
+          eyebrow: safeText(item.badge, `Slide ${index + 1}`),
+          title: safeText(item.title, hero.title),
+          description: safeText(item.description, hero.description),
+          image: item.image_url || hero.image,
+        }))
+      : [
+          {
+            eyebrow: "Estrutura premium",
+            title: "FORBODY",
+            description: "Ambiente forte, visual moderno e energia de treino em cada detalhe.",
+            image: hero.image,
+          },
+          {
+            eyebrow: "Treino completo",
+            title: "RED E BLACK",
+            description: "Planos para diferentes rotinas, com experiência Forbody do começo ao fim.",
+            image: "https://images.unsplash.com/photo-1534258936925-c58bed479fcb?auto=format&fit=crop&w=1800&q=90",
+          },
+          {
+            eyebrow: "Evolução diária",
+            title: "SUA MELHOR FASE",
+            description: "Musculação, aulas, profissionais presentes e estrutura para evoluir.",
+            image: "https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=1800&q=90",
+          },
+        ];
+
+  const activeHeroSlide = heroSlides[0] || {
+    eyebrow: hero.eyebrow,
+    title: hero.title,
+    description: hero.description,
+    image: hero.image,
   };
 
   const showcaseCards = fallbackShowcaseCards.map((card, index) => {
@@ -252,32 +289,51 @@ export default async function HomePage() {
     <main className="min-h-screen overflow-hidden bg-[#030303] text-white">
       <section className="relative min-h-screen overflow-hidden px-5 py-20 sm:px-8 lg:px-12">
         <div className="absolute inset-0">
-          <div
-            className="absolute inset-0 bg-cover bg-center opacity-30 grayscale"
-            style={{ backgroundImage: `url(${hero.image})` }}
-          />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_35%,rgba(220,38,38,0.3),transparent_30%),linear-gradient(90deg,#030303_0%,rgba(3,3,3,0.9)_35%,rgba(3,3,3,0.58)_70%,#030303_100%)]" />
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,3,3,0.1)_0%,#030303_96%)]" />
+          {heroSlides.map((slide, index) => (
+            <div
+              key={`${slide.title}-${index}`}
+              className={`absolute inset-0 bg-cover bg-center grayscale transition-opacity duration-700 ${
+                index === 0 ? "opacity-35" : "opacity-0"
+              }`}
+              style={{ backgroundImage: `url(${slide.image})` }}
+            />
+          ))}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_16%,rgba(255,255,255,0.16),transparent_18%),radial-gradient(circle_at_72%_35%,rgba(220,38,38,0.34),transparent_32%),linear-gradient(90deg,#030303_0%,rgba(3,3,3,0.92)_34%,rgba(3,3,3,0.58)_72%,#030303_100%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,3,3,0.08)_0%,#030303_96%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:82px_82px] opacity-20" />
         </div>
 
+        <div className="forbody-hero-slice left-[-9rem] top-20 rotate-[-18deg]" />
+        <div className="forbody-hero-slice right-[-10rem] top-24 rotate-[22deg]" />
         <div className="absolute left-0 top-1/2 h-[42rem] w-[42rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-600/20 blur-[150px]" />
         <div className="absolute bottom-10 right-0 h-[34rem] w-[34rem] translate-x-1/3 rounded-full bg-red-900/25 blur-[150px]" />
 
         <div className="relative z-10 mx-auto grid min-h-[calc(100vh-10rem)] max-w-7xl items-center gap-14 lg:grid-cols-[1.04fr_0.96fr]">
           <div className="animate-slide-up">
-            <div className="mb-7 inline-flex items-center gap-3 border-l-4 border-red-600 bg-white/[0.04] px-5 py-3 text-[10px] font-black uppercase tracking-[0.34em] text-zinc-300 backdrop-blur-xl">
+            <div className="forbody-3d-kicker mb-7">
               <span className="h-2 w-2 rounded-full bg-red-600 shadow-[0_0_20px_rgba(220,38,38,0.9)]" />
-              {hero.eyebrow}
+              {activeHeroSlide.eyebrow || hero.eyebrow}
             </div>
 
-            <h1 className="max-w-5xl text-5xl font-black uppercase leading-[0.88] tracking-[-0.08em] text-white sm:text-7xl lg:text-8xl xl:text-9xl">
-              {hero.title}
+            <h1 className="forbody-3d-title max-w-5xl text-5xl sm:text-7xl lg:text-8xl xl:text-9xl">
+              {activeHeroSlide.title || hero.title}
             </h1>
 
             <p className="mt-8 max-w-2xl text-base leading-relaxed text-zinc-300 sm:text-lg">
-              {hero.description}
+              {activeHeroSlide.description || hero.description}
             </p>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              {heroSlides.map((slide, index) => (
+                <div
+                  key={`${slide.eyebrow}-${index}`}
+                  className={`h-1.5 rounded-full transition-all ${
+                    index === 0 ? "w-16 bg-red-600 shadow-[0_0_18px_rgba(220,38,38,0.8)]" : "w-8 bg-white/20"
+                  }`}
+                  aria-label={`Slide ${index + 1}: ${slide.title}`}
+                />
+              ))}
+            </div>
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
               <Link
