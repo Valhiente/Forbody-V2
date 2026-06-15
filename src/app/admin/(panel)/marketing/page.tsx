@@ -17,6 +17,10 @@ type ImageInputProps = {
   helper?: string;
 };
 
+type CarouselSlideProps = {
+  index: number;
+};
+
 type SectionProps = {
   title: string;
   description: string;
@@ -87,7 +91,7 @@ function ImageInput({ title, fileName, urlName, helper }: ImageInputProps) {
           className="block w-full cursor-pointer rounded-2xl border border-dashed border-zinc-700 bg-black/40 px-4 py-4 text-sm text-zinc-300 file:mr-4 file:rounded-xl file:border-0 file:bg-red-600 file:px-4 file:py-2 file:text-sm file:font-bold file:text-white hover:border-red-600/60"
         />
         <p className="text-xs text-zinc-500">
-          Recomendado: JPG, PNG ou WEBP. O arquivo será salvo no Supabase Storage.
+          Recomendado: JPG, PNG ou WEBP. Use imagens otimizadas até 2 MB para manter o site rápido.
         </p>
       </div>
 
@@ -102,6 +106,29 @@ function ImageInput({ title, fileName, urlName, helper }: ImageInputProps) {
         name={urlName}
         placeholder="https://..."
         helper="Use isso se já tiver uma imagem hospedada. Se enviar arquivo e colar URL, o arquivo enviado tem prioridade."
+      />
+    </div>
+  );
+}
+
+function CarouselSlide({ index }: CarouselSlideProps) {
+  return (
+    <div className="space-y-5 rounded-3xl border border-red-600/20 bg-red-600/[0.04] p-5">
+      <div>
+        <h3 className="text-xl font-black uppercase tracking-[-0.04em] text-white">
+          Slide {index}
+        </h3>
+        <p className="mt-1 text-xs leading-relaxed text-zinc-500">
+          Imagem e texto do carrossel principal da capa.
+        </p>
+      </div>
+
+      <Input label="Título do slide" name={`heroSlide${index}Title`} placeholder="FORBODY ACADEMIA" />
+      <Input label="Descrição do slide" name={`heroSlide${index}Description`} textarea />
+      <ImageInput
+        title={`Imagem do slide ${index}`}
+        fileName={`heroSlide${index}File`}
+        urlName={`heroSlide${index}Url`}
       />
     </div>
   );
@@ -166,8 +193,8 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
           </h1>
 
           <p className="mt-6 max-w-3xl text-base leading-relaxed text-zinc-400 sm:text-lg">
-            Edite banners, frases, promoções, planos e imagens sem precisar abrir o código.
-            Agora você pode enviar imagens direto pelo painel ou manter uma URL manual.
+            Edite banners, carrossel, frases, promoções, planos e imagens sem abrir o código.
+            O visual da capa agora segue uma pegada premium com texto 3D vermelho e preto.
           </p>
         </div>
 
@@ -200,7 +227,7 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
             title="Imagem principal do banner"
             fileName="heroImageFile"
             urlName="heroImageUrl"
-            helper="Imagem grande usada no topo da Home."
+            helper="Imagem grande usada no topo da Home. Ela também serve como fallback do carrossel."
           />
 
           <Input
@@ -211,7 +238,18 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
         </Section>
 
         <Section
-          title="2. Fotos da Home"
+          title="2. Carrossel da capa"
+          description="Controle os slides da parte principal da Home. Use imagens escuras, com vermelho e alto contraste."
+        >
+          <div className="grid gap-5 lg:grid-cols-3">
+            <CarouselSlide index={1} />
+            <CarouselSlide index={2} />
+            <CarouselSlide index={3} />
+          </div>
+        </Section>
+
+        <Section
+          title="3. Fotos da Home"
           description="Essas imagens aparecem nos cards e blocos visuais da página inicial."
         >
           <ImageInput
@@ -228,7 +266,7 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
         </Section>
 
         <Section
-          title="3. Sessão de planos"
+          title="4. Sessão de planos"
           description="Controle os textos principais da área onde o aluno visualiza os planos Red e Black."
         >
           <Input
@@ -251,7 +289,7 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
         </Section>
 
         <Section
-          title="4. Promoções"
+          title="5. Promoções"
           description="Use esta área para destacar campanhas, descontos ou promoções temporárias."
         >
           <Input label="Título da promoção" name="promoTitle" />
@@ -279,7 +317,7 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
         </Section>
 
         <Section
-          title="5. Planos"
+          title="6. Planos"
           description="Configure os planos Red e Black exibidos na Home da Forbody."
         >
           <div className="grid gap-6 lg:grid-cols-2">
@@ -340,7 +378,7 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
 
             <button
               type="submit"
-              className="h-12 rounded-2xl bg-red-600 px-8 text-sm font-black uppercase tracking-[0.18em] text-white transition hover:bg-red-500"
+              className="h-12 rounded-2xl bg-red-600 px-10 text-sm font-black uppercase tracking-[0.24em] text-white shadow-[0_0_30px_rgba(220,38,38,0.35)] transition hover:bg-red-700"
             >
               Salvar marketing
             </button>
