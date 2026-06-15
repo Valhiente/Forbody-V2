@@ -44,8 +44,6 @@ type HomeMarketingData = {
   plans: SitePlan[];
 };
 
-const whatsappHref = "https://wa.me/5516997261624";
-
 const fallbackPillars = ["Musculação completa", "Bons profissionais", "Aulas coletivas", "Planos acessíveis"];
 
 const fallbackPlanCards = [
@@ -94,7 +92,6 @@ const fallbackShowcaseCards = [
   },
 ];
 
-const studentJourney = ["Escolha sua unidade", "Conheça a estrutura", "Veja planos e modalidades", "Comece a treinar"];
 const unitPreview = ["Triunfo", "Barão do Bananal", "Vila Virgínia", "Candido Portinari"];
 
 function safeText(value: string | null | undefined, fallback: string) {
@@ -202,9 +199,6 @@ export default async function HomePage() {
               <Link href="#planos" className="group rounded-sm border border-white/15 bg-white/[0.04] px-8 py-4 text-center text-sm font-black uppercase tracking-[0.22em] text-white backdrop-blur-xl transition duration-300 hover:border-red-600 hover:bg-red-600/10">
                 Ver planos <span className="ml-2 inline-block text-red-500 transition group-hover:translate-x-1">→</span>
               </Link>
-              <Link href={whatsappHref} target="_blank" rel="noreferrer" className="rounded-sm border border-red-600/50 bg-red-600/10 px-8 py-4 text-center text-sm font-black uppercase tracking-[0.22em] text-red-100 transition duration-300 hover:bg-red-600 hover:text-white">
-                Falar no WhatsApp
-              </Link>
             </div>
 
             <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:max-w-2xl">
@@ -271,8 +265,8 @@ export default async function HomePage() {
                     <li key={benefit} className="flex items-start gap-3 text-sm leading-relaxed text-zinc-300"><span className="mt-1 h-2 w-2 flex-none rounded-full bg-red-600" />{benefit}</li>
                   ))}
                 </ul>
-                <Link href={whatsappHref} target="_blank" rel="noreferrer" className="mt-8 inline-flex w-full justify-center rounded-sm bg-red-600 px-6 py-4 text-center text-xs font-black uppercase tracking-[0.2em] text-white transition hover:bg-red-700">
-                  Quero o {plan.name}
+                <Link href="/unidades" className="mt-8 inline-flex w-full justify-center rounded-sm bg-red-600 px-6 py-4 text-center text-xs font-black uppercase tracking-[0.2em] text-white transition hover:bg-red-700">
+                  Escolher unidade
                 </Link>
               </article>
             ))}
@@ -340,7 +334,7 @@ export default async function HomePage() {
           <h2 className="mt-5 text-4xl font-black uppercase leading-[0.92] tracking-[-0.06em] text-white sm:text-6xl">Escolha sua unidade Forbody e dê o primeiro passo hoje.</h2>
           <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
             <Link href="/unidades" className="rounded-sm bg-red-600 px-8 py-4 text-sm font-black uppercase tracking-[0.22em] text-white hover:bg-red-700">Escolher unidade</Link>
-            <Link href={whatsappHref} target="_blank" rel="noreferrer" className="rounded-sm border border-white/15 px-8 py-4 text-sm font-black uppercase tracking-[0.22em] text-white hover:border-red-600">Falar no WhatsApp</Link>
+            <Link href="#planos" className="rounded-sm border border-white/15 px-8 py-4 text-sm font-black uppercase tracking-[0.22em] text-white hover:border-red-600">Ver planos</Link>
           </div>
         </div>
       </section>
