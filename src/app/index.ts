@@ -56,6 +56,7 @@ export interface Unit {
   googleReviewsCount: number;
   address: string;
   whatsapp: string;
+  imageUrl?: string;
   instagram?: string;
   mapEmbedUrl?: string;
   salesUrl?: string;
