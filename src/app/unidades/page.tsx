@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { unitsData } from '@/app/data';
 import { getUnitStatusBadgeClasses, getUnitStatusLabel, isPubliclyVisible } from '@/utils/unit-status';
@@ -49,10 +50,27 @@ export default function UnitsPage() {
                 <div className="absolute inset-y-0 left-0 w-1 bg-red-600" />
                 <div className="relative ml-4 flex h-full flex-col justify-between gap-6">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-red-600">ATIVA</p>
-                    <h3 className="mt-4 text-2xl font-black text-white">{unit.name}</h3>
-                    <p className="mt-3 text-sm text-slate-400">{unit.city}, {unit.state}</p>
-                    <p className="mt-4 text-sm leading-relaxed text-slate-300">{unit.address}</p>
+                    <div className="flex items-center gap-4">
+                      {unit.imageUrl && (
+                        <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-3xl border border-red-600/30 bg-white/5 shadow-lg shadow-red-600/10">
+                          <Image
+                            src={unit.imageUrl}
+                            alt={`Fachada da unidade Forbody ${unit.name}`}
+                            fill
+                            sizes="80px"
+                            className="object-cover transition duration-500 group-hover:scale-105"
+                          />
+                        </div>
+                      )}
+
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-red-600">ATIVA</p>
+                        <h3 className="mt-3 text-2xl font-black text-white">{unit.name}</h3>
+                        <p className="mt-2 text-sm text-slate-400">{unit.city}, {unit.state}</p>
+                      </div>
+                    </div>
+
+                    <p className="mt-5 text-sm leading-relaxed text-slate-300">{unit.address}</p>
                   </div>
 
                   <div className="flex flex-col gap-3">
