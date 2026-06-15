@@ -182,7 +182,7 @@ async function upsertSection(
     .upsert(payload, { onConflict: 'section_key' });
 
   if (error) {
-    throw new Error(error.message);
+    throw new Error(`Erro em site_marketing_sections: ${error.message}`);
   }
 }
 
@@ -195,7 +195,7 @@ async function upsertItem(
     .upsert(payload, { onConflict: 'section_key,item_key' });
 
   if (error) {
-    throw new Error(error.message);
+    throw new Error(`Erro em site_marketing_items: ${error.message}`);
   }
 }
 
@@ -208,24 +208,24 @@ async function upsertPlan(
     .upsert(payload, { onConflict: 'plan_key' });
 
   if (error) {
-    throw new Error(error.message);
+    throw new Error(`Erro em site_plans: ${error.message}`);
   }
 }
 
 export async function updateMarketingManagerAction(
   formData: FormData
 ): Promise<ActionResult> {
-  const supabase = (await createSupabaseAdminClient()) as SupabaseWriterClient | null;
-
-  if (!supabase) {
-    return {
-      success: false,
-      error:
-        'Supabase não está configurado no ambiente. Verifique as variáveis NEXT_PUBLIC_SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY.',
-    };
-  }
-
   try {
+    const supabase = (await createSupabaseAdminClient()) as SupabaseWriterClient | null;
+
+    if (!supabase) {
+      return {
+        success: false,
+        error:
+          'Supabase não está configurado na Vercel. Verifique NEXT_PUBLIC_SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY no projeto correto.',
+      };
+    }
+
     const heroImageUrl = await resolveImageUrl(
       supabase,
       formData,
@@ -234,36 +234,82 @@ export async function updateMarketingManagerAction(
       'home/hero'
     );
 
+    const carouselSlides = [
+      {
+        key: 'slide_1',
+        fileField: 'heroSlide1File',
+        urlField: 'heroSlide1Url',
+        titleField: 'heroSlide1Title',
+        fallbackTitle: 'FORBODY ACADEMIA',
+        descriptionField: 'heroSlide1Description',
+        fallbackDescription: 'Treino, estrutura e experiência premium em um só lugar.',
+        order: 1,
+      },
+      {
+        key: 'slide_2',
+        fileField: 'heroSlide2File',
+        urlField: 'heroSlide2Url',
+        titleField: 'heroSlide2Title',
+        fallbackTitle: 'PLANOS RED E BLACK',
+        descriptionField: 'heroSlide2Description',
+        fallbackDescription: 'Escolha o plano que combina com sua rotina.',
+        order: 2,
+      },
+      {
+        key: 'slide_3',
+        fileField: 'heroSlide3File',
+        urlField: 'heroSlide3Url',
+        titleField: 'heroSlide3Title',
+        fallbackTitle: 'VENHA TREINAR',
+        descriptionField: 'heroSlide3Description',
+        fallbackDescription: 'A Forbody feita para cada etapa da sua vida.',
+        order: 3,
+      },
+    ];
+
     const photos = [
       {
         key: 'main',
         fileField: 'photoMainFile',
         urlField: 'photoMain',
         title: 'Foto principal',
-        order: 1,
+        order: 10,
       },
       {
         key: 'card_1',
         fileField: 'photoCard1File',
         urlField: 'photoCard1',
         title: 'Foto card 1',
-        order: 2,
+        order: 11,
       },
       {
         key: 'card_2',
         fileField: 'photoCard2File',
         urlField: 'photoCard2',
         title: 'Foto card 2',
-        order: 3,
+        order: 12,
       },
       {
         key: 'card_3',
         fileField: 'photoCard3File',
         urlField: 'photoCard3',
         title: 'Foto card 3',
-        order: 4,
+        order: 13,
       },
     ];
+
+    const resolvedSlides = await Promise.all(
+      carouselSlides.map(async (slide) => ({
+        ...slide,
+        imageUrl: await resolveImageUrl(
+          supabase,
+          formData,
+          slide.fileField,
+          slide.urlField,
+          `home/carousel/${slide.key}`
+        ),
+      }))
+    );
 
     const resolvedPhotos = await Promise.all(
       photos.map(async (photo) => ({
@@ -296,6 +342,7 @@ export async function updateMarketingManagerAction(
       button_href: '/unidades',
       sort_order: 1,
       is_active: true,
+      metadata: { style: 'forbody-3d', carousel: true },
     });
 
     await upsertSection(supabase, {
@@ -305,6 +352,7 @@ export async function updateMarketingManagerAction(
       description: 'Imagens usadas nos blocos visuais da Home.',
       sort_order: 2,
       is_active: true,
+      metadata: {},
     });
 
     await upsertSection(supabase, {
@@ -324,6 +372,7 @@ export async function updateMarketingManagerAction(
       button_href: '#planos',
       sort_order: 3,
       is_active: true,
+      metadata: {},
     });
 
     await upsertSection(supabase, {
@@ -333,7 +382,23 @@ export async function updateMarketingManagerAction(
       description: text(formData.get('promoDescription')),
       sort_order: 4,
       is_active: checkbox(formData.get('promoActive')),
+      metadata: {},
     });
+
+    await Promise.all(
+      resolvedSlides.map((slide) =>
+        upsertItem(supabase, {
+          section_key: 'home_hero',
+          item_key: slide.key,
+          title: textWithFallback(formData, slide.titleField, slide.fallbackTitle),
+          description: textWithFallback(formData, slide.descriptionField, slide.fallbackDescription),
+          image_url: slide.imageUrl,
+          sort_order: slide.order,
+          is_active: true,
+          metadata: { type: 'hero_slide' },
+        })
+      )
+    );
 
     await Promise.all(
       resolvedPhotos.map((photo) =>
@@ -344,6 +409,7 @@ export async function updateMarketingManagerAction(
           image_url: photo.imageUrl,
           sort_order: photo.order,
           is_active: true,
+          metadata: { type: 'home_photo' },
         })
       )
     );
@@ -356,6 +422,7 @@ export async function updateMarketingManagerAction(
       badge: text(formData.get('promoValue')),
       is_active: checkbox(formData.get('promoActive')),
       sort_order: 1,
+      metadata: {},
     });
 
     await upsertPlan(supabase, {
@@ -410,15 +477,15 @@ export async function updateMarketingManagerAction(
     revalidatePath('/admin/marketing');
 
     return { success: true };
-  } catch (error: unknown) {
-    const message =
-      error instanceof Error
-        ? error.message
-        : 'Não foi possível salvar as alterações de marketing.';
+  } catch (error) {
+    console.error('Erro ao salvar marketing:', error);
 
     return {
       success: false,
-      error: message,
+      error:
+        error instanceof Error
+          ? error.message
+          : 'Erro desconhecido ao salvar o marketing. Verifique Supabase, Storage e schema das tabelas.',
     };
   }
 }
