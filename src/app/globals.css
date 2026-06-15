@@ -85,6 +85,59 @@ html {
 }
 
 @layer components {
+  .forbody-3d-title {
+    display: inline-block;
+    font-weight: 950;
+    text-transform: uppercase;
+    letter-spacing: -0.075em;
+    line-height: 0.86;
+    background: linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #ff3838 15%,
+      #e30613 42%,
+      #8c0008 68%,
+      #2b0004 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+    text-shadow:
+      1px 1px 0 #580006,
+      2px 2px 0 #4a0005,
+      3px 3px 0 #3b0004,
+      4px 4px 0 #2c0003,
+      5px 5px 0 #1b0002,
+      0 8px 18px rgba(255, 0, 0, 0.38),
+      0 22px 46px rgba(0, 0, 0, 0.95);
+    transform: perspective(900px) rotateX(6deg) skewX(-5deg);
+    transform-origin: left center;
+    filter: drop-shadow(0 0 18px rgba(227, 6, 19, 0.16));
+  }
+
+  .forbody-3d-title::after {
+    content: "";
+    display: block;
+    height: 3px;
+    margin-top: 0.22em;
+    background: linear-gradient(90deg, transparent, #e30613 18%, #ff3b3b 50%, #e30613 82%, transparent);
+    box-shadow: 0 0 24px rgba(227, 6, 19, 0.55);
+  }
+
+  .forbody-3d-kicker {
+    color: #f7f7f7;
+    text-shadow:
+      1px 1px 0 #3b3b3b,
+      2px 2px 0 #151515,
+      0 12px 24px rgba(0, 0, 0, 0.85);
+    letter-spacing: 0.42em;
+  }
+
+  .forbody-hero-slice {
+    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+  }
+
   .premium-depth {
     position: relative;
     isolation: isolate;
