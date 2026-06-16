@@ -454,14 +454,13 @@ export async function updateMarketingManagerAction(
         'Musculação completa com acompanhamento técnico para você evoluir com segurança.'
       ),
       badge: textWithFallback(formData, 'redBadge', 'Mais escolhido'),
-      featured: false,
       features: lines(formData.get('redFeatures'), [
         'Musculação completa',
         'Avaliação física',
         'Acompanhamento técnico',
       ]),
       payment_options: paymentOptions(formData, 'red', fallbackPayments.red),
-      metadata: {},
+      metadata: { featured: false },
       sort_order: 1,
       is_active: true,
     });
@@ -475,14 +474,13 @@ export async function updateMarketingManagerAction(
         'A experiência completa da Forbody com mais liberdade, benefícios e estrutura.'
       ),
       badge: textWithFallback(formData, 'blackBadge', 'Experiência completa'),
-      featured: true,
       features: lines(formData.get('blackFeatures'), [
         'Musculação completa',
         'Aulas coletivas',
         'Benefícios exclusivos',
       ]),
       payment_options: paymentOptions(formData, 'black', fallbackPayments.black),
-      metadata: {},
+      metadata: { featured: true },
       sort_order: 2,
       is_active: true,
     });
