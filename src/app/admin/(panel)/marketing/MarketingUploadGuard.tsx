@@ -13,11 +13,13 @@ function formatMb(bytes: number) {
 
 export function MarketingUploadGuard() {
   useEffect(() => {
-    const form = document.querySelector<HTMLFormElement>('[data-marketing-form="true"]');
+    const marketingForm = document.querySelector<HTMLFormElement>('[data-marketing-form="true"]');
 
-    if (!form) {
+    if (!marketingForm) {
       return;
     }
+
+    const form = marketingForm;
 
     function handleSubmit(event: SubmitEvent) {
       const fileInputs = Array.from(
