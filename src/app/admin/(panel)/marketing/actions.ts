@@ -62,7 +62,7 @@ type PaymentOption = {
 };
 
 const marketingImagesBucket = 'marketing-images';
-const maxMarketingImageSizeMb = 8;
+const maxMarketingImageSizeMb = 10;
 const maxMarketingImageSizeBytes = maxMarketingImageSizeMb * 1024 * 1024;
 
 const fallbackPayments = {
@@ -403,11 +403,15 @@ export async function updateMarketingManagerAction(
           section_key: 'home_hero',
           item_key: slide.key,
           title: textWithFallback(formData, slide.titleField, slide.fallbackTitle),
-          description: textWithFallback(formData, slide.descriptionField, slide.fallbackDescription),
+          description: textWithFallback(
+            formData,
+            slide.descriptionField,
+            slide.fallbackDescription
+          ),
           image_url: slide.imageUrl,
           sort_order: slide.order,
           is_active: true,
-          metadata: { type: 'hero_slide' },
+          metadata: { type: 'carousel_slide' },
         })
       )
     );
@@ -418,6 +422,7 @@ export async function updateMarketingManagerAction(
           section_key: 'home_photos',
           item_key: photo.key,
           title: photo.title,
+          description: '',
           image_url: photo.imageUrl,
           sort_order: photo.order,
           is_active: true,
@@ -429,60 +434,57 @@ export async function updateMarketingManagerAction(
     await upsertItem(supabase, {
       section_key: 'home_promotions',
       item_key: 'main',
-      title: text(formData.get('promoTitle')),
+      title: textWithFallback(formData, 'promoTitle', 'Promoções'),
       description: text(formData.get('promoDescription')),
-      badge: text(formData.get('promoValue')),
-      is_active: checkbox(formData.get('promoActive')),
+      image_url: null,
       sort_order: 1,
-      metadata: {},
+      is_active: checkbox(formData.get('promoActive')),
+      metadata: {
+        badge: text(formData.get('promoBadge')),
+        button_label: textWithFallback(formData, 'promoButtonLabel', 'Quero aproveitar'),
+      },
     });
 
     await upsertPlan(supabase, {
       plan_key: 'red',
-      name: textWithFallback(formData, 'redName', 'Plano Red'),
-      price_label: textWithFallback(formData, 'redPrice', 'A partir de R$ 99,90'),
+      name: 'Plano Red',
       description: textWithFallback(
         formData,
         'redDescription',
-        'Musculação com apoio técnico e acesso ao aplicativo.'
+        'Musculação completa com acompanhamento técnico para você evoluir com segurança.'
       ),
-      badge: textWithFallback(formData, 'redBadge', 'Melhor entrada'),
-      benefits: lines(formData.get('redBenefits'), [
-        'Musculação',
-        'Treino personalizado com apoio técnico dos professores',
-        'Acesso ao aplicativo',
+      badge: textWithFallback(formData, 'redBadge', 'Mais escolhido'),
+      featured: false,
+      features: lines(formData.get('redFeatures'), [
+        'Musculação completa',
+        'Avaliação física',
+        'Acompanhamento técnico',
       ]),
       payment_options: paymentOptions(formData, 'red', fallbackPayments.red),
-      is_featured: false,
-      is_active: true,
+      metadata: {},
       sort_order: 1,
+      is_active: true,
     });
 
     await upsertPlan(supabase, {
       plan_key: 'black',
-      name: textWithFallback(formData, 'blackName', 'Plano Black'),
-      price_label: textWithFallback(
-        formData,
-        'blackPrice',
-        'A partir de R$ 109,90'
-      ),
+      name: 'Plano Black',
       description: textWithFallback(
         formData,
         'blackDescription',
-        'Plano completo para quem quer aproveitar mais a Forbody.'
+        'A experiência completa da Forbody com mais liberdade, benefícios e estrutura.'
       ),
-      badge: textWithFallback(formData, 'blackBadge', 'Mais completo'),
-      benefits: lines(formData.get('blackBenefits'), [
-        'Musculação',
+      badge: textWithFallback(formData, 'blackBadge', 'Experiência completa'),
+      featured: true,
+      features: lines(formData.get('blackFeatures'), [
+        'Musculação completa',
         'Aulas coletivas',
-        'Avaliação com bioimpedância a cada 90 dias',
-        '5 convidados por mês',
-        'Acesso às outras unidades',
+        'Benefícios exclusivos',
       ]),
       payment_options: paymentOptions(formData, 'black', fallbackPayments.black),
-      is_featured: true,
-      is_active: true,
+      metadata: {},
       sort_order: 2,
+      is_active: true,
     });
 
     revalidatePath('/');
@@ -490,14 +492,9 @@ export async function updateMarketingManagerAction(
 
     return { success: true };
   } catch (error) {
-    console.error('Erro ao salvar marketing:', error);
-
     return {
       success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : 'Erro desconhecido ao salvar o marketing. Verifique Supabase, Storage e schema das tabelas.',
+      error: error instanceof Error ? error.message : 'Erro inesperado ao salvar Marketing.',
     };
   }
 }
