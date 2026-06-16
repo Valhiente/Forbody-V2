@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { updateMarketingManagerAction } from './actions';
+import { MarketingUploadGuard } from './MarketingUploadGuard';
 
 type InputProps = {
   label: string;
@@ -83,7 +84,7 @@ function FileInput({ label, name, urlName, helper }: FileInputProps) {
 
       <p className="text-xs leading-relaxed text-zinc-500">
         {helper ??
-          'Envie JPG, PNG, WebP ou AVIF. Limite: 10MB por imagem. Para carrossel, cada slide precisa ter até 10MB; se passar disso, baixe do Canva em WebP/JPG e comprima antes de enviar.'}
+          'Envie JPG, PNG, WebP ou AVIF. Limite: 10MB por imagem e 50MB por salvamento. Para carrossel, cada slide precisa ter até 10MB; se passar disso, baixe do Canva em WebP/JPG e comprima antes de enviar.'}
       </p>
     </div>
   );
@@ -106,6 +107,7 @@ export default function MarketingPage() {
   return (
     <div className="min-h-screen bg-black px-4 py-8 sm:px-6 lg:px-10">
       <form
+        data-marketing-form="true"
         action={async (formData: FormData) => {
           'use server';
 
@@ -113,6 +115,8 @@ export default function MarketingPage() {
         }}
         className="mx-auto max-w-6xl space-y-8"
       >
+        <MarketingUploadGuard />
+
         <div className="overflow-hidden rounded-[2rem] border border-red-600/20 bg-[radial-gradient(circle_at_top,rgba(220,38,38,0.16),transparent_45%),#090909] p-8 shadow-[0_0_80px_rgba(220,38,38,0.08)] sm:p-10">
           <div className="inline-flex items-center gap-3 border border-red-600/30 bg-red-600/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.32em] text-red-300">
             Gestão de Marketing
@@ -126,6 +130,12 @@ export default function MarketingPage() {
             Edite banners, frases, promoções, planos e imagens sem precisar abrir o código.
             Tudo que for salvo aqui será usado pela Home integrada ao Supabase.
           </p>
+
+          <div className="mt-6 rounded-2xl border border-red-600/30 bg-red-600/10 p-4 text-sm leading-relaxed text-red-100">
+            <strong>Upload de imagens:</strong> cada imagem pode ter até 10MB. O envio total
+            do formulário pode ter até 50MB. Se for usar carrossel, envie uma imagem por slide;
+            se ficar pesado, salve em partes ou comprima em WebP/JPG antes de salvar.
+          </div>
         </div>
 
         <Section
@@ -305,7 +315,8 @@ export default function MarketingPage() {
             <div>
               <p className="text-sm font-semibold text-white">Salvar alterações</p>
               <p className="text-xs text-zinc-500">
-                Cada imagem pode ter até 10MB. No carrossel, envie uma imagem por slide; se uma imagem passar de 10MB, compacte antes de salvar.
+                Cada imagem pode ter até 10MB. O salvamento completo pode ter até 50MB. No carrossel,
+                envie uma imagem por slide; se ficar pesado, salve em partes ou compacte antes de salvar.
               </p>
             </div>
 
