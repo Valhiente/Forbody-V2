@@ -62,6 +62,8 @@ type PaymentOption = {
 };
 
 const marketingImagesBucket = 'marketing-images';
+const maxMarketingImageSizeMb = 8;
+const maxMarketingImageSizeBytes = maxMarketingImageSizeMb * 1024 * 1024;
 
 const fallbackPayments = {
   red: [
@@ -126,6 +128,10 @@ function slugFileName(value: string): string {
     .toLowerCase();
 }
 
+function formatFileSize(bytes: number): string {
+  return `${(bytes / 1024 / 1024).toFixed(1).replace('.', ',')}MB`;
+}
+
 function imageFile(formData: FormData, name: string): File | null {
   const value = formData.get(name);
 
@@ -135,6 +141,12 @@ function imageFile(formData: FormData, name: string): File | null {
 
   if (!value.type.startsWith('image/')) {
     throw new Error('Envie apenas arquivos de imagem nos campos de upload.');
+  }
+
+  if (value.size > maxMarketingImageSizeBytes) {
+    throw new Error(
+      `A imagem "${value.name}" tem ${formatFileSize(value.size)} e ultrapassa o limite de ${maxMarketingImageSizeMb}MB. Comprima a imagem ou envie em WebP antes de salvar.`
+    );
   }
 
   return value;
