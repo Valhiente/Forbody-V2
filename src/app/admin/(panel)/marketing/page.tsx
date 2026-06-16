@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { redirect } from 'next/navigation';
 import { updateMarketingManagerAction } from './actions';
 import { MarketingUploadGuard } from './MarketingUploadGuard';
 
@@ -21,6 +22,13 @@ type SectionProps = {
   title: string;
   description: string;
   children: ReactNode;
+};
+
+type MarketingPageProps = {
+  searchParams?: Promise<{
+    saved?: string;
+    error?: string;
+  }>;
 };
 
 function Input({
@@ -103,7 +111,11 @@ function Section({ title, description, children }: SectionProps) {
   );
 }
 
-export default function MarketingPage() {
+export default async function MarketingPage({ searchParams }: MarketingPageProps) {
+  const params = await searchParams;
+  const saved = params?.saved === '1';
+  const error = params?.error;
+
   return (
     <div className="min-h-screen bg-black px-4 py-8 sm:px-6 lg:px-10">
       <form
@@ -111,11 +123,29 @@ export default function MarketingPage() {
         action={async (formData: FormData) => {
           'use server';
 
-          await updateMarketingManagerAction(formData);
+          const result = await updateMarketingManagerAction(formData);
+
+          if (!result.success) {
+            redirect(`/admin/marketing?error=${encodeURIComponent(result.error ?? 'Erro ao salvar Marketing.')}`);
+          }
+
+          redirect('/admin/marketing?saved=1');
         }}
         className="mx-auto max-w-6xl space-y-8"
       >
         <MarketingUploadGuard />
+
+        {saved ? (
+          <div className="rounded-2xl border border-green-500/40 bg-green-500/10 p-4 text-sm font-semibold text-green-200">
+            Marketing salvo com sucesso. Confira a Home e o Supabase Storage.
+          </div>
+        ) : null}
+
+        {error ? (
+          <div className="rounded-2xl border border-red-500/50 bg-red-500/10 p-4 text-sm font-semibold text-red-200">
+            Erro ao salvar Marketing: {error}
+          </div>
+        ) : null}
 
         <div className="overflow-hidden rounded-[2rem] border border-red-600/20 bg-[radial-gradient(circle_at_top,rgba(220,38,38,0.16),transparent_45%),#090909] p-8 shadow-[0_0_80px_rgba(220,38,38,0.08)] sm:p-10">
           <div className="inline-flex items-center gap-3 border border-red-600/30 bg-red-600/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.32em] text-red-300">
