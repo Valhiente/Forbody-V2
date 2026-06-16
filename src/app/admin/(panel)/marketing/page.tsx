@@ -9,6 +9,13 @@ type InputProps = {
   helper?: string;
 };
 
+type FileInputProps = {
+  label: string;
+  name: string;
+  urlName: string;
+  helper?: string;
+};
+
 type SectionProps = {
   title: string;
   description: string;
@@ -52,6 +59,36 @@ function Input({
   );
 }
 
+function FileInput({ label, name, urlName, helper }: FileInputProps) {
+  return (
+    <div className="space-y-3 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4">
+      <label htmlFor={name} className="text-sm font-semibold text-white">
+        {label}
+      </label>
+
+      <input
+        id={name}
+        name={name}
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/avif"
+        className="block w-full cursor-pointer rounded-2xl border border-dashed border-red-600/40 bg-black px-4 py-4 text-sm text-zinc-300 file:mr-4 file:rounded-xl file:border-0 file:bg-red-600 file:px-4 file:py-2 file:text-xs file:font-black file:uppercase file:tracking-[0.14em] file:text-white hover:border-red-500"
+      />
+
+      <input
+        name={urlName}
+        type="url"
+        placeholder="Opcional: cole uma URL https:// se a imagem já estiver hospedada"
+        className="h-11 w-full rounded-2xl border border-zinc-700 bg-zinc-950 px-4 text-xs text-zinc-300 outline-none transition focus:border-red-500 focus:ring-1 focus:ring-red-500"
+      />
+
+      <p className="text-xs leading-relaxed text-zinc-500">
+        {helper ??
+          'Envie JPG, PNG, WebP ou AVIF. Limite: 10MB por imagem. Para carrossel, cada slide precisa ter até 10MB; se passar disso, baixe do Canva em WebP/JPG e comprima antes de enviar.'}
+      </p>
+    </div>
+  );
+}
+
 function Section({ title, description, children }: SectionProps) {
   return (
     <section className="space-y-6 rounded-3xl border border-zinc-800 bg-zinc-950/90 p-6 shadow-2xl shadow-black/20 backdrop-blur-xl sm:p-8">
@@ -87,7 +124,7 @@ export default function MarketingPage() {
 
           <p className="mt-6 max-w-3xl text-base leading-relaxed text-zinc-400 sm:text-lg">
             Edite banners, frases, promoções, planos e imagens sem precisar abrir o código.
-            Tudo que for salvo aqui será usado futuramente pela Home integrada ao Supabase.
+            Tudo que for salvo aqui será usado pela Home integrada ao Supabase.
           </p>
         </div>
 
@@ -116,12 +153,30 @@ export default function MarketingPage() {
             helper="Texto curto explicando a proposta da Forbody."
           />
 
-          <Input
+          <FileInput
             label="Imagem principal do banner"
-            name="heroImageUrl"
-            placeholder="https://..."
-            helper="Cole a URL da imagem principal usada no banner."
+            name="heroImageFile"
+            urlName="heroImageUrl"
+            helper="Escolha a imagem do computador. Limite: 10MB. Recomendado: 1920x1080 em WebP/JPG com até 2MB para carregar rápido."
           />
+
+          <div className="grid gap-5 lg:grid-cols-3">
+            <FileInput label="Carrossel - slide 1" name="heroSlide1File" urlName="heroSlide1Url" />
+            <FileInput label="Carrossel - slide 2" name="heroSlide2File" urlName="heroSlide2Url" />
+            <FileInput label="Carrossel - slide 3" name="heroSlide3File" urlName="heroSlide3Url" />
+          </div>
+
+          <div className="grid gap-5 lg:grid-cols-3">
+            <Input label="Título do slide 1" name="heroSlide1Title" placeholder="FORBODY ACADEMIA" />
+            <Input label="Título do slide 2" name="heroSlide2Title" placeholder="PLANOS RED E BLACK" />
+            <Input label="Título do slide 3" name="heroSlide3Title" placeholder="VENHA TREINAR" />
+          </div>
+
+          <div className="grid gap-5 lg:grid-cols-3">
+            <Input label="Descrição do slide 1" name="heroSlide1Description" />
+            <Input label="Descrição do slide 2" name="heroSlide2Description" />
+            <Input label="Descrição do slide 3" name="heroSlide3Description" />
+          </div>
 
           <Input
             label="Texto do botão principal"
@@ -134,16 +189,12 @@ export default function MarketingPage() {
           title="2. Fotos da Home"
           description="Essas imagens aparecem nos cards e blocos visuais da página inicial."
         >
-          <Input
-            label="Imagem principal"
-            name="photoMain"
-            placeholder="https://..."
-          />
+          <FileInput label="Imagem principal" name="photoMainFile" urlName="photoMain" />
 
           <div className="grid gap-5 md:grid-cols-3">
-            <Input label="Imagem do card 1" name="photoCard1" placeholder="https://..." />
-            <Input label="Imagem do card 2" name="photoCard2" placeholder="https://..." />
-            <Input label="Imagem do card 3" name="photoCard3" placeholder="https://..." />
+            <FileInput label="Imagem do card 1" name="photoCard1File" urlName="photoCard1" />
+            <FileInput label="Imagem do card 2" name="photoCard2File" urlName="photoCard2" />
+            <FileInput label="Imagem do card 3" name="photoCard3File" urlName="photoCard3" />
           </div>
         </Section>
 
@@ -218,7 +269,7 @@ export default function MarketingPage() {
               <Input label="Descrição" name="redDescription" textarea />
               <Input
                 label="Benefícios"
-                name="redBenefits"
+                name="redFeatures"
                 textarea
                 helper="Digite um benefício por linha."
               />
@@ -240,7 +291,7 @@ export default function MarketingPage() {
               <Input label="Descrição" name="blackDescription" textarea />
               <Input
                 label="Benefícios"
-                name="blackBenefits"
+                name="blackFeatures"
                 textarea
                 helper="Digite um benefício por linha."
               />
@@ -254,7 +305,7 @@ export default function MarketingPage() {
             <div>
               <p className="text-sm font-semibold text-white">Salvar alterações</p>
               <p className="text-xs text-zinc-500">
-                As alterações serão enviadas para o Supabase.
+                Cada imagem pode ter até 10MB. No carrossel, envie uma imagem por slide; se uma imagem passar de 10MB, compacte antes de salvar.
               </p>
             </div>
 
