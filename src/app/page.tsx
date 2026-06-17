@@ -8,7 +8,6 @@ type MarketingSection = {
   title: string | null;
   subtitle: string | null;
   description: string | null;
-  image_url: string | null;
   button_label: string | null;
   button_href: string | null;
   is_active: boolean | null;
@@ -26,23 +25,14 @@ type MarketingItem = {
   sort_order: number | null;
 };
 
-type SitePlan = {
-  plan_key: string;
-  name: string | null;
-  price_label: string | null;
-  description: string | null;
-  badge: string | null;
-  benefits: string[] | null;
-  is_featured: boolean | null;
-  is_active: boolean | null;
-  sort_order: number | null;
-};
-
 type HomeMarketingData = {
   sections: MarketingSection[];
   items: MarketingItem[];
-  plans: SitePlan[];
 };
+
+const officialHeroBackgroundImage =
+  process.env.NEXT_PUBLIC_FORBODY_HERO_BACKGROUND_URL ||
+  "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=1800&q=90";
 
 const fallbackPillars = ["Musculação completa", "Bons profissionais", "Aulas coletivas", "Planos acessíveis"];
 
@@ -98,29 +88,29 @@ function safeText(value: string | null | undefined, fallback: string) {
   return value && value.trim().length > 0 ? value : fallback;
 }
 
-function normalizePrice(value: string) {
-  return value.replace("A partir de ", "");
-}
-
 async function getHomeMarketingData(): Promise<HomeMarketingData> {
   try {
     const supabase = await createSupabaseAdminClient();
-    if (!supabase) return { sections: [], items: [], plans: [] };
+    if (!supabase) return { sections: [], items: [] };
 
-    const [sectionsResult, itemsResult, plansResult] = await Promise.all([
-      supabase.from("site_marketing_sections").select("section_key,title,subtitle,description,image_url,button_label,button_href,is_active,sort_order").order("sort_order", { ascending: true }),
-      supabase.from("site_marketing_items").select("section_key,item_key,title,description,badge,image_url,is_active,sort_order").order("sort_order", { ascending: true }),
-      supabase.from("site_plans").select("plan_key,name,price_label,description,badge,benefits,is_featured,is_active,sort_order").order("sort_order", { ascending: true }),
+    const [sectionsResult, itemsResult] = await Promise.all([
+      supabase
+        .from("site_marketing_sections")
+        .select("section_key,title,subtitle,description,button_label,button_href,is_active,sort_order")
+        .order("sort_order", { ascending: true }),
+      supabase
+        .from("site_marketing_items")
+        .select("section_key,item_key,title,description,badge,image_url,is_active,sort_order")
+        .order("sort_order", { ascending: true }),
     ]);
 
     return {
       sections: (sectionsResult.data || []) as MarketingSection[],
       items: (itemsResult.data || []) as MarketingItem[],
-      plans: (plansResult.data || []) as SitePlan[],
     };
   } catch (error) {
     console.error("Erro ao carregar marketing da Home:", error);
-    return { sections: [], items: [], plans: [] };
+    return { sections: [], items: [] };
   }
 }
 
@@ -129,7 +119,9 @@ function sectionByKey(sections: MarketingSection[], key: string) {
 }
 
 function itemsBySection(items: MarketingItem[], key: string) {
-  return items.filter((item) => item.section_key === key && item.is_active !== false).sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+  return items
+    .filter((item) => item.section_key === key && item.is_active !== false)
+    .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
 }
 
 export default async function HomePage() {
@@ -145,7 +137,6 @@ export default async function HomePage() {
       heroSection?.description,
       "Estrutura completa, professores presentes, planos acessíveis e unidades preparadas para acompanhar você em cada fase da sua rotina."
     ),
-    image: heroSection?.image_url || photoItems.find((item) => item.item_key === "main")?.image_url || "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=1800&q=90",
     buttonLabel: safeText(heroSection?.button_label, "Escolher unidade"),
     buttonHref: safeText(heroSection?.button_href, "/unidades"),
   };
@@ -155,29 +146,22 @@ export default async function HomePage() {
     return { ...card, image: photo?.image_url || card.image, title: photo?.title || card.title, description: photo?.description || card.description };
   });
 
-  const planCards =
-    marketing.plans.length > 0
-      ? marketing.plans
-          .filter((plan) => plan.is_active !== false)
-          .map((plan, index) => ({
-            name: safeText(plan.name, fallbackPlanCards[index]?.name || "Plano Forbody"),
-            price: normalizePrice(safeText(plan.price_label, fallbackPlanCards[index]?.price || "R$ 99,90")),
-            description: safeText(plan.description, fallbackPlanCards[index]?.description || "Plano Forbody."),
-            tag: safeText(plan.badge, fallbackPlanCards[index]?.tag || "Forbody"),
-            featured: Boolean(plan.is_featured),
-            benefits: Array.isArray(plan.benefits) && plan.benefits.length > 0 ? plan.benefits : fallbackPlanCards[index]?.benefits || [],
-          }))
-      : fallbackPlanCards;
+  const planCards = fallbackPlanCards;
 
-  const mainVisualImage = photoItems.find((item) => item.item_key === "main")?.image_url || "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1600&q=90";
+  const mainVisualImage =
+    photoItems.find((item) => item.item_key === "main")?.image_url ||
+    "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1600&q=90";
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#030303] text-white">
       <section className="relative min-h-screen overflow-hidden px-5 py-20 sm:px-8 lg:px-12">
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-cover bg-center opacity-32 grayscale" style={{ backgroundImage: `url(${hero.image})` }} />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(220,38,38,0.30),transparent_34%),linear-gradient(90deg,#030303_0%,rgba(3,3,3,0.92)_42%,rgba(3,3,3,0.62)_100%)]" />
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,3,3,0.10)_0%,#030303_96%)]" />
+          <div
+            className="absolute inset-0 bg-cover bg-center-right opacity-55"
+            style={{ backgroundImage: `url(${officialHeroBackgroundImage})`, backgroundPosition: "center right" }}
+          />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_28%,rgba(220,38,38,0.22),transparent_32%),linear-gradient(90deg,#030303_0%,rgba(3,3,3,0.94)_35%,rgba(3,3,3,0.68)_68%,rgba(3,3,3,0.34)_100%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,3,3,0.05)_0%,#030303_98%)]" />
         </div>
 
         <div className="absolute left-0 top-1/2 h-[42rem] w-[42rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-600/20 blur-[150px]" />
@@ -214,8 +198,8 @@ export default async function HomePage() {
             <div className="absolute -inset-8 bg-red-600/10 blur-[90px]" />
             <div className="relative min-h-[560px] overflow-hidden border border-white/10 bg-[#080808]/90 shadow-2xl shadow-red-950/30 backdrop-blur-xl">
               <div className="absolute inset-x-0 top-0 h-1 bg-red-600" />
-              <div className="absolute inset-0 bg-cover bg-center opacity-30 grayscale" style={{ backgroundImage: `url(${mainVisualImage})` }} />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/30" />
+              <div className="absolute inset-0 bg-cover bg-center opacity-45" style={{ backgroundImage: `url(${mainVisualImage})` }} />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/75 to-black/20" />
               <div className="relative flex h-full min-h-[560px] flex-col justify-end p-6 sm:p-8">
                 <p className="text-xs font-black uppercase tracking-[0.34em] text-red-500">comece agora</p>
                 <h2 className="mt-4 text-4xl font-black uppercase leading-none tracking-[-0.05em] text-white sm:text-5xl">Red ou Black. Escolha sua rotina.</h2>
@@ -297,8 +281,8 @@ export default async function HomePage() {
           <div className="grid gap-5 lg:grid-cols-3">
             {showcaseCards.map((card) => (
               <article key={card.title} className="group relative min-h-[420px] overflow-hidden border border-white/10 bg-[#080808]">
-                <div className="absolute inset-0 bg-cover bg-center opacity-35 grayscale transition duration-500 group-hover:scale-105 group-hover:opacity-45" style={{ backgroundImage: `url(${card.image})` }} />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent" />
+                <div className="absolute inset-0 bg-cover bg-center opacity-55 transition duration-500 group-hover:scale-105 group-hover:opacity-70" style={{ backgroundImage: `url(${card.image})` }} />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/72 to-transparent" />
                 <div className="relative flex h-full min-h-[420px] flex-col justify-end p-7">
                   <p className="text-xs font-black uppercase tracking-[0.3em] text-red-500">{card.eyebrow}</p>
                   <h3 className="mt-4 text-2xl font-black uppercase leading-tight text-white">{card.title}</h3>
