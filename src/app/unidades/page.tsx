@@ -32,10 +32,10 @@ export default function UnitsPage() {
       <section className="px-6 sm:px-8 lg:px-12 max-w-7xl mx-auto pb-14">
         <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h2 className="text-3xl font-black tracking-tight text-white">Unidades em funcionamento</h2>
+            <h2 className="text-3xl font-black tracking-tight text-white">Unidades abertas</h2>
             <p className="mt-3 max-w-2xl text-sm text-slate-400">Todas as unidades com matrícula, localização e WhatsApp próprio.</p>
           </div>
-          <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm uppercase tracking-[0.16em] text-slate-200">{activeUnits.length} unidades</span>
+          <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm uppercase tracking-[0.16em] text-slate-200">{activeUnits.length} unidades abertas</span>
         </div>
 
         <div className="grid gap-6 xl:grid-cols-3 lg:grid-cols-2">
@@ -67,7 +67,8 @@ export default function UnitsPage() {
                       )}
 
                       <div>
-                        <h3 className="text-2xl font-black text-white">{unit.name}</h3>
+                        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-red-600">ABERTA</p>
+                        <h3 className="mt-3 text-2xl font-black text-white">{unit.name}</h3>
                         <p className="mt-2 text-sm text-slate-400">{unit.city}, {unit.state}</p>
                       </div>
                     </div>
@@ -151,7 +152,7 @@ export default function UnitsPage() {
 
       <section className="px-6 sm:px-8 lg:px-12 max-w-7xl mx-auto pb-20">
         <div className="mb-10">
-          <h2 className="text-3xl font-black tracking-tight text-white">Em breve novas unidades</h2>
+          <h2 className="text-3xl font-black tracking-tight text-white">Próximas inaugurações</h2>
           <p className="mt-3 max-w-2xl text-sm text-slate-400">Fique de olho: novas unidades Forbody chegando em breve com a energia da nossa academia.</p>
         </div>
 
