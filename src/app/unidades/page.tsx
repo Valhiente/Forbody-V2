@@ -41,24 +41,27 @@ export default function UnitsPage() {
         <div className="grid gap-6 xl:grid-cols-3 lg:grid-cols-2">
           {activeUnits.map((unit) => {
             const unitWhatsappLink = whatsappLink(unit.whatsapp);
+            const locationUrl = unit.locationUrl && unit.locationUrl !== '#' ? unit.locationUrl : undefined;
 
             return (
               <article
                 key={unit.slug}
-                className="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a] p-6 transition hover:border-red-600"
+                className="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a] p-6 transition duration-300 hover:-translate-y-1 hover:border-red-600/70 hover:shadow-[0_0_42px_rgba(239,68,68,0.28)]"
               >
-                <div className="absolute inset-y-0 left-0 w-1 bg-red-600" />
+                <div className="absolute inset-y-0 left-0 w-1 bg-red-600 transition duration-300 group-hover:shadow-[0_0_24px_rgba(239,68,68,0.9)]" />
+                <div className="absolute -left-20 -top-20 h-48 w-48 rounded-full bg-red-600/0 blur-3xl transition duration-300 group-hover:bg-red-600/10" />
+
                 <div className="relative ml-4 flex h-full flex-col justify-between gap-6">
                   <div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-5">
                       {unit.imageUrl && (
-                        <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-3xl border border-red-600/30 bg-white/5 shadow-lg shadow-red-600/10">
+                        <div className="relative h-[90px] w-[90px] shrink-0 overflow-hidden rounded-[1.65rem] border border-red-600/60 bg-white/5 shadow-[0_0_22px_rgba(239,68,68,0.28)] ring-1 ring-red-500/25 transition duration-300 group-hover:scale-105 group-hover:border-red-500 group-hover:shadow-[0_0_34px_rgba(239,68,68,0.55)]">
                           <Image
                             src={unit.imageUrl}
                             alt={`Fachada da unidade Forbody ${unit.name}`}
                             fill
-                            sizes="80px"
-                            className="object-cover transition duration-500 group-hover:scale-105"
+                            sizes="90px"
+                            className="object-cover transition duration-500 group-hover:scale-110"
                           />
                         </div>
                       )}
@@ -77,18 +80,32 @@ export default function UnitsPage() {
                     <p className="text-sm text-slate-400">Escolha como quer seguir</p>
                     <Link
                       href={`/unidades/${unit.slug}`}
-                      className="inline-flex w-full items-center justify-center rounded-full bg-white/5 px-4 py-3 text-sm font-semibold text-red-600 transition hover:bg-red-600 hover:text-black"
+                      className="inline-flex w-full items-center justify-center gap-3 rounded-full bg-white/5 px-4 py-3 text-sm font-semibold text-red-600 transition hover:bg-red-600 hover:text-black"
                     >
+                      <span className="text-lg leading-none">→</span>
                       Ver detalhes
                     </Link>
+
+                    {locationUrl && (
+                      <a
+                        href={locationUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex w-full items-center justify-center gap-3 rounded-full bg-white/5 px-4 py-3 text-sm font-semibold text-red-600 transition hover:bg-red-600 hover:text-black"
+                      >
+                        <span className="text-lg leading-none">⌖</span>
+                        Como chegar
+                      </a>
+                    )}
 
                     {unitWhatsappLink && (
                       <a
                         href={unitWhatsappLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex w-full items-center justify-center rounded-full border border-red-600/40 bg-red-600 px-4 py-3 text-sm font-black uppercase tracking-[0.12em] text-black transition hover:bg-red-700"
+                        className="inline-flex w-full items-center justify-center gap-3 rounded-full border border-red-600/40 bg-red-600 px-4 py-3 text-sm font-black uppercase tracking-[0.12em] text-black transition hover:bg-red-700 hover:shadow-[0_0_24px_rgba(239,68,68,0.45)]"
                       >
+                        <span className="text-base leading-none">◉</span>
                         Falar no WhatsApp
                       </a>
                     )}
