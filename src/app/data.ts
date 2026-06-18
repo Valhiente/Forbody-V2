@@ -117,7 +117,7 @@ export const unitsData: Unit[] = [
     galleryUrls: [
       { category: 'academia', title: 'Fachada da unidade Triunfo', imageUrl: '/images/units/triunfo.jpg' },
       { category: 'equipamentos', title: 'Equipamentos da unidade Triunfo', imageUrl: '/images/units/triunfo.jpg' },
-      { category: 'recepcao', title: 'Recepção da unidade Triunfo', imageUrl: '/images/units/triunfo.jpg' },
+      { category: 'forbodyshop', title: 'Forbodyshop Triunfo', imageUrl: '/images/units/triunfo.jpg' },
     ],
     teachers: [],
     googlePlaceId: 'ChIJXZTIhbq_uZQRvvgjq08MRcc'
@@ -145,7 +145,7 @@ export const unitsData: Unit[] = [
     galleryUrls: [
       { category: 'academia', title: 'Fachada da unidade Barão do Bananal', imageUrl: '/images/units/barao-do-bananal.jpg' },
       { category: 'equipamentos', title: 'Equipamentos da unidade Barão do Bananal', imageUrl: '/images/units/barao-do-bananal.jpg' },
-      { category: 'recepcao', title: 'Recepção da unidade Barão do Bananal', imageUrl: '/images/units/barao-do-bananal.jpg' },
+      { category: 'forbodyshop', title: 'Forbodyshop Barão do Bananal', imageUrl: '/images/units/barao-do-bananal.jpg' },
     ],
     teachers: [],
     googlePlaceId: 'ChIJwVOXprm_uZQREFsgGHIf8y4'
@@ -173,7 +173,7 @@ export const unitsData: Unit[] = [
     galleryUrls: [
       { category: 'academia', title: 'Fachada da unidade Vila Virgínia', imageUrl: '/images/units/vila-virginia.jpg' },
       { category: 'equipamentos', title: 'Equipamentos da unidade Vila Virgínia', imageUrl: '/images/units/vila-virginia.jpg' },
-      { category: 'recepcao', title: 'Recepção da unidade Vila Virgínia', imageUrl: '/images/units/vila-virginia.jpg' },
+      { category: 'forbodyshop', title: 'Forbodyshop Vila Virgínia', imageUrl: '/images/units/vila-virginia.jpg' },
     ],
     teachers: [],
     googlePlaceId: 'ChIJjx8pfwC_uZQRt8MeuNMo8aA'
@@ -201,7 +201,7 @@ export const unitsData: Unit[] = [
     galleryUrls: [
       { category: 'academia', title: 'Fachada da unidade Portinari', imageUrl: '/images/units/portinari.jpg' },
       { category: 'equipamentos', title: 'Equipamentos da unidade Portinari', imageUrl: '/images/units/portinari.jpg' },
-      { category: 'recepcao', title: 'Recepção da unidade Portinari', imageUrl: '/images/units/portinari.jpg' },
+      { category: 'forbodyshop', title: 'Forbodyshop Portinari', imageUrl: '/images/units/portinari.jpg' },
     ],
     teachers: [],
     googlePlaceId: 'ChIJNegEDqjBuZQRsXJxQT9NpTo'
