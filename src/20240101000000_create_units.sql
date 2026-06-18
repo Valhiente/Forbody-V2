@@ -1,40 +1,38 @@
--- Criação da tabela principal de Unidades (ForBody OS)
+-- Schema canônico da tabela de unidades usado pelo Forbody-V2.
+-- Mantém o mesmo formato esperado por src/services/units.service.ts.
+
 CREATE TABLE IF NOT EXISTS public.units (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    
-    -- Dados de Identificação
+    id TEXT PRIMARY KEY,
+    slug TEXT UNIQUE NOT NULL,
     name TEXT NOT NULL,
-    slug TEXT NOT NULL UNIQUE,
-    city TEXT NOT NULL,
-    state TEXT NOT NULL,
-    address TEXT,
-    
-    -- Status e Controle
-    status TEXT DEFAULT 'active', -- 'active', 'coming_soon', 'maintenance'
-    coming_soon BOOLEAN DEFAULT false,
-    is_active BOOLEAN DEFAULT true,
-    opening_date DATE,
+    city TEXT DEFAULT 'Ribeirão Preto',
+    state TEXT DEFAULT 'SP',
+    address TEXT DEFAULT '',
+    status TEXT DEFAULT 'coming_soon' CHECK (status IN ('active', 'coming_soon', 'maintenance', 'hidden')),
+
     evo_id INTEGER,
-    
-    -- Contato e Redes
-    whatsapp TEXT,
-    instagram TEXT,
-    
-    -- SEO Local e Mapas
-    google_place_id TEXT,
-    gmaps_url TEXT,
-    map_embed_url TEXT,
-    google_rating NUMERIC(3,1),
-    google_reviews_count INTEGER,
-    
-    -- Estrutura Visual (JSONB e Arrays)
-    business_hours JSONB,
-    gallery_urls TEXT[],
-    
-    -- Timestamps Automáticos
+    evo_unit_id INTEGER,
+
+    whatsapp TEXT DEFAULT '',
+    instagram TEXT DEFAULT '',
+
+    sales_url TEXT DEFAULT '',
+    student_area_url TEXT DEFAULT '',
+    checkout_url TEXT DEFAULT '',
+    location_url TEXT DEFAULT '',
+
+    google_place_id TEXT DEFAULT '',
+    map_embed_url TEXT DEFAULT '',
+    google_reviews_score NUMERIC(3,1) DEFAULT 0,
+    google_reviews_count INTEGER DEFAULT 0,
+
+    business_hours JSONB DEFAULT '[]'::jsonb,
+    gallery_urls JSONB DEFAULT '[]'::jsonb,
+    teachers JSONB DEFAULT '[]'::jsonb,
+
     created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Índice de Performance: Acelera as buscas dinâmicas do SSG Next.js
 CREATE INDEX IF NOT EXISTS idx_units_slug ON public.units(slug);
+CREATE INDEX IF NOT EXISTS idx_units_status ON public.units(status);
