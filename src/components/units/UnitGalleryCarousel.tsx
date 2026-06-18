@@ -13,9 +13,14 @@ type UnitGalleryCarouselProps = {
 export default function UnitGalleryCarousel({ title, subtitle, items }: UnitGalleryCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [expandedItem, setExpandedItem] = useState<UnitGalleryItem | null>(null);
 
   const safeItems = useMemo(() => items.filter((item) => item.imageUrl), [items]);
   const activeItem = safeItems[activeIndex] || safeItems[0];
+
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [items]);
 
   useEffect(() => {
     if (safeItems.length <= 1) return undefined;
@@ -31,34 +36,39 @@ export default function UnitGalleryCarousel({ title, subtitle, items }: UnitGall
 
   return (
     <article className="overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a] shadow-sm shadow-black/20">
-      <button
-        type="button"
-        onClick={() => setIsExpanded((value) => !value)}
-        className="flex w-full items-center justify-between gap-4 p-6 text-left transition hover:bg-white/[0.03]"
-      >
+      <div className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.24em] text-red-500">{subtitle}</p>
           <h3 className="mt-2 text-2xl font-black text-white">{title}</h3>
+          <p className="mt-2 text-sm text-slate-500">Rolagem automática. Clique na imagem para expandir.</p>
         </div>
-        <span className="rounded-full border border-red-600/30 bg-red-600/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-red-300">
-          {isExpanded ? 'Recolher' : 'Expandir'}
-        </span>
-      </button>
+        <button
+          type="button"
+          onClick={() => setIsExpanded((value) => !value)}
+          className="w-fit rounded-full border border-red-600/30 bg-red-600/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-red-300 transition hover:border-red-600 hover:bg-red-600 hover:text-black"
+        >
+          {isExpanded ? 'Recolher lista' : 'Ver todas'}
+        </button>
+      </div>
 
-      <div className="relative h-[280px] overflow-hidden sm:h-[360px]">
+      <button
+        type="button"
+        onClick={() => setExpandedItem(activeItem)}
+        className="group relative block h-[300px] w-full overflow-hidden text-left sm:h-[380px]"
+      >
         <Image
           src={activeItem.imageUrl}
           alt={activeItem.title}
           fill
           sizes="(min-width: 1024px) 720px, 100vw"
-          className="object-cover transition duration-700"
+          className="object-cover transition duration-700 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
         <div className="absolute bottom-5 left-5 right-5">
           <p className="text-xs font-black uppercase tracking-[0.2em] text-red-400">{activeIndex + 1} / {safeItems.length}</p>
-          <h4 className="mt-2 text-xl font-black text-white">{activeItem.title}</h4>
+          <h4 className="mt-2 text-2xl font-black text-white">{activeItem.title}</h4>
         </div>
-      </div>
+      </button>
 
       {safeItems.length > 1 && (
         <div className="flex gap-2 overflow-x-auto p-5">
@@ -78,13 +88,35 @@ export default function UnitGalleryCarousel({ title, subtitle, items }: UnitGall
       {isExpanded && (
         <div className="grid gap-4 border-t border-white/10 p-5 sm:grid-cols-2 lg:grid-cols-3">
           {safeItems.map((item, index) => (
-            <div key={`${item.title}-${index}`} className="group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
+            <button
+              type="button"
+              onClick={() => setExpandedItem(item)}
+              key={`${item.title}-${index}`}
+              className="group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] text-left transition hover:border-red-600/50"
+            >
               <div className="relative h-48 overflow-hidden">
                 <Image src={item.imageUrl} alt={item.title} fill sizes="(min-width: 1024px) 33vw, 100vw" className="object-cover transition duration-500 group-hover:scale-105" />
               </div>
               <p className="p-4 text-sm font-bold text-slate-200">{item.title}</p>
-            </div>
+            </button>
           ))}
+        </div>
+      )}
+
+      {expandedItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-xl" role="dialog" aria-modal="true">
+          <button
+            type="button"
+            aria-label="Fechar imagem expandida"
+            onClick={() => setExpandedItem(null)}
+            className="absolute right-5 top-5 rounded-full border border-white/10 bg-white/10 px-5 py-3 text-xs font-black uppercase tracking-[0.18em] text-white transition hover:border-red-600 hover:bg-red-600"
+          >
+            Fechar
+          </button>
+
+          <div className="relative h-[78vh] w-full max-w-6xl overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a]">
+            <Image src={expandedItem.imageUrl} alt={expandedItem.title} fill sizes="100vw" className="object-contain" />
+          </div>
         </div>
       )}
     </article>
