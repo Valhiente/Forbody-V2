@@ -1,6 +1,16 @@
-import type { Modality, Testimonial, Plan, Unit } from './index';
+import type { Modality, Testimonial, Plan, Unit, UnitBusinessHour } from './index';
 
 // Central de Dados (Simula o futuro CMS/Banco de Dados)
+
+const defaultBusinessHours: UnitBusinessHour[] = [
+  { day: '1', hours: '05:00-23:00' },
+  { day: '2', hours: '05:00-23:00' },
+  { day: '3', hours: '05:00-23:00' },
+  { day: '4', hours: '05:00-23:00' },
+  { day: '5', hours: '05:00-22:00' },
+  { day: '6', hours: '08:00-15:00' },
+  { day: '0', hours: '08:00-13:00' },
+];
 
 export const modalitiesData: Modality[] = [
   {
@@ -103,8 +113,12 @@ export const unitsData: Unit[] = [
     imageUrl: '/images/units/triunfo.jpg',
     instagram: '@forbody.triunfo',
     mapEmbedUrl: '',
-    businessHours: [],
-    galleryUrls: [],
+    businessHours: defaultBusinessHours,
+    galleryUrls: [
+      { category: 'academia', title: 'Fachada da unidade Triunfo', imageUrl: '/images/units/triunfo.jpg' },
+      { category: 'equipamentos', title: 'Equipamentos da unidade Triunfo', imageUrl: '/images/units/triunfo.jpg' },
+      { category: 'recepcao', title: 'Recepção da unidade Triunfo', imageUrl: '/images/units/triunfo.jpg' },
+    ],
     teachers: [],
     googlePlaceId: 'ChIJXZTIhbq_uZQRvvgjq08MRcc'
   },
@@ -127,8 +141,12 @@ export const unitsData: Unit[] = [
     imageUrl: '/images/units/barao-do-bananal.jpg',
     instagram: '@forbody.barao',
     mapEmbedUrl: '',
-    businessHours: [],
-    galleryUrls: [],
+    businessHours: defaultBusinessHours,
+    galleryUrls: [
+      { category: 'academia', title: 'Fachada da unidade Barão do Bananal', imageUrl: '/images/units/barao-do-bananal.jpg' },
+      { category: 'equipamentos', title: 'Equipamentos da unidade Barão do Bananal', imageUrl: '/images/units/barao-do-bananal.jpg' },
+      { category: 'recepcao', title: 'Recepção da unidade Barão do Bananal', imageUrl: '/images/units/barao-do-bananal.jpg' },
+    ],
     teachers: [],
     googlePlaceId: 'ChIJwVOXprm_uZQREFsgGHIf8y4'
   },
@@ -151,8 +169,12 @@ export const unitsData: Unit[] = [
     imageUrl: '/images/units/vila-virginia.jpg',
     instagram: '@forbody.vilavirg',
     mapEmbedUrl: '',
-    businessHours: [],
-    galleryUrls: [],
+    businessHours: defaultBusinessHours,
+    galleryUrls: [
+      { category: 'academia', title: 'Fachada da unidade Vila Virgínia', imageUrl: '/images/units/vila-virginia.jpg' },
+      { category: 'equipamentos', title: 'Equipamentos da unidade Vila Virgínia', imageUrl: '/images/units/vila-virginia.jpg' },
+      { category: 'recepcao', title: 'Recepção da unidade Vila Virgínia', imageUrl: '/images/units/vila-virginia.jpg' },
+    ],
     teachers: [],
     googlePlaceId: 'ChIJjx8pfwC_uZQRt8MeuNMo8aA'
   },
@@ -175,8 +197,12 @@ export const unitsData: Unit[] = [
     imageUrl: '/images/units/portinari.jpg',
     instagram: '@forbody.portinari',
     mapEmbedUrl: '',
-    businessHours: [],
-    galleryUrls: [],
+    businessHours: defaultBusinessHours,
+    galleryUrls: [
+      { category: 'academia', title: 'Fachada da unidade Portinari', imageUrl: '/images/units/portinari.jpg' },
+      { category: 'equipamentos', title: 'Equipamentos da unidade Portinari', imageUrl: '/images/units/portinari.jpg' },
+      { category: 'recepcao', title: 'Recepção da unidade Portinari', imageUrl: '/images/units/portinari.jpg' },
+    ],
     teachers: [],
     googlePlaceId: 'ChIJNegEDqjBuZQRsXJxQT9NpTo'
   },
