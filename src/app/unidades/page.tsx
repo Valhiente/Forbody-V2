@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { unitsData } from '@/app/data';
-import { getUnitStatusBadgeClasses, getUnitStatusLabel, isPubliclyVisible } from '@/utils/unit-status';
+import { getUnits } from '@/services/units.service';
+import { getUnitStatus, getUnitStatusBadgeClasses, getUnitStatusLabel, isPubliclyVisible } from '@/utils/unit-status';
 
 function whatsappLink(phone?: string) {
   if (!phone) return undefined;
@@ -12,11 +12,12 @@ function whatsappLink(phone?: string) {
   return `https://wa.me/${digits}`;
 }
 
-export default function UnitsPage() {
-  const publicUnits = unitsData.filter(isPubliclyVisible);
-  const activeUnits = publicUnits.filter((unit) => unit.status === 'active');
-  const comingSoonUnits = publicUnits.filter((unit) => unit.status === 'coming_soon');
-  const maintenanceUnits = publicUnits.filter((unit) => unit.status === 'maintenance');
+export default async function UnitsPage() {
+  const units = await getUnits();
+  const publicUnits = units.filter(isPubliclyVisible);
+  const activeUnits = publicUnits.filter((unit) => getUnitStatus(unit.status) === 'active');
+  const comingSoonUnits = publicUnits.filter((unit) => getUnitStatus(unit.status) === 'coming_soon');
+  const maintenanceUnits = publicUnits.filter((unit) => getUnitStatus(unit.status) === 'maintenance');
 
   return (
     <main className="min-h-screen bg-[#050505] text-white">
@@ -156,29 +157,35 @@ export default function UnitsPage() {
           <p className="mt-3 max-w-2xl text-sm text-slate-400">Fique de olho: novas unidades Forbody chegando em breve com a energia da nossa academia.</p>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-2">
-          {comingSoonUnits.map((unit) => (
-            <Link
-              key={unit.slug}
-              href={`/unidades/${unit.slug}`}
-              className="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-6 transition hover:border-red-600"
-            >
-              <div className="absolute inset-y-0 left-0 w-1 bg-red-600/30" />
-              <div className="relative ml-4 flex h-full flex-col justify-between gap-6">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-200">EM BREVE</p>
-                  <h3 className="mt-4 text-2xl font-black text-white">{unit.name}</h3>
-                  <p className="mt-3 text-sm text-slate-400">{unit.city}, {unit.state}</p>
-                  <p className="mt-4 text-sm leading-relaxed text-slate-500">Endereço em breve</p>
-                </div>
+        {comingSoonUnits.length > 0 ? (
+          <div className="grid gap-6 lg:grid-cols-2">
+            {comingSoonUnits.map((unit) => (
+              <Link
+                key={unit.slug}
+                href={`/unidades/${unit.slug}`}
+                className="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-6 transition hover:border-red-600"
+              >
+                <div className="absolute inset-y-0 left-0 w-1 bg-red-600/30" />
+                <div className="relative ml-4 flex h-full flex-col justify-between gap-6">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-200">EM BREVE</p>
+                    <h3 className="mt-4 text-2xl font-black text-white">{unit.name}</h3>
+                    <p className="mt-3 text-sm text-slate-400">{unit.city}, {unit.state}</p>
+                    <p className="mt-4 text-sm leading-relaxed text-slate-500">{unit.address || 'Endereço em breve'}</p>
+                  </div>
 
-                <div className="flex flex-col gap-4">
-                  <span className="inline-flex w-full items-center justify-center rounded-full border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-200 transition group-hover:border-red-600 group-hover:text-red-500">Quero ser avisado</span>
+                  <div className="flex flex-col gap-4">
+                    <span className="inline-flex w-full items-center justify-center rounded-full border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-200 transition group-hover:border-red-600 group-hover:text-red-500">Quero ser avisado</span>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-[2rem] border border-white/10 bg-white/5 p-8 text-sm text-slate-400">
+            Novas unidades serão exibidas aqui assim que forem cadastradas no admin.
+          </div>
+        )}
       </section>
     </main>
   );
