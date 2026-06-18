@@ -82,6 +82,21 @@ const fallbackShowcaseCards = [
   },
 ];
 
+const fallbackTestimonials = [
+  {
+    quote: "Os professores ajudam de verdade e deixam o treino mais seguro para quem está começando.",
+    source: "Avaliação Google de aluno Forbody",
+  },
+  {
+    quote: "Ambiente organizado, estrutura completa e uma energia que ajuda a manter constância.",
+    source: "Avaliação Google de aluno Forbody",
+  },
+  {
+    quote: "A experiência fica melhor quando a unidade é limpa, bem equipada e a equipe está presente.",
+    source: "Avaliação Google de aluno Forbody",
+  },
+];
+
 const unitPreview = ["Triunfo", "Barão do Bananal", "Vila Virgínia", "Candido Portinari"];
 
 function safeText(value: string | null | undefined, fallback: string) {
@@ -288,6 +303,33 @@ export default async function HomePage() {
                   <h3 className="mt-4 text-2xl font-black uppercase leading-tight text-white">{card.title}</h3>
                   <p className="mt-4 text-sm leading-relaxed text-zinc-400">{card.description}</p>
                 </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-5 py-24 sm:px-8 lg:px-12">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+            <div>
+              <p className="border-l-4 border-red-600 pl-4 text-xs font-black uppercase tracking-[0.34em] text-red-500">Avaliações Google</p>
+              <h2 className="mt-6 text-4xl font-black uppercase leading-[0.92] tracking-[-0.06em] text-white sm:text-6xl">O que os alunos mais valorizam.</h2>
+            </div>
+            <div className="border border-white/10 bg-white/[0.03] p-6">
+              <p className="text-sm leading-relaxed text-zinc-300">
+                Depoimentos apresentados como resumo institucional de avaliações e comentários recebidos pelas unidades Forbody. A próxima etapa será importar avaliações reais com nome e texto exatamente como aparecem no Google.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-5 lg:grid-cols-3">
+            {fallbackTestimonials.map((testimonial) => (
+              <article key={testimonial.quote} className="relative overflow-hidden border border-white/10 bg-[#080808] p-8 transition duration-300 hover:-translate-y-2 hover:border-red-600/50 hover:shadow-[0_0_64px_rgba(220,38,38,0.14)]">
+                <div className="absolute inset-x-0 top-0 h-1 bg-red-600" />
+                <p className="text-sm font-black uppercase tracking-[0.3em] text-red-500">★★★★★</p>
+                <p className="mt-7 text-lg font-semibold leading-relaxed text-white">“{testimonial.quote}”</p>
+                <p className="mt-8 text-xs font-black uppercase tracking-[0.22em] text-zinc-500">{testimonial.source}</p>
               </article>
             ))}
           </div>
