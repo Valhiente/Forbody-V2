@@ -233,15 +233,15 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
 
             <div className="grid gap-6">
               {equipmentImages.length > 0 && (
-                <UnitGalleryCarousel title="Equipamentos da unidade" subtitle="Rolagem automática" items={equipmentImages} />
+                <UnitGalleryCarousel title="Equipamentos da unidade" subtitle="Rolagem automática" items={equipmentImages} fallbackImageUrl={unit.imageUrl} />
               )}
 
               {academyImages.length > 0 && (
-                <UnitGalleryCarousel title="Fotos da academia" subtitle="Ambiente Forbody" items={academyImages} />
+                <UnitGalleryCarousel title="Fotos da academia" subtitle="Ambiente Forbody" items={academyImages} fallbackImageUrl={unit.imageUrl} />
               )}
 
               {shopImages.length > 0 && (
-                <UnitGalleryCarousel title="ForbodyShop" subtitle="Produtos e artigos" items={shopImages} />
+                <UnitGalleryCarousel title="ForbodyShop" subtitle="Produtos e artigos" items={shopImages} fallbackImageUrl={unit.imageUrl} />
               )}
             </div>
           </div>
