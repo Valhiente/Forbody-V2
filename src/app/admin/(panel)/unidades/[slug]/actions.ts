@@ -44,6 +44,8 @@ export async function updateUnitAction(formData: FormData) {
     revalidatePath('/admin');
     revalidatePath('/admin/unidades');
     revalidatePath(`/admin/unidades/${slug}`);
+    revalidatePath('/unidades');
+    revalidatePath(`/unidades/${slug}`);
   }
 
   return result;
