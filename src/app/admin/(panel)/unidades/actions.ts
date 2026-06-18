@@ -75,6 +75,8 @@ export async function createUnitAction(formData: FormData) {
 
   revalidatePath('/admin');
   revalidatePath('/admin/unidades');
+  revalidatePath('/unidades');
+  revalidatePath(`/unidades/${slug}`);
   
   if (result.id) {
     redirect(`/admin/unidades/${slug}`);
