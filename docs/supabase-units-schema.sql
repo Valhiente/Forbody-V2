@@ -1,30 +1,10 @@
--- Ainda não executar automaticamente.
--- SQL inicial para futura migração manual no Supabase.
-
-CREATE TABLE units (
-        id TEXT PRIMARY KEY,
-            slug TEXT UNIQUE NOT NULL,
-                name TEXT NOT NULL,
-                    city TEXT,
-                        state TEXT,
-                            address TEXT,
-                                status TEXT,
-                                    evo_id INTEGER,
-                                        evo_unit_id INTEGER,
-                                            sales_url TEXT,
-                                                student_area_url TEXT,
-                                                    location_url TEXT,
-                                                        google_place_id TEXT,
-                                                            google_reviews_score NUMERIC,
-                                                                google_reviews_count INTEGER,
-                                                                    whatsapp TEXT,
-                                                                        instagram TEXT,
-                                                                            map_embed_url TEXT,
-                                                                                business_hours JSONB DEFAULT '[]',
-                                                                                    gallery_urls JSONB DEFAULT '[]',
-                                                                                        teachers JSONB DEFAULT '[]',
-                                                                                            created_at TIMESTAMPTZ DEFAULT NOW(),
-                                                                                                updated_at TIMESTAMPTZ DEFAULT NOW()
-                                                                                                );
-                                                                                                
-)
+-- OBSOLETO: este arquivo era um rascunho antigo e estava inconsistente.
+-- Não executar este arquivo no Supabase.
+--
+-- Schema canônico atual:
+-- src/20240101000000_create_units.sql
+--
+-- Motivo:
+-- 1. O rascunho anterior tinha fechamento extra de parêntese.
+-- 2. Duplicava a tabela units com risco de divergência.
+-- 3. O projeto agora usa como referência oficial o SQL versionado em src/.
