@@ -115,9 +115,10 @@ export const unitsData: Unit[] = [
     mapEmbedUrl: '',
     businessHours: defaultBusinessHours,
     galleryUrls: [
-      { category: 'academia', title: 'Fachada da unidade Triunfo', imageUrl: '/images/units/triunfo.jpg' },
-      { category: 'equipamentos', title: 'Equipamentos da unidade Triunfo', imageUrl: '/images/units/triunfo.jpg' },
-      { category: 'forbodyshop', title: 'Forbodyshop Triunfo', imageUrl: '/images/units/triunfo.jpg' },
+      { category: 'equipamentos', title: 'Equipamentos da unidade Triunfo 1', imageUrl: '/images/units/triunfo/equipamentos-1.jpg' },
+      { category: 'equipamentos', title: 'Equipamentos da unidade Triunfo 2', imageUrl: '/images/units/triunfo/equipamentos-2.jpg' },
+      { category: 'academia', title: 'Fotos da academia Triunfo', imageUrl: '/images/units/triunfo/academia-1.jpg' },
+      { category: 'forbodyshop', title: 'ForbodyShop Triunfo', imageUrl: '/images/units/triunfo/forbodyshop-1.jpg' },
     ],
     teachers: [],
     googlePlaceId: 'ChIJXZTIhbq_uZQRvvgjq08MRcc'
@@ -143,9 +144,9 @@ export const unitsData: Unit[] = [
     mapEmbedUrl: '',
     businessHours: defaultBusinessHours,
     galleryUrls: [
-      { category: 'academia', title: 'Fachada da unidade Barão do Bananal', imageUrl: '/images/units/barao-do-bananal.jpg' },
-      { category: 'equipamentos', title: 'Equipamentos da unidade Barão do Bananal', imageUrl: '/images/units/barao-do-bananal.jpg' },
-      { category: 'forbodyshop', title: 'Forbodyshop Barão do Bananal', imageUrl: '/images/units/barao-do-bananal.jpg' },
+      { category: 'equipamentos', title: 'Equipamentos da unidade Barão do Bananal', imageUrl: '/images/units/barao-do-bananal/equipamentos-1.jpg' },
+      { category: 'academia', title: 'Fotos da academia Barão do Bananal', imageUrl: '/images/units/barao-do-bananal/academia-1.jpg' },
+      { category: 'forbodyshop', title: 'ForbodyShop Barão do Bananal', imageUrl: '/images/units/barao-do-bananal/forbodyshop-1.jpg' },
     ],
     teachers: [],
     googlePlaceId: 'ChIJwVOXprm_uZQREFsgGHIf8y4'
@@ -171,9 +172,9 @@ export const unitsData: Unit[] = [
     mapEmbedUrl: '',
     businessHours: defaultBusinessHours,
     galleryUrls: [
-      { category: 'academia', title: 'Fachada da unidade Vila Virgínia', imageUrl: '/images/units/vila-virginia.jpg' },
-      { category: 'equipamentos', title: 'Equipamentos da unidade Vila Virgínia', imageUrl: '/images/units/vila-virginia.jpg' },
-      { category: 'forbodyshop', title: 'Forbodyshop Vila Virgínia', imageUrl: '/images/units/vila-virginia.jpg' },
+      { category: 'equipamentos', title: 'Equipamentos da unidade Vila Virgínia', imageUrl: '/images/units/vila-virginia/equipamentos-1.jpg' },
+      { category: 'academia', title: 'Fotos da academia Vila Virgínia', imageUrl: '/images/units/vila-virginia/academia-1.jpg' },
+      { category: 'forbodyshop', title: 'ForbodyShop Vila Virgínia', imageUrl: '/images/units/vila-virginia/forbodyshop-1.jpg' },
     ],
     teachers: [],
     googlePlaceId: 'ChIJjx8pfwC_uZQRt8MeuNMo8aA'
@@ -199,9 +200,9 @@ export const unitsData: Unit[] = [
     mapEmbedUrl: '',
     businessHours: defaultBusinessHours,
     galleryUrls: [
-      { category: 'academia', title: 'Fachada da unidade Portinari', imageUrl: '/images/units/portinari.jpg' },
-      { category: 'equipamentos', title: 'Equipamentos da unidade Portinari', imageUrl: '/images/units/portinari.jpg' },
-      { category: 'forbodyshop', title: 'Forbodyshop Portinari', imageUrl: '/images/units/portinari.jpg' },
+      { category: 'equipamentos', title: 'Equipamentos da unidade Portinari', imageUrl: '/images/units/portinari/equipamentos-1.jpg' },
+      { category: 'academia', title: 'Fotos da academia Portinari', imageUrl: '/images/units/portinari/academia-1.jpg' },
+      { category: 'forbodyshop', title: 'ForbodyShop Portinari', imageUrl: '/images/units/portinari/forbodyshop-1.jpg' },
     ],
     teachers: [],
     googlePlaceId: 'ChIJNegEDqjBuZQRsXJxQT9NpTo'
