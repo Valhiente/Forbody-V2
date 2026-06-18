@@ -8,9 +8,41 @@ type UnitGalleryCarouselProps = {
   title: string;
   subtitle: string;
   items: UnitGalleryItem[];
+  fallbackImageUrl?: string;
 };
 
-export default function UnitGalleryCarousel({ title, subtitle, items }: UnitGalleryCarouselProps) {
+type SafeGalleryImageProps = {
+  src: string;
+  alt: string;
+  sizes: string;
+  className: string;
+  fallbackImageUrl?: string;
+};
+
+function SafeGalleryImage({ src, alt, sizes, className, fallbackImageUrl }: SafeGalleryImageProps) {
+  const [currentSrc, setCurrentSrc] = useState(src);
+
+  useEffect(() => {
+    setCurrentSrc(src);
+  }, [src]);
+
+  return (
+    <Image
+      src={currentSrc}
+      alt={alt}
+      fill
+      sizes={sizes}
+      className={className}
+      onError={() => {
+        if (fallbackImageUrl && currentSrc !== fallbackImageUrl) {
+          setCurrentSrc(fallbackImageUrl);
+        }
+      }}
+    />
+  );
+}
+
+export default function UnitGalleryCarousel({ title, subtitle, items, fallbackImageUrl }: UnitGalleryCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
   const [expandedItem, setExpandedItem] = useState<UnitGalleryItem | null>(null);
@@ -56,12 +88,12 @@ export default function UnitGalleryCarousel({ title, subtitle, items }: UnitGall
         onClick={() => setExpandedItem(activeItem)}
         className="group relative block h-[300px] w-full overflow-hidden text-left sm:h-[380px]"
       >
-        <Image
+        <SafeGalleryImage
           src={activeItem.imageUrl}
           alt={activeItem.title}
-          fill
           sizes="(min-width: 1024px) 720px, 100vw"
           className="object-cover transition duration-700 group-hover:scale-105"
+          fallbackImageUrl={fallbackImageUrl}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
         <div className="absolute bottom-5 left-5 right-5">
@@ -79,7 +111,13 @@ export default function UnitGalleryCarousel({ title, subtitle, items }: UnitGall
               onClick={() => setActiveIndex(index)}
               className={`relative h-20 w-28 shrink-0 overflow-hidden rounded-2xl border transition ${activeIndex === index ? 'border-red-600 shadow-[0_0_24px_rgba(239,68,68,0.35)]' : 'border-white/10 opacity-70 hover:opacity-100'}`}
             >
-              <Image src={item.imageUrl} alt={item.title} fill sizes="112px" className="object-cover" />
+              <SafeGalleryImage
+                src={item.imageUrl}
+                alt={item.title}
+                sizes="112px"
+                className="object-cover"
+                fallbackImageUrl={fallbackImageUrl}
+              />
             </button>
           ))}
         </div>
@@ -95,7 +133,13 @@ export default function UnitGalleryCarousel({ title, subtitle, items }: UnitGall
               className="group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] text-left transition hover:border-red-600/50"
             >
               <div className="relative h-48 overflow-hidden">
-                <Image src={item.imageUrl} alt={item.title} fill sizes="(min-width: 1024px) 33vw, 100vw" className="object-cover transition duration-500 group-hover:scale-105" />
+                <SafeGalleryImage
+                  src={item.imageUrl}
+                  alt={item.title}
+                  sizes="(min-width: 1024px) 33vw, 100vw"
+                  className="object-cover transition duration-500 group-hover:scale-105"
+                  fallbackImageUrl={fallbackImageUrl}
+                />
               </div>
               <p className="p-4 text-sm font-bold text-slate-200">{item.title}</p>
             </button>
@@ -115,7 +159,13 @@ export default function UnitGalleryCarousel({ title, subtitle, items }: UnitGall
           </button>
 
           <div className="relative h-[78vh] w-full max-w-6xl overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a]">
-            <Image src={expandedItem.imageUrl} alt={expandedItem.title} fill sizes="100vw" className="object-contain" />
+            <SafeGalleryImage
+              src={expandedItem.imageUrl}
+              alt={expandedItem.title}
+              sizes="100vw"
+              className="object-contain"
+              fallbackImageUrl={fallbackImageUrl}
+            />
           </div>
         </div>
       )}
