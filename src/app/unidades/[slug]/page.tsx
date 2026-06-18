@@ -1,7 +1,9 @@
 import React from 'react';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import type { Unit } from '@/app/index';
 import { unitsData } from '@/app/data';
+import UnitBusinessHours from '@/components/units/UnitBusinessHours';
 import {
   canShowSalesCta,
   getUnitStatus,
@@ -19,6 +21,12 @@ function whatsappLink(phone?: string) {
 
   return `https://wa.me/${digits}`;
 }
+
+const galleryLabels = {
+  academia: 'Fotos da academia',
+  equipamentos: 'Fotos dos equipamentos',
+  recepcao: 'Fotos da recepção',
+};
 
 export async function generateStaticParams() {
   return unitsData
@@ -58,39 +66,59 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
 
   const unitWhatsappLink = whatsappLink(unit.whatsapp);
   const showSalesCta = canShowSalesCta(unit);
+  const gallery = unit.galleryUrls || [];
 
   return (
     <main className="min-h-screen bg-[#050505] text-white">
       <section className="pt-20 pb-16 px-6 sm:px-8 lg:px-12">
-        <div className="mx-auto max-w-6xl rounded-[2rem] border border-white/10 bg-[#0a0a0a] p-8 md:p-12 shadow-xl shadow-red-600/10">
-          <div className="flex flex-col gap-6">
-            <span className="inline-flex items-center rounded-full border border-red-600/20 bg-red-600/10 px-4 py-2 text-xs font-black uppercase tracking-[0.36em] text-red-400">UNIDADE FORBODY</span>
-            <div className="space-y-4">
-              <h1 className="text-4xl font-black leading-tight sm:text-5xl">Forbody {unit.name}</h1>
-              <p className="max-w-3xl text-base text-slate-300 sm:text-lg">Treino forte, estrutura completa e contato direto com a unidade em poucos cliques.</p>
+        <div className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a] shadow-xl shadow-red-600/10 lg:grid lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="p-8 md:p-12">
+            <div className="flex flex-col gap-6">
+              <span className="inline-flex w-fit items-center rounded-full border border-red-600/20 bg-red-600/10 px-4 py-2 text-xs font-black uppercase tracking-[0.36em] text-red-400">UNIDADE FORBODY</span>
+              <div className="space-y-4">
+                <h1 className="text-4xl font-black leading-tight sm:text-5xl">Forbody {unit.name}</h1>
+                <p className="max-w-3xl text-base text-slate-300 sm:text-lg">Treino forte, estrutura completa e contato direto com a unidade em poucos cliques.</p>
 
-              <span className={`inline-flex rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] ${getUnitStatusBadgeClasses(unit.status)}`}>
-                {getUnitStatusLabel(unit.status)}
-              </span>
+                <span className={`inline-flex rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] ${getUnitStatusBadgeClasses(unit.status)}`}>
+                  {getUnitStatusLabel(unit.status)}
+                </span>
 
-              {isMaintenance && (
-                <div className="rounded-2xl border border-orange-600/20 bg-orange-600/10 px-5 py-4 text-sm text-orange-200">
-                  Esta unidade está temporariamente em manutenção.
-                </div>
-              )}
+                {isMaintenance && (
+                  <div className="rounded-2xl border border-orange-600/20 bg-orange-600/10 px-5 py-4 text-sm text-orange-200">
+                    Esta unidade está temporariamente em manutenção.
+                  </div>
+                )}
 
-              {isComingSoon && (
-                <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-slate-300">
-                  Essa unidade será inaugurada em breve. Acompanhe as novidades da Forbody.
-                </div>
-              )}
+                {isComingSoon && (
+                  <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-slate-300">
+                    Essa unidade será inaugurada em breve. Acompanhe as novidades da Forbody.
+                  </div>
+                )}
+              </div>
             </div>
           </div>
+
+          {unit.imageUrl && (
+            <div className="relative min-h-[320px] border-t border-white/10 lg:border-l lg:border-t-0">
+              <Image
+                src={unit.imageUrl}
+                alt={`Fachada da unidade Forbody ${unit.name}`}
+                fill
+                sizes="(min-width: 1024px) 500px, 100vw"
+                className="object-cover opacity-80"
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+              <div className="absolute bottom-6 left-6 rounded-full border border-red-600/40 bg-black/70 px-5 py-3 text-xs font-black uppercase tracking-[0.22em] text-red-300 backdrop-blur-xl">
+                {unit.city}, {unit.state}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
       <section className="px-6 sm:px-8 lg:px-12 pb-16">
-        <div className="mx-auto grid gap-10 max-w-6xl lg:grid-cols-[1.4fr_0.9fr]">
+        <div className="mx-auto grid gap-10 max-w-6xl lg:grid-cols-[1.35fr_0.95fr]">
           <div className="space-y-8">
             <div className="rounded-[2rem] border border-white/10 bg-[#0a0a0a] p-8 shadow-sm shadow-black/20">
               <div className="flex items-start gap-4">
@@ -102,6 +130,8 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
                 </div>
               </div>
             </div>
+
+            {!isComingSoon && !isMaintenance && <UnitBusinessHours hours={unit.businessHours} />}
 
             <div className="grid gap-4 sm:grid-cols-3">
               <div className="rounded-[1.75rem] border border-white/10 bg-[#111111] p-6 text-center">
@@ -163,7 +193,7 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
                     rel="noopener noreferrer"
                     className="inline-flex w-full items-center justify-center rounded-full bg-white/5 px-6 py-4 text-sm font-semibold uppercase tracking-[0.16em] text-slate-200 transition hover:bg-white/10"
                   >
-                    Ver Localização
+                    Como chegar
                   </a>
                 )}
 
@@ -193,6 +223,39 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
           </div>
         </div>
       </section>
+
+      {gallery.length > 0 && (
+        <section className="px-6 sm:px-8 lg:px-12 pb-20">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-10 max-w-3xl">
+              <p className="text-sm uppercase tracking-[0.3em] text-red-500">Galeria da unidade</p>
+              <h2 className="mt-4 text-3xl font-black text-white sm:text-4xl">Conheça a Forbody {unit.name}</h2>
+              <p className="mt-4 text-sm leading-relaxed text-slate-400">Fotos da academia, equipamentos e recepção. Conforme novas imagens forem adicionadas, esta galeria será atualizada.</p>
+            </div>
+
+            <div className="grid gap-5 md:grid-cols-3">
+              {gallery.map((item) => (
+                <article key={`${item.category}-${item.title}`} className="group overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a] shadow-sm shadow-black/20 transition hover:-translate-y-1 hover:border-red-600/50 hover:shadow-[0_0_42px_rgba(239,68,68,0.2)]">
+                  <div className="relative min-h-[260px] overflow-hidden">
+                    <Image
+                      src={item.imageUrl}
+                      alt={item.title}
+                      fill
+                      sizes="(min-width: 768px) 33vw, 100vw"
+                      className="object-cover transition duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent" />
+                    <div className="absolute bottom-5 left-5 right-5">
+                      <p className="text-xs font-black uppercase tracking-[0.2em] text-red-400">{galleryLabels[item.category]}</p>
+                      <h3 className="mt-2 text-xl font-black text-white">{item.title}</h3>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="px-6 sm:px-8 lg:px-12 pb-20">
         <div className="mx-auto max-w-6xl rounded-[2rem] border border-white/10 bg-[#0a0a0a] p-10 shadow-xl shadow-red-600/10">
