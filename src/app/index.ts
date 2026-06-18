@@ -44,6 +44,17 @@ export interface Plan {
   checkoutUrl?: string;
 }
 
+export interface UnitGalleryItem {
+  category: 'academia' | 'equipamentos' | 'recepcao';
+  title: string;
+  imageUrl: string;
+}
+
+export interface UnitBusinessHour {
+  day: string;
+  hours: string;
+}
+
 export interface Unit {
   id: string;
   slug: string;
@@ -65,11 +76,8 @@ export interface Unit {
   locationUrl?: string;
   status?: 'active' | 'coming_soon' | 'maintenance' | 'hidden';
   googlePlaceId?: string | null;
-  businessHours?: {
-    day: string;
-    hours: string;
-  }[];
-  galleryUrls?: string[];
+  businessHours?: UnitBusinessHour[];
+  galleryUrls?: UnitGalleryItem[];
   teachers?: {
     name: string;
     role: string;
