@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import type { Unit } from '@/app/index';
 import { unitsData } from '@/app/data';
 import UnitBusinessHours from '@/components/units/UnitBusinessHours';
+import UnitGalleryCarousel from '@/components/units/UnitGalleryCarousel';
 import {
   canShowSalesCta,
   getUnitStatus,
@@ -21,12 +22,6 @@ function whatsappLink(phone?: string) {
 
   return `https://wa.me/${digits}`;
 }
-
-const galleryLabels = {
-  academia: 'Fotos da academia',
-  equipamentos: 'Fotos dos equipamentos',
-  recepcao: 'Fotos da recepção',
-};
 
 export async function generateStaticParams() {
   return unitsData
@@ -67,6 +62,9 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
   const unitWhatsappLink = whatsappLink(unit.whatsapp);
   const showSalesCta = canShowSalesCta(unit);
   const gallery = unit.galleryUrls || [];
+  const equipmentImages = gallery.filter((item) => item.category === 'equipamentos');
+  const academyImages = gallery.filter((item) => item.category === 'academia');
+  const shopImages = gallery.filter((item) => item.category === 'forbodyshop');
 
   return (
     <main className="min-h-screen bg-[#050505] text-white">
@@ -230,28 +228,21 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
             <div className="mb-10 max-w-3xl">
               <p className="text-sm uppercase tracking-[0.3em] text-red-500">Galeria da unidade</p>
               <h2 className="mt-4 text-3xl font-black text-white sm:text-4xl">Conheça a Forbody {unit.name}</h2>
-              <p className="mt-4 text-sm leading-relaxed text-slate-400">Fotos da academia, equipamentos e recepção. Conforme novas imagens forem adicionadas, esta galeria será atualizada.</p>
+              <p className="mt-4 text-sm leading-relaxed text-slate-400">Fotos da academia, equipamentos e ForbodyShop. Conforme novas imagens forem adicionadas, esta galeria será atualizada.</p>
             </div>
 
-            <div className="grid gap-5 md:grid-cols-3">
-              {gallery.map((item) => (
-                <article key={`${item.category}-${item.title}`} className="group overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a] shadow-sm shadow-black/20 transition hover:-translate-y-1 hover:border-red-600/50 hover:shadow-[0_0_42px_rgba(239,68,68,0.2)]">
-                  <div className="relative min-h-[260px] overflow-hidden">
-                    <Image
-                      src={item.imageUrl}
-                      alt={item.title}
-                      fill
-                      sizes="(min-width: 768px) 33vw, 100vw"
-                      className="object-cover transition duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent" />
-                    <div className="absolute bottom-5 left-5 right-5">
-                      <p className="text-xs font-black uppercase tracking-[0.2em] text-red-400">{galleryLabels[item.category]}</p>
-                      <h3 className="mt-2 text-xl font-black text-white">{item.title}</h3>
-                    </div>
-                  </div>
-                </article>
-              ))}
+            <div className="grid gap-6">
+              {equipmentImages.length > 0 && (
+                <UnitGalleryCarousel title="Equipamentos da unidade" subtitle="Rolagem automática" items={equipmentImages} />
+              )}
+
+              {academyImages.length > 0 && (
+                <UnitGalleryCarousel title="Fotos da academia" subtitle="Ambiente Forbody" items={academyImages} />
+              )}
+
+              {shopImages.length > 0 && (
+                <UnitGalleryCarousel title="ForbodyShop" subtitle="Produtos e artigos" items={shopImages} />
+              )}
             </div>
           </div>
         </section>
