@@ -42,28 +42,28 @@ export const unitsData: Unit[] = [
       { category: 'galeria', title: 'Galeria Triunfo 8', imageUrl: '/images/units/triunfo/galeria/galeria-8.jpg' },
       { category: 'galeria', title: 'Galeria Triunfo 9', imageUrl: '/images/units/triunfo/galeria/galeria-9.jpg' },
       { category: 'forbodyshop', title: 'ForbodyShop Triunfo', imageUrl: '/images/units/triunfo/forbodyshop/forbodyshop-1.jpg' },
-    ], teachers: [], googlePlaceId: ''
+    ], teachers: [], googlePlaceId: 'ChIJXZTIhbq_uZQRvvgjq08MRcc'
   },
   {
     id: 'u-barao', slug: 'barao-do-bananal', name: 'Barão do Bananal', city: 'Ribeirão Preto', state: 'SP', evoId: 2, evoUnitId: 2, salesUrl: '#', studentAreaUrl: '#', locationUrl: '#', status: 'active', googleReviewsScore: 4.6, googleReviewsCount: 30, address: 'Av. Barão do Bananal, 820 - Chácara São João, Ribeirão Preto - SP', whatsapp: '5516997122560', imageUrl: '/images/units/barao-do-bananal.jpg', instagram: '@forbody.barao', mapEmbedUrl: '', businessHours: defaultBusinessHours,
     galleryUrls: [
       { category: 'galeria', title: 'Galeria Barão do Bananal', imageUrl: '/images/units/barao-do-bananal/galeria/galeria-1.jpg' },
       { category: 'forbodyshop', title: 'ForbodyShop Barão do Bananal', imageUrl: '/images/units/barao-do-bananal/forbodyshop/forbodyshop-1.jpg' },
-    ], teachers: [], googlePlaceId: ''
+    ], teachers: [], googlePlaceId: 'ChIJwVOXprm_uZQREFsgGHIf8y4'
   },
   {
     id: 'u-vila-virginia', slug: 'vila-virginia', name: 'Vila Virgínia', city: 'Ribeirão Preto', state: 'SP', evoId: 3, evoUnitId: 3, salesUrl: '#', studentAreaUrl: '#', locationUrl: '#', status: 'active', googleReviewsScore: 4.5, googleReviewsCount: 25, address: 'R. Franco da Rocha, 1370 - Vila Virginia, Ribeirão Preto - SP', whatsapp: '5516992238286', imageUrl: '/images/units/vila-virginia.jpg', instagram: '@forbody.vilavirg', mapEmbedUrl: '', businessHours: defaultBusinessHours,
     galleryUrls: [
       { category: 'galeria', title: 'Galeria Vila Virgínia', imageUrl: '/images/units/vila-virginia/galeria/galeria-1.jpg' },
       { category: 'forbodyshop', title: 'ForbodyShop Vila Virgínia', imageUrl: '/images/units/vila-virginia/forbodyshop/forbodyshop-1.jpg' },
-    ], teachers: [], googlePlaceId: ''
+    ], teachers: [], googlePlaceId: 'ChIJjx8pfwC_uZQRt8MeuNMo8aA'
   },
   {
     id: 'u-portinari', slug: 'portinari', name: 'Portinari', city: 'Ribeirão Preto', state: 'SP', evoId: 4, evoUnitId: 4, salesUrl: '#', studentAreaUrl: '#', locationUrl: '#', status: 'active', googleReviewsScore: 4.4, googleReviewsCount: 18, address: 'Av. Nelson Ferreira De Melo, 365 - Candido Portinari, Ribeirão Preto - SP', whatsapp: '5516997102560', imageUrl: '/images/units/portinari.jpg', instagram: '@forbody.portinari', mapEmbedUrl: '', businessHours: defaultBusinessHours,
     galleryUrls: [
       { category: 'galeria', title: 'Galeria Portinari', imageUrl: '/images/units/portinari/galeria/galeria-1.jpg' },
       { category: 'forbodyshop', title: 'ForbodyShop Portinari', imageUrl: '/images/units/portinari/forbodyshop/forbodyshop-1.jpg' },
-    ], teachers: [], googlePlaceId: ''
+    ], teachers: [], googlePlaceId: 'ChIJNegEDqjBuZQRsXJxQT9NpTo'
   },
   { id: 'u-nova-rp-1', slug: 'nova-unidade-ribeirao-preto-1', name: 'Nova Unidade Ribeirão Preto 1', city: 'Ribeirão Preto', state: 'SP', evoId: 0, salesUrl: '#', studentAreaUrl: '#', status: 'coming_soon', googleReviewsScore: 0, googleReviewsCount: 0, address: 'Endereço em breve', whatsapp: '', instagram: '', mapEmbedUrl: '', businessHours: [], galleryUrls: [], teachers: [], locationUrl: '#', googlePlaceId: '' },
   { id: 'u-nova-rp-2', slug: 'nova-unidade-ribeirao-preto-2', name: 'Nova Unidade Ribeirão Preto 2', city: 'Ribeirão Preto', state: 'SP', evoId: 0, salesUrl: '#', studentAreaUrl: '#', status: 'coming_soon', googleReviewsScore: 0, googleReviewsCount: 0, address: 'Endereço em breve', whatsapp: '', instagram: '', mapEmbedUrl: '', businessHours: [], galleryUrls: [], teachers: [], locationUrl: '#', googlePlaceId: '' },
