@@ -29,6 +29,7 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
   const googleData = await fetchGooglePlaceReviews(unit.googlePlaceId);
   const googleScore = googleData.rating || unit.googleReviewsScore;
   const googleReviewsCount = googleData.reviewsCount || unit.googleReviewsCount;
+  const displayReviews = googleData.reviews.length > 0 ? googleData.reviews : unit.googleReviews || [];
 
   return (
     <main className="min-h-screen bg-[#050505] text-white">
@@ -39,8 +40,8 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
             <h1 className="mt-6 text-4xl font-black leading-tight sm:text-5xl">Forbody {unit.name}</h1>
             <p className="mt-5 max-w-3xl text-base text-slate-300 sm:text-lg">Treino forte, estrutura completa e informações da unidade em poucos cliques.</p>
             <span className={`mt-6 inline-flex rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] ${getUnitStatusBadgeClasses(unit.status)}`}>{getUnitStatusLabel(unit.status)}</span>
-            {isMaintenance && <p className="mt-5 rounded-2xl border border-orange-600/20 bg-orange-600/10 px-5 py-4 text-sm text-orange-200">Esta unidade esta temporariamente em manutencao.</p>}
-            {isComingSoon && <p className="mt-5 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-slate-300">Essa unidade sera inaugurada em breve.</p>}
+            {isMaintenance && <p className="mt-5 rounded-2xl border border-orange-600/20 bg-orange-600/10 px-5 py-4 text-sm text-orange-200">Esta unidade está temporariamente em manutenção.</p>}
+            {isComingSoon && <p className="mt-5 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-slate-300">Essa unidade será inaugurada em breve.</p>}
           </div>
 
           {unit.imageUrl && (
@@ -57,7 +58,7 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
         <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.35fr_0.95fr]">
           <div className="space-y-8">
             <div className="rounded-[2rem] border border-white/10 bg-[#0a0a0a] p-8 shadow-sm shadow-black/20">
-              <p className="text-sm uppercase tracking-[0.26em] text-slate-500">Localizacao</p>
+              <p className="text-sm uppercase tracking-[0.26em] text-slate-500">Localização</p>
               <h2 className="mt-3 text-2xl font-black text-white">{unit.address}</h2>
               <p className="mt-3 text-sm text-slate-400">{unit.city}, {unit.state}</p>
             </div>
@@ -66,7 +67,7 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
 
           {googleScore > 0 && googleReviewsCount > 0 && (
             <div className="rounded-[2rem] border border-white/10 bg-[#111111] p-7 shadow-sm shadow-black/20">
-              <p className="text-sm uppercase tracking-[0.24em] text-slate-500">Avaliacoes</p>
+              <p className="text-sm uppercase tracking-[0.24em] text-slate-500">Avaliações</p>
               <div className="mt-4 flex items-center justify-between gap-4">
                 <p className="text-5xl font-black text-white">{googleScore.toFixed(1)}</p>
                 <div className="rounded-[1.5rem] bg-red-600/10 px-4 py-3 text-right">
@@ -74,12 +75,7 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
                   <p className="mt-2 text-lg font-bold text-white">{googleReviewsCount} reviews</p>
                 </div>
               </div>
-              <GoogleReviewsLoop reviews={googleData.reviews} googleUrl={unit.locationUrl} />
-              {!googleData.hasApiKey && (
-                <p className="mt-4 text-xs leading-relaxed text-orange-300">
-                  Chave GOOGLE_PLACES_API_KEY nao encontrada no ambiente. A nota estatica permanece exibida, mas os comentarios reais dependem dessa variavel.
-                </p>
-              )}
+              <GoogleReviewsLoop reviews={displayReviews} googleUrl={unit.locationUrl} />
             </div>
           )}
         </div>
@@ -90,8 +86,8 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
           <div className="mx-auto max-w-6xl">
             <div className="mb-10 max-w-3xl">
               <p className="text-sm uppercase tracking-[0.3em] text-red-500">Galeria da unidade</p>
-              <h2 className="mt-4 text-3xl font-black text-white sm:text-4xl">Conheca a Forbody {unit.name}</h2>
-              <p className="mt-4 text-sm leading-relaxed text-slate-400">Galeria da unidade e ForbodyShop. Conforme novas imagens forem adicionadas, esta area sera atualizada.</p>
+              <h2 className="mt-4 text-3xl font-black text-white sm:text-4xl">Conheça a Forbody {unit.name}</h2>
+              <p className="mt-4 text-sm leading-relaxed text-slate-400">Galeria da unidade e ForbodyShop. Conforme novas imagens forem adicionadas, esta área será atualizada.</p>
             </div>
 
             <div className="grid gap-6">
