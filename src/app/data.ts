@@ -35,6 +35,12 @@ export const unitsData: Unit[] = [
       { category: 'galeria', title: 'Galeria Triunfo 1', imageUrl: '/images/units/triunfo/galeria/galeria-1.jpg' },
       { category: 'galeria', title: 'Galeria Triunfo 2', imageUrl: '/images/units/triunfo/galeria/galeria-2.jpg' },
       { category: 'galeria', title: 'Galeria Triunfo 3', imageUrl: '/images/units/triunfo/galeria/galeria-3.jpg' },
+      { category: 'galeria', title: 'Galeria Triunfo 4', imageUrl: '/images/units/triunfo/galeria/galeria-4.jpg' },
+      { category: 'galeria', title: 'Galeria Triunfo 5', imageUrl: '/images/units/triunfo/galeria/galeria-5.jpg' },
+      { category: 'galeria', title: 'Galeria Triunfo 6', imageUrl: '/images/units/triunfo/galeria/galeria-6.jpg' },
+      { category: 'galeria', title: 'Galeria Triunfo 7', imageUrl: '/images/units/triunfo/galeria/galeria-7.jpg' },
+      { category: 'galeria', title: 'Galeria Triunfo 8', imageUrl: '/images/units/triunfo/galeria/galeria-8.jpg' },
+      { category: 'galeria', title: 'Galeria Triunfo 9', imageUrl: '/images/units/triunfo/galeria/galeria-9.jpg' },
       { category: 'forbodyshop', title: 'ForbodyShop Triunfo', imageUrl: '/images/units/triunfo/forbodyshop/forbodyshop-1.jpg' },
     ], teachers: [], googlePlaceId: ''
   },
