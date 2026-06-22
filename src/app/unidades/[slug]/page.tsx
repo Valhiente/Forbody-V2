@@ -2,8 +2,10 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import type { Unit } from '@/app/index';
 import { unitsData } from '@/app/data';
+import { fetchGooglePlaceReviews } from '@/app/google';
 import UnitBusinessHours from '@/components/units/UnitBusinessHours';
 import UnitGalleryCarousel from '@/components/units/UnitGalleryCarousel';
+import GoogleReviewsLoop from '@/components/units/GoogleReviewsLoop';
 import { getUnitStatus, getUnitStatusBadgeClasses, getUnitStatusLabel, isPubliclyVisible } from '@/utils/unit-status';
 
 export async function generateStaticParams() {
@@ -24,6 +26,9 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
   const gallery = unit.galleryUrls || [];
   const galleryImages = gallery.filter((item) => item.category === 'galeria');
   const shopImages = gallery.filter((item) => item.category === 'forbodyshop');
+  const googleData = await fetchGooglePlaceReviews(unit.googlePlaceId);
+  const googleScore = googleData.rating || unit.googleReviewsScore;
+  const googleReviewsCount = googleData.reviewsCount || unit.googleReviewsCount;
 
   return (
     <main className="min-h-screen bg-[#050505] text-white">
@@ -59,16 +64,22 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
             {!isComingSoon && !isMaintenance && <UnitBusinessHours hours={unit.businessHours} />}
           </div>
 
-          {unit.googleReviewsScore > 0 && unit.googleReviewsCount > 0 && (
+          {googleScore > 0 && googleReviewsCount > 0 && (
             <div className="rounded-[2rem] border border-white/10 bg-[#111111] p-7 shadow-sm shadow-black/20">
               <p className="text-sm uppercase tracking-[0.24em] text-slate-500">Avaliacoes</p>
               <div className="mt-4 flex items-center justify-between gap-4">
-                <p className="text-5xl font-black text-white">{unit.googleReviewsScore.toFixed(1)}</p>
+                <p className="text-5xl font-black text-white">{googleScore.toFixed(1)}</p>
                 <div className="rounded-[1.5rem] bg-red-600/10 px-4 py-3 text-right">
                   <p className="text-xs uppercase tracking-[0.2em] text-red-300">Google</p>
-                  <p className="mt-2 text-lg font-bold text-white">{unit.googleReviewsCount} reviews</p>
+                  <p className="mt-2 text-lg font-bold text-white">{googleReviewsCount} reviews</p>
                 </div>
               </div>
+              <GoogleReviewsLoop reviews={googleData.reviews} googleUrl={unit.locationUrl} />
+              {!googleData.hasApiKey && (
+                <p className="mt-4 text-xs leading-relaxed text-orange-300">
+                  Chave GOOGLE_PLACES_API_KEY nao encontrada no ambiente. A nota estatica permanece exibida, mas os comentarios reais dependem dessa variavel.
+                </p>
+              )}
             </div>
           )}
         </div>
