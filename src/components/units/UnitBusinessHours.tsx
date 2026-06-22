@@ -102,7 +102,8 @@ export default function UnitBusinessHours({ hours }: { hours?: BusinessHour[] })
           <h2 className={`mt-3 text-3xl font-black uppercase ${status.isOpen ? 'text-red-500' : 'text-white'}`}>{status.title}</h2>
           <p className="mt-2 text-sm text-slate-300">{status.message}</p>
         </div>
-        <div className={`rounded-full border px-5 py-3 text-xs font-black uppercase tracking-[0.2em] ${status.isOpen ? 'border-red-600/40 bg-red-600/15 text-red-300' : 'border-white/10 bg-white/5 text-slate-300'}`}>
+        <div className={`relative inline-flex w-fit items-center gap-3 overflow-hidden rounded-full border px-5 py-3 text-xs font-black uppercase tracking-[0.2em] ${status.isOpen ? 'animate-pulse border-red-500 bg-red-600/20 text-red-100 shadow-[0_0_28px_rgba(239,68,68,0.45)]' : 'border-white/10 bg-white/5 text-slate-300'}`}>
+          <span className={`h-2.5 w-2.5 rounded-full ${status.isOpen ? 'animate-ping bg-red-400' : 'bg-slate-500'}`} />
           {status.isOpen ? 'Aberta' : 'Fechada'}
         </div>
       </div>
@@ -128,9 +129,17 @@ export default function UnitBusinessHours({ hours }: { hours?: BusinessHour[] })
         })}
       </div>
 
-      <p className="mt-5 text-xs leading-relaxed text-slate-500">
-        Feriados: 08:00 às 13:00. Horários cadastrados manualmente pela equipe Forbody.
-      </p>
+      <div className="mt-6 rounded-2xl border border-red-600/30 bg-gradient-to-r from-red-600/15 via-red-600/5 to-transparent p-4 shadow-[0_0_24px_rgba(239,68,68,0.14)]">
+        <div className="flex items-start gap-3">
+          <span className="mt-1 flex h-3 w-3 shrink-0 rounded-full bg-red-500 shadow-[0_0_18px_rgba(239,68,68,0.9)]" />
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-red-300">Atenção aos feriados</p>
+            <p className="mt-2 text-sm font-semibold leading-relaxed text-white">
+              Feriados: <span className="text-red-300">08:00 às 13:00</span>. Horários cadastrados manualmente pela equipe Forbody.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
