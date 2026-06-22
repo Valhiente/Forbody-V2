@@ -68,11 +68,11 @@ export default function UnitGalleryCarousel({ title, subtitle, items, fallbackIm
 
   return (
     <article className="overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a] shadow-sm shadow-black/20">
-      <div className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.24em] text-red-500">{subtitle}</p>
           <h3 className="mt-2 text-2xl font-black text-white">{title}</h3>
-          <p className="mt-2 text-sm text-slate-500">Rolagem automática. Clique na imagem para expandir.</p>
+          <p className="mt-2 text-sm text-slate-500">Formato feed Instagram. Clique na imagem para expandir.</p>
         </div>
         <button
           type="button"
@@ -83,38 +83,40 @@ export default function UnitGalleryCarousel({ title, subtitle, items, fallbackIm
         </button>
       </div>
 
-      <button
-        type="button"
-        onClick={() => setExpandedItem(activeItem)}
-        className="group relative block h-[300px] w-full overflow-hidden text-left sm:h-[380px]"
-      >
-        <SafeGalleryImage
-          src={activeItem.imageUrl}
-          alt={activeItem.title}
-          sizes="(min-width: 1024px) 720px, 100vw"
-          className="object-cover transition duration-700 group-hover:scale-105"
-          fallbackImageUrl={fallbackImageUrl}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-        <div className="absolute bottom-5 left-5 right-5">
-          <p className="text-xs font-black uppercase tracking-[0.2em] text-red-400">{activeIndex + 1} / {safeItems.length}</p>
-          <h4 className="mt-2 text-2xl font-black text-white">{activeItem.title}</h4>
-        </div>
-      </button>
+      <div className="px-5 pb-5">
+        <button
+          type="button"
+          onClick={() => setExpandedItem(activeItem)}
+          className="group relative mx-auto block aspect-square w-full max-w-[520px] overflow-hidden rounded-[1.75rem] border border-white/10 bg-black text-left shadow-[0_18px_48px_rgba(0,0,0,0.35)]"
+        >
+          <SafeGalleryImage
+            src={activeItem.imageUrl}
+            alt={activeItem.title}
+            sizes="(min-width: 1024px) 520px, 92vw"
+            className="object-cover transition duration-700 group-hover:scale-105"
+            fallbackImageUrl={fallbackImageUrl}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/15 to-transparent" />
+          <div className="absolute bottom-5 left-5 right-5">
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-red-400">{activeIndex + 1} / {safeItems.length}</p>
+            <h4 className="mt-2 text-xl font-black text-white sm:text-2xl">{activeItem.title}</h4>
+          </div>
+        </button>
+      </div>
 
       {safeItems.length > 1 && (
-        <div className="flex gap-2 overflow-x-auto p-5">
+        <div className="flex gap-2 overflow-x-auto border-t border-white/10 p-5">
           {safeItems.map((item, index) => (
             <button
               key={`${item.imageUrl}-${index}`}
               type="button"
               onClick={() => setActiveIndex(index)}
-              className={`relative h-20 w-28 shrink-0 overflow-hidden rounded-2xl border transition ${activeIndex === index ? 'border-red-600 shadow-[0_0_24px_rgba(239,68,68,0.35)]' : 'border-white/10 opacity-70 hover:opacity-100'}`}
+              className={`relative aspect-square h-20 shrink-0 overflow-hidden rounded-2xl border transition ${activeIndex === index ? 'border-red-600 shadow-[0_0_24px_rgba(239,68,68,0.35)]' : 'border-white/10 opacity-70 hover:opacity-100'}`}
             >
               <SafeGalleryImage
                 src={item.imageUrl}
                 alt={item.title}
-                sizes="112px"
+                sizes="80px"
                 className="object-cover"
                 fallbackImageUrl={fallbackImageUrl}
               />
@@ -124,7 +126,7 @@ export default function UnitGalleryCarousel({ title, subtitle, items, fallbackIm
       )}
 
       {isExpanded && (
-        <div className="grid gap-4 border-t border-white/10 p-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 border-t border-white/10 p-5 sm:grid-cols-2 lg:grid-cols-4">
           {safeItems.map((item, index) => (
             <button
               type="button"
@@ -132,11 +134,11 @@ export default function UnitGalleryCarousel({ title, subtitle, items, fallbackIm
               key={`${item.title}-${index}`}
               className="group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] text-left transition hover:border-red-600/50"
             >
-              <div className="relative h-48 overflow-hidden">
+              <div className="relative aspect-square overflow-hidden">
                 <SafeGalleryImage
                   src={item.imageUrl}
                   alt={item.title}
-                  sizes="(min-width: 1024px) 33vw, 100vw"
+                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
                   className="object-cover transition duration-500 group-hover:scale-105"
                   fallbackImageUrl={fallbackImageUrl}
                 />
@@ -158,11 +160,11 @@ export default function UnitGalleryCarousel({ title, subtitle, items, fallbackIm
             Fechar
           </button>
 
-          <div className="relative h-[78vh] w-full max-w-6xl overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a]">
+          <div className="relative aspect-square w-full max-w-[760px] overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a]">
             <SafeGalleryImage
               src={expandedItem.imageUrl}
               alt={expandedItem.title}
-              sizes="100vw"
+              sizes="760px"
               className="object-contain"
               fallbackImageUrl={fallbackImageUrl}
             />
