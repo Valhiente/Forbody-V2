@@ -45,7 +45,7 @@ export interface Plan {
 }
 
 export interface UnitGalleryItem {
-  category: 'academia' | 'equipamentos' | 'forbodyshop';
+  category: 'galeria' | 'forbodyshop';
   title: string;
   imageUrl: string;
 }
