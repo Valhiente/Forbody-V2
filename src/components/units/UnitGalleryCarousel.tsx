@@ -72,7 +72,7 @@ export default function UnitGalleryCarousel({ title, subtitle, items, fallbackIm
         <div>
           <p className="text-xs font-black uppercase tracking-[0.24em] text-red-500">{subtitle}</p>
           <h3 className="mt-2 text-2xl font-black text-white">{title}</h3>
-          <p className="mt-2 text-sm text-slate-500">Formato feed Instagram. Clique na imagem para expandir.</p>
+          <p className="mt-2 text-sm text-slate-500">Formato feed Instagram 4:5. Clique na imagem para expandir.</p>
         </div>
         <button
           type="button"
@@ -87,12 +87,12 @@ export default function UnitGalleryCarousel({ title, subtitle, items, fallbackIm
         <button
           type="button"
           onClick={() => setExpandedItem(activeItem)}
-          className="group relative mx-auto block aspect-square w-full max-w-[520px] overflow-hidden rounded-[1.75rem] border border-white/10 bg-black text-left shadow-[0_18px_48px_rgba(0,0,0,0.35)]"
+          className="group relative mx-auto block aspect-[4/5] w-full max-w-[430px] overflow-hidden rounded-[1.75rem] border border-white/10 bg-black text-left shadow-[0_18px_48px_rgba(0,0,0,0.35)]"
         >
           <SafeGalleryImage
             src={activeItem.imageUrl}
             alt={activeItem.title}
-            sizes="(min-width: 1024px) 520px, 92vw"
+            sizes="(min-width: 1024px) 430px, 92vw"
             className="object-cover transition duration-700 group-hover:scale-105"
             fallbackImageUrl={fallbackImageUrl}
           />
@@ -111,7 +111,7 @@ export default function UnitGalleryCarousel({ title, subtitle, items, fallbackIm
               key={`${item.imageUrl}-${index}`}
               type="button"
               onClick={() => setActiveIndex(index)}
-              className={`relative aspect-square h-20 shrink-0 overflow-hidden rounded-2xl border transition ${activeIndex === index ? 'border-red-600 shadow-[0_0_24px_rgba(239,68,68,0.35)]' : 'border-white/10 opacity-70 hover:opacity-100'}`}
+              className={`relative aspect-[4/5] h-24 shrink-0 overflow-hidden rounded-2xl border transition ${activeIndex === index ? 'border-red-600 shadow-[0_0_24px_rgba(239,68,68,0.35)]' : 'border-white/10 opacity-70 hover:opacity-100'}`}
             >
               <SafeGalleryImage
                 src={item.imageUrl}
@@ -134,7 +134,7 @@ export default function UnitGalleryCarousel({ title, subtitle, items, fallbackIm
               key={`${item.title}-${index}`}
               className="group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] text-left transition hover:border-red-600/50"
             >
-              <div className="relative aspect-square overflow-hidden">
+              <div className="relative aspect-[4/5] overflow-hidden">
                 <SafeGalleryImage
                   src={item.imageUrl}
                   alt={item.title}
@@ -160,11 +160,11 @@ export default function UnitGalleryCarousel({ title, subtitle, items, fallbackIm
             Fechar
           </button>
 
-          <div className="relative aspect-square w-full max-w-[760px] overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a]">
+          <div className="relative aspect-[4/5] w-full max-w-[620px] overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a]">
             <SafeGalleryImage
               src={expandedItem.imageUrl}
               alt={expandedItem.title}
-              sizes="760px"
+              sizes="620px"
               className="object-contain"
               fallbackImageUrl={fallbackImageUrl}
             />
