@@ -55,6 +55,14 @@ export interface UnitBusinessHour {
   hours: string;
 }
 
+export interface UnitGoogleReview {
+  authorName: string;
+  rating: number;
+  text: string;
+  relativeTimeDescription?: string;
+  time?: number;
+}
+
 export interface Unit {
   id: string;
   slug: string;
@@ -76,6 +84,7 @@ export interface Unit {
   locationUrl?: string;
   status?: 'active' | 'coming_soon' | 'maintenance' | 'hidden';
   googlePlaceId?: string | null;
+  googleReviews?: UnitGoogleReview[];
   businessHours?: UnitBusinessHour[];
   galleryUrls?: UnitGalleryItem[];
   teachers?: {
