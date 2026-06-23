@@ -28,6 +28,23 @@ function SafeGalleryImage({ src, alt, sizes, className, fallbackImageUrl }: Safe
     setCurrentSrc(src);
   }, [src]);
 
+  const shouldUseNativeImage = currentSrc.startsWith('data:') || currentSrc.endsWith('.svg');
+
+  if (shouldUseNativeImage) {
+    return (
+      <img
+        src={currentSrc}
+        alt={alt}
+        className={`absolute inset-0 h-full w-full ${className}`}
+        onError={() => {
+          if (fallbackImageUrl && currentSrc !== fallbackImageUrl) {
+            setCurrentSrc(fallbackImageUrl);
+          }
+        }}
+      />
+    );
+  }
+
   return (
     <Image
       src={currentSrc}
@@ -80,40 +97,36 @@ export default function UnitGalleryCarousel({
   if (isCover) {
     return (
       <article className="overflow-hidden rounded-[1.5rem] border border-red-600/20 bg-[#0a0a0a] shadow-[0_18px_50px_rgba(127,29,29,0.18)]">
-        <button
-          type="button"
-          onClick={() => setExpandedItem(activeItem)}
-          aria-label={`Expandir capa ${title}`}
-          className="group relative block aspect-[21/9] max-h-[320px] min-h-[220px] w-full overflow-hidden bg-black text-left sm:min-h-[260px] lg:max-h-[300px]"
-        >
+        <div className="group relative aspect-[21/9] max-h-[320px] min-h-[180px] w-full overflow-hidden bg-black sm:min-h-[220px] lg:max-h-[300px]">
           <SafeGalleryImage
             src={activeItem.imageUrl}
             alt={activeItem.title}
             sizes="(min-width: 1024px) 1120px, 92vw"
-            className="object-cover transition duration-700 group-hover:scale-105"
+            className="object-cover transition duration-700 group-hover:scale-[1.015]"
             fallbackImageUrl={fallbackImageUrl}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/45 to-black/10" />
-          <div className="absolute inset-x-0 bottom-0 flex flex-col gap-4 p-5 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="w-fit rounded-full border border-red-600/30 bg-red-600/15 px-3 py-2 text-[0.65rem] font-black uppercase tracking-[0.18em] text-red-200 backdrop-blur-md">ForbodyShop</p>
-              <h3 className="mt-3 text-2xl font-black text-white sm:text-3xl">{title}</h3>
-            </div>
-            {hasCoverLink && (
-              <a
-                href={coverLinkUrl}
-                target="_blank"
-                rel="noreferrer"
-                onClick={(event) => event.stopPropagation()}
-                className="w-fit rounded-full border border-red-600/40 bg-red-600 px-4 py-3 text-xs font-black uppercase tracking-[0.14em] text-black transition hover:bg-white"
-              >
-                {coverLinkLabel}
-              </a>
-            )}
-          </div>
-        </button>
 
-        {(safeItems.length > 1 || hasCoverLink) && (
+          <button
+            type="button"
+            onClick={() => setExpandedItem(activeItem)}
+            aria-label={`Expandir capa ${title}`}
+            className="absolute inset-0 z-10 cursor-zoom-in"
+          />
+
+          {hasCoverLink && (
+            <a
+              href={coverLinkUrl}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={coverLinkLabel}
+              className="absolute bottom-[5.5%] left-1/2 z-20 h-[12%] w-[28%] -translate-x-1/2 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-black"
+            >
+              <span className="sr-only">{coverLinkLabel}</span>
+            </a>
+          )}
+        </div>
+
+        {safeItems.length > 1 && (
           <div className="flex items-center justify-between gap-3 border-t border-white/10 p-3">
             <div className="flex gap-1.5">
               {safeItems.map((item, index) => (
@@ -127,15 +140,13 @@ export default function UnitGalleryCarousel({
               ))}
             </div>
 
-            {safeItems.length > 1 && (
-              <button
-                type="button"
-                onClick={() => setIsExpanded((value) => !value)}
-                className="w-fit rounded-full border border-red-600/30 bg-red-600/10 px-3 py-2 text-[0.65rem] font-black uppercase tracking-[0.14em] text-red-300 transition hover:border-red-600 hover:bg-red-600 hover:text-black"
-              >
-                {isExpanded ? 'Recolher' : 'Ver todas'}
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={() => setIsExpanded((value) => !value)}
+              className="w-fit rounded-full border border-red-600/30 bg-red-600/10 px-3 py-2 text-[0.65rem] font-black uppercase tracking-[0.14em] text-red-300 transition hover:border-red-600 hover:bg-red-600 hover:text-black"
+            >
+              {isExpanded ? 'Recolher' : 'Ver todas'}
+            </button>
           </div>
         )}
 
