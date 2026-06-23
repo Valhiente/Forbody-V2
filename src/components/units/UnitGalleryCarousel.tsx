@@ -9,6 +9,8 @@ type UnitGalleryCarouselProps = {
   items: UnitGalleryItem[];
   fallbackImageUrl?: string;
   variant?: 'default' | 'cover';
+  coverLinkUrl?: string;
+  coverLinkLabel?: string;
 };
 
 type SafeGalleryImageProps = {
@@ -42,7 +44,14 @@ function SafeGalleryImage({ src, alt, sizes, className, fallbackImageUrl }: Safe
   );
 }
 
-export default function UnitGalleryCarousel({ title, items, fallbackImageUrl, variant = 'default' }: UnitGalleryCarouselProps) {
+export default function UnitGalleryCarousel({
+  title,
+  items,
+  fallbackImageUrl,
+  variant = 'default',
+  coverLinkUrl,
+  coverLinkLabel = 'Acessar área de vendas',
+}: UnitGalleryCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
   const [expandedItem, setExpandedItem] = useState<UnitGalleryItem | null>(null);
@@ -50,6 +59,7 @@ export default function UnitGalleryCarousel({ title, items, fallbackImageUrl, va
   const safeItems = useMemo(() => items.filter((item) => item.imageUrl), [items]);
   const activeItem = safeItems[activeIndex] || safeItems[0];
   const isCover = variant === 'cover' || title.trim().toLowerCase() === 'forbodyshop';
+  const hasCoverLink = Boolean(coverLinkUrl && coverLinkUrl !== '#');
 
   useEffect(() => {
     setActiveIndex(0);
@@ -69,50 +79,65 @@ export default function UnitGalleryCarousel({ title, items, fallbackImageUrl, va
 
   if (isCover) {
     return (
-      <article className="overflow-hidden rounded-[1.75rem] border border-red-600/20 bg-[#0a0a0a] shadow-[0_22px_70px_rgba(127,29,29,0.22)]">
+      <article className="overflow-hidden rounded-[1.5rem] border border-red-600/20 bg-[#0a0a0a] shadow-[0_18px_50px_rgba(127,29,29,0.18)]">
         <button
           type="button"
           onClick={() => setExpandedItem(activeItem)}
           aria-label={`Expandir capa ${title}`}
-          className="group relative block aspect-[1366/768] w-full overflow-hidden bg-black text-left"
+          className="group relative block aspect-[21/9] max-h-[320px] min-h-[220px] w-full overflow-hidden bg-black text-left sm:min-h-[260px] lg:max-h-[300px]"
         >
           <SafeGalleryImage
             src={activeItem.imageUrl}
             alt={activeItem.title}
-            sizes="(min-width: 1024px) 1180px, 92vw"
+            sizes="(min-width: 1024px) 1120px, 92vw"
             className="object-cover transition duration-700 group-hover:scale-105"
             fallbackImageUrl={fallbackImageUrl}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-black/5" />
-          <div className="absolute inset-x-0 bottom-0 p-5">
-            <p className="w-fit rounded-full border border-red-600/30 bg-red-600/15 px-3 py-2 text-[0.65rem] font-black uppercase tracking-[0.18em] text-red-200 backdrop-blur-md">ForbodyShop</p>
-            <h3 className="mt-3 text-2xl font-black text-white">{title}</h3>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/45 to-black/10" />
+          <div className="absolute inset-x-0 bottom-0 flex flex-col gap-4 p-5 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="w-fit rounded-full border border-red-600/30 bg-red-600/15 px-3 py-2 text-[0.65rem] font-black uppercase tracking-[0.18em] text-red-200 backdrop-blur-md">ForbodyShop</p>
+              <h3 className="mt-3 text-2xl font-black text-white sm:text-3xl">{title}</h3>
+            </div>
+            {hasCoverLink && (
+              <a
+                href={coverLinkUrl}
+                target="_blank"
+                rel="noreferrer"
+                onClick={(event) => event.stopPropagation()}
+                className="w-fit rounded-full border border-red-600/40 bg-red-600 px-4 py-3 text-xs font-black uppercase tracking-[0.14em] text-black transition hover:bg-white"
+              >
+                {coverLinkLabel}
+              </a>
+            )}
           </div>
         </button>
 
-        <div className="flex items-center justify-between gap-3 border-t border-white/10 p-4">
-          <div className="flex gap-1.5">
-            {safeItems.map((item, index) => (
-              <button
-                key={`${item.imageUrl}-${index}`}
-                type="button"
-                aria-label={`Selecionar capa ${index + 1}`}
-                onClick={() => setActiveIndex(index)}
-                className={`h-2.5 rounded-full transition ${activeIndex === index ? 'w-8 bg-red-500' : 'w-2.5 bg-white/25 hover:bg-white/50'}`}
-              />
-            ))}
-          </div>
+        {(safeItems.length > 1 || hasCoverLink) && (
+          <div className="flex items-center justify-between gap-3 border-t border-white/10 p-3">
+            <div className="flex gap-1.5">
+              {safeItems.map((item, index) => (
+                <button
+                  key={`${item.imageUrl}-${index}`}
+                  type="button"
+                  aria-label={`Selecionar capa ${index + 1}`}
+                  onClick={() => setActiveIndex(index)}
+                  className={`h-2 rounded-full transition ${activeIndex === index ? 'w-7 bg-red-500' : 'w-2 bg-white/25 hover:bg-white/50'}`}
+                />
+              ))}
+            </div>
 
-          {safeItems.length > 1 && (
-            <button
-              type="button"
-              onClick={() => setIsExpanded((value) => !value)}
-              className="w-fit rounded-full border border-red-600/30 bg-red-600/10 px-3 py-2 text-[0.65rem] font-black uppercase tracking-[0.14em] text-red-300 transition hover:border-red-600 hover:bg-red-600 hover:text-black"
-            >
-              {isExpanded ? 'Recolher' : 'Ver todas'}
-            </button>
-          )}
-        </div>
+            {safeItems.length > 1 && (
+              <button
+                type="button"
+                onClick={() => setIsExpanded((value) => !value)}
+                className="w-fit rounded-full border border-red-600/30 bg-red-600/10 px-3 py-2 text-[0.65rem] font-black uppercase tracking-[0.14em] text-red-300 transition hover:border-red-600 hover:bg-red-600 hover:text-black"
+              >
+                {isExpanded ? 'Recolher' : 'Ver todas'}
+              </button>
+            )}
+          </div>
+        )}
 
         {isExpanded && (
           <div className="grid gap-3 border-t border-white/10 p-4 sm:grid-cols-2">
@@ -124,7 +149,7 @@ export default function UnitGalleryCarousel({ title, items, fallbackImageUrl, va
                 key={`${item.title}-${index}`}
                 className="group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] text-left transition hover:border-red-600/50"
               >
-                <div className="relative aspect-[1366/768] overflow-hidden">
+                <div className="relative aspect-[21/9] max-h-[220px] overflow-hidden">
                   <SafeGalleryImage
                     src={item.imageUrl}
                     alt={item.title}
@@ -149,7 +174,7 @@ export default function UnitGalleryCarousel({ title, items, fallbackImageUrl, va
               Fechar
             </button>
 
-            <div className="relative aspect-[1366/768] w-full max-w-[920px] overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a]">
+            <div className="relative aspect-[21/9] w-full max-w-[920px] overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a]">
               <SafeGalleryImage
                 src={expandedItem.imageUrl}
                 alt={expandedItem.title}
