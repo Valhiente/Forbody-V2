@@ -135,7 +135,7 @@ export default function UnitBusinessHours({ hours }: { hours?: BusinessHour[] })
           <div>
             <p className="text-xs font-black uppercase tracking-[0.22em] text-red-300">Atenção aos feriados</p>
             <p className="mt-2 text-sm font-semibold leading-relaxed text-white">
-              Feriados: <span className="text-red-300">08:00 às 13:00</span>. Horários cadastrados manualmente pela equipe Forbody.
+              Feriados: <span className="text-red-300">08:00 às 13:00</span>.
             </p>
           </div>
         </div>
