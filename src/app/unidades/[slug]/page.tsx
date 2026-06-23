@@ -1,12 +1,25 @@
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import type { Unit } from '@/app/index';
+import type { Unit, UnitGalleryItem } from '@/app/index';
 import { unitsData } from '@/app/data';
 import { fetchGooglePlaceReviews } from '@/app/google';
 import UnitBusinessHours from '@/components/units/UnitBusinessHours';
 import UnitGalleryCarousel from '@/components/units/UnitGalleryCarousel';
 import GoogleReviewsLoop from '@/components/units/GoogleReviewsLoop';
 import { getUnitStatus, getUnitStatusBadgeClasses, getUnitStatusLabel, isPubliclyVisible } from '@/utils/unit-status';
+
+const forbodyShopGlobalImageUrl = process.env.NEXT_PUBLIC_FORBODYSHOP_IMAGE_URL || '/images/units/triunfo/forbodyshop/forbodyshop-1.jpg';
+const forbodyShopSalesUrl = process.env.NEXT_PUBLIC_FORBODYSHOP_SALES_URL || '#';
+
+function getGlobalForbodyShopItems(unitName: string): UnitGalleryItem[] {
+  return [
+    {
+      category: 'forbodyshop',
+      title: `ForbodyShop ${unitName}`,
+      imageUrl: forbodyShopGlobalImageUrl,
+    },
+  ];
+}
 
 export async function generateStaticParams() {
   return unitsData.filter(isPubliclyVisible).map((unit) => ({ slug: unit.slug }));
@@ -25,7 +38,8 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
   const isMaintenance = status === 'maintenance';
   const gallery = unit.galleryUrls || [];
   const galleryImages = gallery.filter((item) => item.category === 'galeria');
-  const shopImages = gallery.filter((item) => item.category === 'forbodyshop');
+  const hasForbodyShop = gallery.some((item) => item.category === 'forbodyshop');
+  const shopImages = hasForbodyShop ? getGlobalForbodyShopItems(unit.name) : [];
   const googleData = await fetchGooglePlaceReviews(unit.googlePlaceId);
   const googleScore = googleData.rating || unit.googleReviewsScore;
   const googleReviewsCount = googleData.reviewsCount || unit.googleReviewsCount;
@@ -84,7 +98,7 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
 
           {shopImages.length > 0 && (
             <div className="lg:col-span-2">
-              <UnitGalleryCarousel title="ForbodyShop" items={shopImages} fallbackImageUrl={unit.imageUrl} />
+              <UnitGalleryCarousel title="ForbodyShop" items={shopImages} fallbackImageUrl={unit.imageUrl} coverLinkUrl={forbodyShopSalesUrl} />
             </div>
           )}
         </div>
