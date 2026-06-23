@@ -74,12 +74,12 @@ export default function UnitGalleryCarousel({ title, items, fallbackImageUrl, va
           type="button"
           onClick={() => setExpandedItem(activeItem)}
           aria-label={`Expandir capa ${title}`}
-          className="group relative block aspect-[16/10] w-full overflow-hidden bg-black text-left"
+          className="group relative block aspect-[1366/768] w-full overflow-hidden bg-black text-left"
         >
           <SafeGalleryImage
             src={activeItem.imageUrl}
             alt={activeItem.title}
-            sizes="(min-width: 1024px) 360px, 92vw"
+            sizes="(min-width: 1024px) 1180px, 92vw"
             className="object-cover transition duration-700 group-hover:scale-105"
             fallbackImageUrl={fallbackImageUrl}
           />
@@ -124,11 +124,11 @@ export default function UnitGalleryCarousel({ title, items, fallbackImageUrl, va
                 key={`${item.title}-${index}`}
                 className="group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] text-left transition hover:border-red-600/50"
               >
-                <div className="relative aspect-[16/10] overflow-hidden">
+                <div className="relative aspect-[1366/768] overflow-hidden">
                   <SafeGalleryImage
                     src={item.imageUrl}
                     alt={item.title}
-                    sizes="(min-width: 1024px) 180px, (min-width: 640px) 50vw, 100vw"
+                    sizes="(min-width: 1024px) 540px, (min-width: 640px) 50vw, 100vw"
                     className="object-cover transition duration-500 group-hover:scale-105"
                     fallbackImageUrl={fallbackImageUrl}
                   />
@@ -149,11 +149,11 @@ export default function UnitGalleryCarousel({ title, items, fallbackImageUrl, va
               Fechar
             </button>
 
-            <div className="relative aspect-[16/10] w-full max-w-[760px] overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a]">
+            <div className="relative aspect-[1366/768] w-full max-w-[920px] overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a]">
               <SafeGalleryImage
                 src={expandedItem.imageUrl}
                 alt={expandedItem.title}
-                sizes="760px"
+                sizes="920px"
                 className="object-contain"
                 fallbackImageUrl={fallbackImageUrl}
               />
