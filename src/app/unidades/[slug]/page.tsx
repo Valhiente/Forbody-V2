@@ -63,6 +63,7 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
               <p className="mt-3 text-sm text-slate-400">{unit.city}, {unit.state}</p>
             </div>
             {!isComingSoon && !isMaintenance && <UnitBusinessHours hours={unit.businessHours} />}
+            {shopImages.length > 0 && <UnitGalleryCarousel title="ForbodyShop" items={shopImages} fallbackImageUrl={unit.imageUrl} />}
           </div>
 
           <aside className="space-y-6 lg:self-start">
@@ -80,7 +81,6 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
             )}
 
             {galleryImages.length > 0 && <UnitGalleryCarousel title="Galeria" items={galleryImages} fallbackImageUrl={unit.imageUrl} />}
-            {shopImages.length > 0 && <UnitGalleryCarousel title="ForbodyShop" items={shopImages} fallbackImageUrl={unit.imageUrl} />}
           </aside>
         </div>
       </section>
