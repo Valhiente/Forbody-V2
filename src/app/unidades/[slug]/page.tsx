@@ -54,8 +54,8 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
         </div>
       </section>
 
-      <section className="px-6 pb-16 sm:px-8 lg:px-12">
-        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.35fr_0.95fr]">
+      <section className="px-6 pb-20 sm:px-8 lg:px-12">
+        <div className="mx-auto grid max-w-6xl items-start gap-8 lg:grid-cols-[minmax(0,1.45fr)_minmax(320px,0.8fr)]">
           <div className="space-y-8">
             <div className="rounded-[2rem] border border-white/10 bg-[#0a0a0a] p-8 shadow-sm shadow-black/20">
               <p className="text-sm uppercase tracking-[0.26em] text-slate-500">Localização</p>
@@ -65,38 +65,25 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
             {!isComingSoon && !isMaintenance && <UnitBusinessHours hours={unit.businessHours} />}
           </div>
 
-          {googleScore > 0 && googleReviewsCount > 0 && (
-            <div className="rounded-[2rem] border border-white/10 bg-[#111111] p-7 shadow-sm shadow-black/20">
-              <p className="text-sm uppercase tracking-[0.24em] text-slate-500">Avaliações</p>
-              <div className="mt-4 flex items-center justify-between gap-4">
-                <p className="text-5xl font-black text-white">{googleScore.toFixed(1)}</p>
-                <div className="rounded-[1.5rem] bg-red-600/10 px-4 py-3 text-right">
-                  <p className="text-xs uppercase tracking-[0.2em] text-red-300">Google</p>
-                  <p className="mt-2 text-lg font-bold text-white">{googleReviewsCount} reviews</p>
+          <aside className="space-y-6 lg:self-start">
+            {googleScore > 0 && googleReviewsCount > 0 && (
+              <div className="rounded-[1.75rem] border border-white/10 bg-[#111111] p-5 shadow-sm shadow-black/20">
+                <div className="flex items-end justify-between gap-4">
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-[0.22em] text-red-400">Google</p>
+                    <p className="mt-2 text-4xl font-black text-white">{googleScore.toFixed(1)}</p>
+                  </div>
+                  <p className="rounded-full border border-red-600/20 bg-red-600/10 px-3 py-2 text-xs font-bold text-red-200">{googleReviewsCount} avaliações</p>
                 </div>
+                <GoogleReviewsLoop reviews={displayReviews} googleUrl={unit.locationUrl} />
               </div>
-              <GoogleReviewsLoop reviews={displayReviews} googleUrl={unit.locationUrl} />
-            </div>
-          )}
+            )}
+
+            {galleryImages.length > 0 && <UnitGalleryCarousel title="Galeria" items={galleryImages} fallbackImageUrl={unit.imageUrl} />}
+            {shopImages.length > 0 && <UnitGalleryCarousel title="ForbodyShop" items={shopImages} fallbackImageUrl={unit.imageUrl} />}
+          </aside>
         </div>
       </section>
-
-      {gallery.length > 0 && (
-        <section className="px-6 pb-20 sm:px-8 lg:px-12">
-          <div className="mx-auto max-w-6xl">
-            <div className="mb-10 max-w-3xl">
-              <p className="text-sm uppercase tracking-[0.3em] text-red-500">Galeria da unidade</p>
-              <h2 className="mt-4 text-3xl font-black text-white sm:text-4xl">Conheça a Forbody {unit.name}</h2>
-              <p className="mt-4 text-sm leading-relaxed text-slate-400">Galeria da unidade e ForbodyShop. Conforme novas imagens forem adicionadas, esta área será atualizada.</p>
-            </div>
-
-            <div className="grid gap-6">
-              {galleryImages.length > 0 && <UnitGalleryCarousel title="Galeria" subtitle="Fotos da unidade" items={galleryImages} fallbackImageUrl={unit.imageUrl} />}
-              {shopImages.length > 0 && <UnitGalleryCarousel title="ForbodyShop" subtitle="Produtos e artigos" items={shopImages} fallbackImageUrl={unit.imageUrl} />}
-            </div>
-          </div>
-        </section>
-      )}
     </main>
   );
 }
