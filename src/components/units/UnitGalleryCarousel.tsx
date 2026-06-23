@@ -49,7 +49,7 @@ export default function UnitGalleryCarousel({ title, items, fallbackImageUrl, va
 
   const safeItems = useMemo(() => items.filter((item) => item.imageUrl), [items]);
   const activeItem = safeItems[activeIndex] || safeItems[0];
-  const isCover = variant === 'cover';
+  const isCover = variant === 'cover' || title.trim().toLowerCase() === 'forbodyshop';
 
   useEffect(() => {
     setActiveIndex(0);
