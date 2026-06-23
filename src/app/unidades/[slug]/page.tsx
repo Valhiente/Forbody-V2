@@ -8,7 +8,7 @@ import UnitGalleryCarousel from '@/components/units/UnitGalleryCarousel';
 import GoogleReviewsLoop from '@/components/units/GoogleReviewsLoop';
 import { getUnitStatus, getUnitStatusBadgeClasses, getUnitStatusLabel, isPubliclyVisible } from '@/utils/unit-status';
 
-const forbodyShopGlobalImageUrl = process.env.NEXT_PUBLIC_FORBODYSHOP_IMAGE_URL || '/images/units/triunfo/forbodyshop/forbodyshop-1.jpg';
+const forbodyShopGlobalImageUrl = process.env.NEXT_PUBLIC_FORBODYSHOP_IMAGE_URL || '/images/forbodyshop/forbodyshop-oficial.svg';
 const forbodyShopSalesUrl = process.env.NEXT_PUBLIC_FORBODYSHOP_SALES_URL || '#';
 
 function getGlobalForbodyShopItems(unitName: string): UnitGalleryItem[] {
