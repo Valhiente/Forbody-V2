@@ -6,7 +6,6 @@ import type { UnitGalleryItem } from '@/app/index';
 
 type UnitGalleryCarouselProps = {
   title: string;
-  subtitle: string;
   items: UnitGalleryItem[];
   fallbackImageUrl?: string;
 };
@@ -42,7 +41,7 @@ function SafeGalleryImage({ src, alt, sizes, className, fallbackImageUrl }: Safe
   );
 }
 
-export default function UnitGalleryCarousel({ title, subtitle, items, fallbackImageUrl }: UnitGalleryCarouselProps) {
+export default function UnitGalleryCarousel({ title, items, fallbackImageUrl }: UnitGalleryCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
   const [expandedItem, setExpandedItem] = useState<UnitGalleryItem | null>(null);
@@ -67,56 +66,53 @@ export default function UnitGalleryCarousel({ title, subtitle, items, fallbackIm
   if (!activeItem) return null;
 
   return (
-    <article className="overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a] shadow-sm shadow-black/20">
-      <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-xs font-black uppercase tracking-[0.24em] text-red-500">{subtitle}</p>
-          <h3 className="mt-2 text-2xl font-black text-white">{title}</h3>
-          <p className="mt-2 text-sm text-slate-500">Formato feed Instagram 4:5. Clique na imagem para expandir.</p>
-        </div>
-        <button
-          type="button"
-          onClick={() => setIsExpanded((value) => !value)}
-          className="w-fit rounded-full border border-red-600/30 bg-red-600/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-red-300 transition hover:border-red-600 hover:bg-red-600 hover:text-black"
-        >
-          {isExpanded ? 'Recolher lista' : 'Ver todas'}
-        </button>
+    <article className="overflow-hidden rounded-[1.75rem] border border-white/10 bg-[#0a0a0a] shadow-sm shadow-black/20">
+      <div className="flex items-center justify-between gap-4 p-4">
+        <h3 className="text-xl font-black text-white">{title}</h3>
+        {safeItems.length > 1 && (
+          <button
+            type="button"
+            onClick={() => setIsExpanded((value) => !value)}
+            className="w-fit rounded-full border border-red-600/30 bg-red-600/10 px-3 py-2 text-[0.65rem] font-black uppercase tracking-[0.14em] text-red-300 transition hover:border-red-600 hover:bg-red-600 hover:text-black"
+          >
+            {isExpanded ? 'Recolher' : 'Ver todas'}
+          </button>
+        )}
       </div>
 
-      <div className="px-5 pb-5">
+      <div className="px-4 pb-4">
         <button
           type="button"
           onClick={() => setExpandedItem(activeItem)}
-          className="group relative mx-auto block aspect-[4/5] w-full max-w-[430px] overflow-hidden rounded-[1.75rem] border border-white/10 bg-black text-left shadow-[0_18px_48px_rgba(0,0,0,0.35)]"
+          aria-label={`Expandir imagem ${activeItem.title}`}
+          className="group relative mx-auto block aspect-[4/5] w-full max-w-[360px] overflow-hidden rounded-[1.5rem] border border-white/10 bg-black text-left shadow-[0_18px_48px_rgba(0,0,0,0.35)]"
         >
           <SafeGalleryImage
             src={activeItem.imageUrl}
             alt={activeItem.title}
-            sizes="(min-width: 1024px) 430px, 92vw"
+            sizes="(min-width: 1024px) 360px, 92vw"
             className="object-cover transition duration-700 group-hover:scale-105"
             fallbackImageUrl={fallbackImageUrl}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/15 to-transparent" />
-          <div className="absolute bottom-5 left-5 right-5">
-            <p className="text-xs font-black uppercase tracking-[0.2em] text-red-400">{activeIndex + 1} / {safeItems.length}</p>
-            <h4 className="mt-2 text-xl font-black text-white sm:text-2xl">{activeItem.title}</h4>
-          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+          <p className="absolute bottom-4 left-4 rounded-full bg-black/60 px-3 py-2 text-[0.65rem] font-black uppercase tracking-[0.14em] text-red-300 backdrop-blur-md">{activeIndex + 1} / {safeItems.length}</p>
         </button>
       </div>
 
       {safeItems.length > 1 && (
-        <div className="flex gap-2 overflow-x-auto border-t border-white/10 p-5">
+        <div className="flex gap-2 overflow-x-auto border-t border-white/10 p-4">
           {safeItems.map((item, index) => (
             <button
               key={`${item.imageUrl}-${index}`}
               type="button"
+              aria-label={`Selecionar imagem ${index + 1}`}
               onClick={() => setActiveIndex(index)}
-              className={`relative aspect-[4/5] h-24 shrink-0 overflow-hidden rounded-2xl border transition ${activeIndex === index ? 'border-red-600 shadow-[0_0_24px_rgba(239,68,68,0.35)]' : 'border-white/10 opacity-70 hover:opacity-100'}`}
+              className={`relative aspect-[4/5] h-20 shrink-0 overflow-hidden rounded-xl border transition ${activeIndex === index ? 'border-red-600 shadow-[0_0_24px_rgba(239,68,68,0.35)]' : 'border-white/10 opacity-70 hover:opacity-100'}`}
             >
               <SafeGalleryImage
                 src={item.imageUrl}
                 alt={item.title}
-                sizes="80px"
+                sizes="72px"
                 className="object-cover"
                 fallbackImageUrl={fallbackImageUrl}
               />
@@ -126,10 +122,11 @@ export default function UnitGalleryCarousel({ title, subtitle, items, fallbackIm
       )}
 
       {isExpanded && (
-        <div className="grid gap-4 border-t border-white/10 p-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 border-t border-white/10 p-4 sm:grid-cols-2">
           {safeItems.map((item, index) => (
             <button
               type="button"
+              aria-label={`Expandir imagem ${index + 1}`}
               onClick={() => setExpandedItem(item)}
               key={`${item.title}-${index}`}
               className="group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] text-left transition hover:border-red-600/50"
@@ -138,12 +135,11 @@ export default function UnitGalleryCarousel({ title, subtitle, items, fallbackIm
                 <SafeGalleryImage
                   src={item.imageUrl}
                   alt={item.title}
-                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                  sizes="(min-width: 1024px) 180px, (min-width: 640px) 50vw, 100vw"
                   className="object-cover transition duration-500 group-hover:scale-105"
                   fallbackImageUrl={fallbackImageUrl}
                 />
               </div>
-              <p className="p-4 text-sm font-bold text-slate-200">{item.title}</p>
             </button>
           ))}
         </div>
