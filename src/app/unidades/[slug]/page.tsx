@@ -8,7 +8,7 @@ import UnitGalleryCarousel from '@/components/units/UnitGalleryCarousel';
 import GoogleReviewsLoop from '@/components/units/GoogleReviewsLoop';
 import { getUnitStatus, getUnitStatusBadgeClasses, getUnitStatusLabel, isPubliclyVisible } from '@/utils/unit-status';
 
-const forbodyShopGlobalImageUrl = process.env.NEXT_PUBLIC_FORBODYSHOP_IMAGE_URL || '/images/forbodyshop/forbodyshop-oficial.svg';
+const forbodyShopGlobalImageUrl = process.env.NEXT_PUBLIC_FORBODYSHOP_IMAGE_URL || '/api/forbodyshop-image';
 const forbodyShopSalesUrl = process.env.NEXT_PUBLIC_FORBODYSHOP_SALES_URL || '#';
 
 function getGlobalForbodyShopItems(unitName: string): UnitGalleryItem[] {
@@ -98,7 +98,7 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
 
           {shopImages.length > 0 && (
             <div className="lg:col-span-2">
-              <UnitGalleryCarousel title="ForbodyShop" items={shopImages} fallbackImageUrl={unit.imageUrl} coverLinkUrl={forbodyShopSalesUrl} />
+              <UnitGalleryCarousel title="ForbodyShop" items={shopImages} coverLinkUrl={forbodyShopSalesUrl} />
             </div>
           )}
         </div>
