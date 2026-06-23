@@ -28,7 +28,7 @@ function SafeGalleryImage({ src, alt, sizes, className, fallbackImageUrl }: Safe
     setCurrentSrc(src);
   }, [src]);
 
-  const shouldUseNativeImage = currentSrc.startsWith('data:') || currentSrc.endsWith('.svg');
+  const shouldUseNativeImage = currentSrc.startsWith('data:') || currentSrc.endsWith('.svg') || currentSrc.startsWith('/api/');
 
   if (shouldUseNativeImage) {
     return (
