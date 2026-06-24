@@ -102,7 +102,7 @@ export default function UnitGalleryCarousel({
             src={activeItem.imageUrl}
             alt={activeItem.title}
             sizes="(min-width: 1024px) 1120px, 92vw"
-            className="object-cover transition duration-700 group-hover:scale-[1.015]"
+            className="object-contain transition duration-700 group-hover:scale-[1.015]"
             fallbackImageUrl={fallbackImageUrl}
           />
 
@@ -165,7 +165,7 @@ export default function UnitGalleryCarousel({
                     src={item.imageUrl}
                     alt={item.title}
                     sizes="(min-width: 1024px) 540px, (min-width: 640px) 50vw, 100vw"
-                    className="object-cover transition duration-500 group-hover:scale-105"
+                    className="object-contain transition duration-500 group-hover:scale-105"
                     fallbackImageUrl={fallbackImageUrl}
                   />
                 </div>
@@ -271,7 +271,7 @@ export default function UnitGalleryCarousel({
                   src={item.imageUrl}
                   alt={item.title}
                   sizes="(min-width: 1024px) 180px, (min-width: 640px) 50vw, 100vw"
-                  className="object-cover transition duration-500 group-hover:scale-105"
+                  className="object-contain transition duration-500 group-hover:scale-105"
                   fallbackImageUrl={fallbackImageUrl}
                 />
               </div>
