@@ -34,7 +34,12 @@ const officialHeroBackgroundImage =
   process.env.NEXT_PUBLIC_FORBODY_HERO_BACKGROUND_URL ||
   "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=1800&q=90";
 
-const fallbackPillars = ["Musculação completa", "Bons profissionais", "Aulas coletivas", "Planos acessíveis"];
+const heroProofItems = [
+  { value: "4", label: "unidades" },
+  { value: "R$ 99,90", label: "planos a partir de" },
+  { value: "Professores", label: "presentes" },
+  { value: "Aulas", label: "coletivas" },
+];
 
 const fallbackPlanCards = [
   {
@@ -103,6 +108,21 @@ function safeText(value: string | null | undefined, fallback: string) {
   return value && value.trim().length > 0 ? value : fallback;
 }
 
+function renderHeroTitle(title: string) {
+  const marker = "Forbody";
+  const index = title.toLowerCase().indexOf(marker.toLowerCase());
+
+  if (index === -1) return title;
+
+  return (
+    <>
+      {title.slice(0, index)}
+      <span className="text-red-600 drop-shadow-[0_0_28px_rgba(220,38,38,0.55)]">{title.slice(index, index + marker.length)}</span>
+      {title.slice(index + marker.length)}
+    </>
+  );
+}
+
 async function getHomeMarketingData(): Promise<HomeMarketingData> {
   try {
     const supabase = await createSupabaseAdminClient();
@@ -147,12 +167,12 @@ export default async function HomePage() {
 
   const hero = {
     eyebrow: safeText(heroSection?.subtitle, "Forbody Academia"),
-    title: safeText(heroSection?.title, "Sua melhor versão começa dentro da Forbody."),
+    title: safeText(heroSection?.title, "Sua melhor versão começa na Forbody."),
     description: safeText(
       heroSection?.description,
-      "Estrutura completa, professores presentes, planos acessíveis e unidades preparadas para acompanhar você em cada fase da sua rotina."
+      "Estrutura completa, professores presentes, planos acessíveis e acompanhamento real em cada fase da sua rotina."
     ),
-    buttonLabel: safeText(heroSection?.button_label, "Escolher unidade"),
+    buttonLabel: safeText(heroSection?.button_label, "Quero começar agora"),
     buttonHref: safeText(heroSection?.button_href, "/unidades"),
   };
 
@@ -163,74 +183,54 @@ export default async function HomePage() {
 
   const planCards = fallbackPlanCards;
 
-  const mainVisualImage =
-    photoItems.find((item) => item.item_key === "main")?.image_url ||
-    "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1600&q=90";
-
   return (
     <main className="min-h-screen overflow-hidden bg-[#030303] text-white">
-      <section className="relative min-h-screen overflow-hidden px-5 py-20 sm:px-8 lg:px-12">
+      <section className="relative flex min-h-screen items-center overflow-hidden px-5 pb-14 pt-28 sm:px-8 lg:px-12 lg:pt-32">
         <div className="absolute inset-0">
           <div
-            className="absolute inset-0 bg-cover bg-center-right opacity-55"
+            className="absolute inset-0 bg-cover bg-center opacity-75 saturate-[1.08]"
             style={{ backgroundImage: `url(${officialHeroBackgroundImage})`, backgroundPosition: "center right" }}
           />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_28%,rgba(220,38,38,0.22),transparent_32%),linear-gradient(90deg,#030303_0%,rgba(3,3,3,0.94)_35%,rgba(3,3,3,0.68)_68%,rgba(3,3,3,0.34)_100%)]" />
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,3,3,0.05)_0%,#030303_98%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_28%,rgba(220,38,38,0.26),transparent_34%),linear-gradient(90deg,#030303_0%,rgba(3,3,3,0.96)_31%,rgba(3,3,3,0.72)_57%,rgba(3,3,3,0.28)_100%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,3,3,0.08)_0%,rgba(3,3,3,0.2)_58%,#030303_100%)]" />
+          <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black to-transparent" />
         </div>
 
-        <div className="absolute left-0 top-1/2 h-[42rem] w-[42rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-600/20 blur-[150px]" />
+        <div className="absolute -left-32 top-1/2 h-[42rem] w-[42rem] -translate-y-1/2 rounded-full bg-red-600/20 blur-[160px]" />
+        <div className="absolute bottom-10 right-0 h-[28rem] w-[28rem] rounded-full bg-red-600/10 blur-[140px]" />
 
-        <div className="relative z-10 mx-auto grid min-h-[calc(100vh-10rem)] max-w-7xl items-center gap-14 lg:grid-cols-[1.04fr_0.96fr]">
-          <div className="animate-slide-up">
-            <p className="mb-7 border-l-4 border-red-600 pl-4 text-xs font-black uppercase tracking-[0.34em] text-red-500">
+        <div className="relative z-10 mx-auto flex min-h-[calc(100vh-9rem)] w-full max-w-7xl flex-col justify-center">
+          <div className="max-w-4xl animate-slide-up">
+            <p className="mb-7 inline-flex border-l-4 border-red-600 bg-black/25 px-4 py-2 text-xs font-black uppercase tracking-[0.34em] text-red-500 backdrop-blur-xl">
               {hero.eyebrow}
             </p>
-            <h1 className="max-w-5xl text-5xl font-black uppercase leading-[0.92] tracking-[-0.07em] text-white sm:text-7xl lg:text-8xl">
-              {hero.title}
+            <h1 className="max-w-5xl text-5xl font-black uppercase leading-[0.88] tracking-[-0.075em] text-white drop-shadow-[0_10px_34px_rgba(0,0,0,0.7)] sm:text-7xl lg:text-[6.6rem]">
+              {renderHeroTitle(hero.title)}
             </h1>
-            <p className="mt-8 max-w-2xl text-base leading-relaxed text-zinc-300 sm:text-lg">{hero.description}</p>
+            <p className="mt-8 max-w-2xl text-base leading-relaxed text-zinc-200 sm:text-xl">{hero.description}</p>
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <Link href={hero.buttonHref} className="rounded-sm bg-red-600 px-8 py-4 text-center text-sm font-black uppercase tracking-[0.22em] text-white shadow-[0_0_34px_rgba(220,38,38,0.28)] transition duration-300 hover:bg-red-700">
-                {hero.buttonLabel}
+              <Link href={hero.buttonHref} className="rounded-lg bg-red-600 px-8 py-4 text-center text-sm font-black uppercase tracking-[0.18em] text-white shadow-[0_0_38px_rgba(220,38,38,0.35)] transition duration-300 hover:-translate-y-0.5 hover:bg-red-700">
+                {hero.buttonLabel} <span className="ml-2">→</span>
               </Link>
-              <Link href="#planos" className="group rounded-sm border border-white/15 bg-white/[0.04] px-8 py-4 text-center text-sm font-black uppercase tracking-[0.22em] text-white backdrop-blur-xl transition duration-300 hover:border-red-600 hover:bg-red-600/10">
+              <Link href="#planos" className="group rounded-lg border border-white/20 bg-black/30 px-8 py-4 text-center text-sm font-black uppercase tracking-[0.18em] text-white backdrop-blur-xl transition duration-300 hover:-translate-y-0.5 hover:border-red-600 hover:bg-red-600/10">
                 Ver planos <span className="ml-2 inline-block text-red-500 transition group-hover:translate-x-1">→</span>
               </Link>
             </div>
 
-            <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:max-w-2xl">
-              {fallbackPillars.map((pillar) => (
-                <div key={pillar} className="border border-white/10 bg-black/35 px-5 py-4 text-sm font-black uppercase tracking-[0.14em] text-zinc-200 backdrop-blur-xl">
-                  {pillar}
-                </div>
-              ))}
-            </div>
+            <p className="mt-8 flex items-center gap-3 text-sm font-semibold text-zinc-200">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-red-600/40 bg-red-600/10 text-red-500">⌖</span>
+              Escolha a unidade <strong className="text-white">mais próxima</strong> e comece hoje.
+            </p>
           </div>
 
-          <div className="relative animate-fade-in">
-            <div className="absolute -inset-8 bg-red-600/10 blur-[90px]" />
-            <div className="relative min-h-[560px] overflow-hidden border border-white/10 bg-[#080808]/90 shadow-2xl shadow-red-950/30 backdrop-blur-xl">
-              <div className="absolute inset-x-0 top-0 h-1 bg-red-600" />
-              <div className="absolute inset-0 bg-cover bg-center opacity-45" style={{ backgroundImage: `url(${mainVisualImage})` }} />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/75 to-black/20" />
-              <div className="relative flex h-full min-h-[560px] flex-col justify-end p-6 sm:p-8">
-                <p className="text-xs font-black uppercase tracking-[0.34em] text-red-500">comece agora</p>
-                <h2 className="mt-4 text-4xl font-black uppercase leading-none tracking-[-0.05em] text-white sm:text-5xl">Red ou Black. Escolha sua rotina.</h2>
-                <p className="mt-5 text-sm leading-relaxed text-zinc-300">Planos para você decidir rápido, encontrar sua unidade e começar a treinar.</p>
-                <div className="mt-7 grid gap-4 sm:grid-cols-2">
-                  {planCards.map((plan) => (
-                    <div key={plan.name} className={`border p-5 backdrop-blur-xl ${plan.featured ? "border-red-600/60 bg-red-600/15" : "border-white/10 bg-white/[0.06]"}`}>
-                      <p className="text-lg font-black uppercase tracking-[-0.04em] text-white">{plan.name.replace("Plano ", "")}</p>
-                      <p className="mt-4 text-[10px] font-black uppercase tracking-[0.24em] text-zinc-500">A partir de</p>
-                      <p className="mt-1 text-3xl font-black tracking-[-0.07em] text-white">{plan.price}</p>
-                      <p className="mt-4 text-xs leading-relaxed text-zinc-400">{plan.description}</p>
-                    </div>
-                  ))}
-                </div>
+          <div className="mt-12 grid overflow-hidden rounded-[1.6rem] border border-white/10 bg-black/45 shadow-[0_0_80px_rgba(220,38,38,0.12)] backdrop-blur-xl sm:grid-cols-2 lg:grid-cols-4">
+            {heroProofItems.map((item) => (
+              <div key={item.label} className="border-b border-white/10 p-5 sm:border-r lg:border-b-0 last:border-r-0">
+                <p className="text-3xl font-black uppercase tracking-[-0.06em] text-white sm:text-4xl">{item.value}</p>
+                <p className="mt-2 text-xs font-black uppercase tracking-[0.18em] text-red-400">{item.label}</p>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
