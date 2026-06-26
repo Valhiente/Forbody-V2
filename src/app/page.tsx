@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createSupabaseAdminClient } from "@/lib/supabase/server";
+import HomeShowcaseRotatingCard from "@/components/home/HomeShowcaseRotatingCard";
 
 export const revalidate = 60;
 
@@ -34,12 +35,7 @@ const officialHeroBackgroundImage =
   process.env.NEXT_PUBLIC_FORBODY_HERO_BACKGROUND_URL ||
   "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=1800&q=90";
 
-const heroProofItems = [
-  { value: "4", label: "unidades" },
-  { value: "R$ 99,90", label: "planos a partir de" },
-  { value: "Professores", label: "presentes" },
-  { value: "Aulas", label: "coletivas" },
-];
+const fallbackPillars = ["Musculação completa", "Bons profissionais", "Aulas coletivas", "Planos acessíveis"];
 
 const fallbackPlanCards = [
   {
@@ -104,8 +100,28 @@ const fallbackTestimonials = [
 
 const unitPreview = ["Triunfo", "Barão do Bananal", "Vila Virgínia", "Candido Portinari"];
 
-function safeText(value: string | null | undefined, fallback: string) {
-  return value && value.trim().length > 0 ? value : fallback;
+const heroProofItems = [
+  "4 unidades",
+  "Planos a partir de R$ 99,90",
+  "Professores presentes",
+  "Aulas coletivas",
+];
+
+const heroUnitCards = [
+  { name: "Triunfo", href: "/unidades/triunfo" },
+  { name: "Barão do Bananal", href: "/unidades/barao-do-bananal" },
+  { name: "Vila Virgínia", href: "/unidades/vila-virginia" },
+  { name: "Portinari", href: "/unidades/portinari" },
+];
+
+function normalizeSupplierHref(value: string | null | undefined) {
+  const cleanValue = value?.trim();
+
+  if (!cleanValue || cleanValue === "#") return undefined;
+  if (cleanValue.startsWith("/") || cleanValue.startsWith("#")) return cleanValue;
+  if (/^https?:\/\//i.test(cleanValue)) return cleanValue;
+
+  return `https://${cleanValue}`;
 }
 
 function renderHeroTitle(title: string) {
@@ -117,10 +133,17 @@ function renderHeroTitle(title: string) {
   return (
     <>
       {title.slice(0, index)}
-      <span className="text-red-600 drop-shadow-[0_0_28px_rgba(220,38,38,0.55)]">{title.slice(index, index + marker.length)}</span>
+      <span className="text-red-600 drop-shadow-[0_0_28px_rgba(220,38,38,0.55)]">
+        {title.slice(index, index + marker.length)}
+      </span>
       {title.slice(index + marker.length)}
     </>
   );
+}
+
+
+function safeText(value: string | null | undefined, fallback: string) {
+  return value && value.trim().length > 0 ? value : fallback;
 }
 
 async function getHomeMarketingData(): Promise<HomeMarketingData> {
@@ -164,34 +187,63 @@ export default async function HomePage() {
   const heroSection = sectionByKey(marketing.sections, "home_hero");
   const plansSection = sectionByKey(marketing.sections, "home_plans");
   const photoItems = itemsBySection(marketing.items, "home_photos");
+  const suppliersSection = sectionByKey(marketing.sections, "home_suppliers");
+  const supplierItems = itemsBySection(marketing.items, "home_suppliers");
 
   const hero = {
     eyebrow: safeText(heroSection?.subtitle, "Forbody Academia"),
-    title: safeText(heroSection?.title, "Sua melhor versão começa na Forbody."),
+    title: safeText(heroSection?.title, "Sua melhor versão começa dentro da Forbody."),
     description: safeText(
       heroSection?.description,
-      "Estrutura completa, professores presentes, planos acessíveis e acompanhamento real em cada fase da sua rotina."
+      "Estrutura completa, professores presentes, planos acessíveis e unidades preparadas para acompanhar você em cada fase da sua rotina."
     ),
-    buttonLabel: safeText(heroSection?.button_label, "Quero começar agora"),
+    buttonLabel: safeText(heroSection?.button_label, "Escolher unidade"),
     buttonHref: safeText(heroSection?.button_href, "/unidades"),
   };
 
   const showcaseCards = fallbackShowcaseCards.map((card, index) => {
-    const photo = photoItems.find((item) => item.item_key === `card_${index + 1}`);
-    return { ...card, image: photo?.image_url || card.image, title: photo?.title || card.title, description: photo?.description || card.description };
+    const baseKey = `card_${index + 1}`;
+    const cardPhotos = photoItems.filter(
+      (item) =>
+        item.image_url &&
+        (item.item_key === baseKey || item.item_key.startsWith(`${baseKey}_`))
+    );
+    const mainPhoto = cardPhotos.find((item) => item.item_key === baseKey) || cardPhotos[0];
+    const images = cardPhotos
+      .map((item) => item.image_url)
+      .filter((imageUrl): imageUrl is string => Boolean(imageUrl));
+
+    return {
+      ...card,
+      title: mainPhoto?.title || card.title,
+      description: mainPhoto?.description || card.description,
+      images: images.length > 0 ? images : [card.image],
+    };
   });
+
+  const suppliers = supplierItems
+    .map((item) => ({
+      name: safeText(item.title, item.badge || "Fornecedor Forbody"),
+      href: normalizeSupplierHref(item.description),
+      logo: item.image_url?.trim(),
+    }))
+    .filter((supplier) => supplier.href && supplier.logo);
 
   const planCards = fallbackPlanCards;
 
+  const mainVisualImage =
+    photoItems.find((item) => item.item_key === "main")?.image_url ||
+    "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1600&q=90";
+
   return (
     <main className="min-h-screen overflow-hidden bg-[#030303] text-white">
-      <section className="relative flex min-h-screen items-center overflow-hidden px-5 pb-14 pt-28 sm:px-8 lg:px-12 lg:pt-32">
+      <section className="relative flex min-h-screen items-center overflow-hidden px-5 pb-10 pt-24 sm:px-8 lg:px-12 lg:pt-28">
         <div className="absolute inset-0">
           <div
-            className="absolute inset-0 bg-cover bg-center opacity-75 saturate-[1.08]"
+            className="absolute inset-0 bg-cover bg-center opacity-70 saturate-[1.08]"
             style={{ backgroundImage: `url(${officialHeroBackgroundImage})`, backgroundPosition: "center right" }}
           />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_28%,rgba(220,38,38,0.26),transparent_34%),linear-gradient(90deg,#030303_0%,rgba(3,3,3,0.96)_31%,rgba(3,3,3,0.72)_57%,rgba(3,3,3,0.28)_100%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_28%,rgba(220,38,38,0.26),transparent_34%),linear-gradient(90deg,#030303_0%,rgba(3,3,3,0.96)_32%,rgba(3,3,3,0.72)_62%,rgba(3,3,3,0.32)_100%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,3,3,0.08)_0%,rgba(3,3,3,0.2)_58%,#030303_100%)]" />
           <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black to-transparent" />
         </div>
@@ -199,17 +251,21 @@ export default async function HomePage() {
         <div className="absolute -left-32 top-1/2 h-[42rem] w-[42rem] -translate-y-1/2 rounded-full bg-red-600/20 blur-[160px]" />
         <div className="absolute bottom-10 right-0 h-[28rem] w-[28rem] rounded-full bg-red-600/10 blur-[140px]" />
 
-        <div className="relative z-10 mx-auto flex min-h-[calc(100vh-9rem)] w-full max-w-7xl flex-col justify-center">
-          <div className="max-w-4xl animate-slide-up">
-            <p className="mb-7 inline-flex border-l-4 border-red-600 bg-black/25 px-4 py-2 text-xs font-black uppercase tracking-[0.34em] text-red-500 backdrop-blur-xl">
+        <div className="relative z-10 mx-auto grid min-h-[calc(100vh-7rem)] w-full max-w-7xl items-center gap-8 lg:grid-cols-[0.9fr_1.1fr] xl:grid-cols-[0.95fr_1.05fr]">
+          <div className="animate-slide-up">
+            <p className="mb-6 inline-flex border-l-4 border-red-600 bg-black/25 px-4 py-2 text-xs font-black uppercase tracking-[0.34em] text-red-500 backdrop-blur-xl">
               {hero.eyebrow}
             </p>
-            <h1 className="max-w-5xl text-5xl font-black uppercase leading-[0.88] tracking-[-0.075em] text-white drop-shadow-[0_10px_34px_rgba(0,0,0,0.7)] sm:text-7xl lg:text-[6.6rem]">
+
+            <h1 className="max-w-4xl text-5xl font-black uppercase leading-[0.88] tracking-[-0.075em] text-white drop-shadow-[0_10px_34px_rgba(0,0,0,0.7)] sm:text-7xl lg:text-[5.8rem] xl:text-[6.5rem]">
               {renderHeroTitle(hero.title)}
             </h1>
-            <p className="mt-8 max-w-2xl text-base leading-relaxed text-zinc-200 sm:text-xl">{hero.description}</p>
 
-            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+            <p className="mt-7 max-w-2xl text-base leading-relaxed text-zinc-200 sm:text-lg">
+              {hero.description}
+            </p>
+
+            <div className="mt-9 flex flex-col gap-4 sm:flex-row">
               <Link href={hero.buttonHref} className="rounded-lg bg-red-600 px-8 py-4 text-center text-sm font-black uppercase tracking-[0.18em] text-white shadow-[0_0_38px_rgba(220,38,38,0.35)] transition duration-300 hover:-translate-y-0.5 hover:bg-red-700">
                 {hero.buttonLabel} <span className="ml-2">→</span>
               </Link>
@@ -218,19 +274,72 @@ export default async function HomePage() {
               </Link>
             </div>
 
-            <p className="mt-8 flex items-center gap-3 text-sm font-semibold text-zinc-200">
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-red-600/40 bg-red-600/10 text-red-500">⌖</span>
-              Escolha a unidade <strong className="text-white">mais próxima</strong> e comece hoje.
-            </p>
+            <div className="mt-10 grid overflow-hidden rounded-[1.4rem] border border-white/10 bg-black/45 shadow-[0_0_80px_rgba(220,38,38,0.12)] backdrop-blur-xl sm:grid-cols-2">
+              {heroProofItems.map((item) => (
+                <div key={item} className="border-b border-white/10 px-5 py-4 text-xs font-black uppercase tracking-[0.16em] text-zinc-200 even:border-l sm:[&:nth-child(n+3)]:border-b-0">
+                  <span className="mr-2 text-red-500">●</span>
+                  {item}
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="mt-12 grid overflow-hidden rounded-[1.6rem] border border-white/10 bg-black/45 shadow-[0_0_80px_rgba(220,38,38,0.12)] backdrop-blur-xl sm:grid-cols-2 lg:grid-cols-4">
-            {heroProofItems.map((item) => (
-              <div key={item.label} className="border-b border-white/10 p-5 sm:border-r lg:border-b-0 last:border-r-0">
-                <p className="text-3xl font-black uppercase tracking-[-0.06em] text-white sm:text-4xl">{item.value}</p>
-                <p className="mt-2 text-xs font-black uppercase tracking-[0.18em] text-red-400">{item.label}</p>
+          <div className="animate-fade-in">
+            <div className="rounded-[1.8rem] border border-white/10 bg-black/55 p-4 shadow-[0_0_90px_rgba(220,38,38,0.14)] backdrop-blur-2xl sm:p-5">
+              <div className="grid gap-4 xl:grid-cols-[0.9fr_1.1fr]">
+                <div className="grid gap-4">
+                  {planCards.map((plan) => (
+                    <article key={plan.name} className={`relative overflow-hidden rounded-[1.35rem] border p-5 transition duration-300 hover:-translate-y-1 ${plan.featured ? "border-red-600/60 bg-red-600/15 shadow-[0_0_54px_rgba(220,38,38,0.16)]" : "border-white/10 bg-white/[0.06]"}`}>
+                      <div className="absolute inset-x-0 top-0 h-1 bg-red-600" />
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <p className="text-[10px] font-black uppercase tracking-[0.24em] text-red-400">{plan.tag}</p>
+                          <h2 className="mt-3 text-2xl font-black uppercase tracking-[-0.06em] text-white">{plan.name}</h2>
+                        </div>
+                        <div className="rounded-full border border-white/10 bg-black/30 px-3 py-2 text-[10px] font-black uppercase tracking-[0.16em] text-zinc-300">
+                          Plano
+                        </div>
+                      </div>
+
+                      <p className="mt-5 text-[10px] font-black uppercase tracking-[0.24em] text-zinc-500">A partir de</p>
+                      <p className="mt-1 text-4xl font-black tracking-[-0.08em] text-white">{plan.price}</p>
+                      <p className="mt-4 text-xs leading-relaxed text-zinc-300">{plan.description}</p>
+
+                      <Link href="/unidades" className="mt-5 inline-flex w-full justify-center rounded-lg bg-red-600 px-5 py-3 text-center text-[11px] font-black uppercase tracking-[0.18em] text-white transition hover:bg-red-700">
+                        Escolher unidade
+                      </Link>
+                    </article>
+                  ))}
+                </div>
+
+                <article className="relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[#080808]/90 p-5">
+                  <div className="absolute inset-0 bg-cover bg-center opacity-20" style={{ backgroundImage: `url(${mainVisualImage})` }} />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/88 to-black/40" />
+
+                  <div className="relative">
+                    <p className="text-[10px] font-black uppercase tracking-[0.28em] text-red-400">Nossas unidades</p>
+                    <h2 className="mt-3 text-3xl font-black uppercase leading-none tracking-[-0.06em] text-white">
+                      Encontre sua unidade Forbody.
+                    </h2>
+                    <p className="mt-4 text-xs leading-relaxed text-zinc-300">
+                      Encontre a Forbody mais próxima e veja os detalhes da unidade.
+                    </p>
+
+                    <div className="mt-6 grid gap-3">
+                      {heroUnitCards.map((unit) => (
+                        <Link key={unit.href} href={unit.href} className="group flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-black/45 px-4 py-4 transition duration-300 hover:-translate-y-0.5 hover:border-red-600/60 hover:bg-red-600/10">
+                          <span>
+                            <span className="block text-sm font-black uppercase tracking-[-0.03em] text-white">{unit.name}</span>
+                            <span className="mt-1 block text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500">Ver unidade</span>
+                          </span>
+                          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-red-600 text-sm font-black text-white transition group-hover:translate-x-1">→</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </article>
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </section>
@@ -290,20 +399,18 @@ export default async function HomePage() {
       <section className="px-5 py-24 sm:px-8 lg:px-12">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 max-w-3xl">
-            <p className="border-l-4 border-red-600 pl-4 text-xs font-black uppercase tracking-[0.34em] text-red-500">Experiência Forbody</p>
+            <p className="border-l-4 border-red-600 pl-4 text-xs font-black uppercase tracking-[0.34em] text-red-500">Por que treinar na Forbody?</p>
             <h2 className="mt-6 text-4xl font-black uppercase leading-[0.92] tracking-[-0.06em] text-white sm:text-6xl">Tudo pensado para você treinar melhor.</h2>
           </div>
           <div className="grid gap-5 lg:grid-cols-3">
             {showcaseCards.map((card) => (
-              <article key={card.title} className="group relative min-h-[420px] overflow-hidden border border-white/10 bg-[#080808]">
-                <div className="absolute inset-0 bg-cover bg-center opacity-55 transition duration-500 group-hover:scale-105 group-hover:opacity-70" style={{ backgroundImage: `url(${card.image})` }} />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/72 to-transparent" />
-                <div className="relative flex h-full min-h-[420px] flex-col justify-end p-7">
-                  <p className="text-xs font-black uppercase tracking-[0.3em] text-red-500">{card.eyebrow}</p>
-                  <h3 className="mt-4 text-2xl font-black uppercase leading-tight text-white">{card.title}</h3>
-                  <p className="mt-4 text-sm leading-relaxed text-zinc-400">{card.description}</p>
-                </div>
-              </article>
+              <HomeShowcaseRotatingCard
+                key={card.title}
+                eyebrow={card.eyebrow}
+                title={card.title}
+                description={card.description}
+                images={card.images}
+              />
             ))}
           </div>
         </div>
@@ -336,11 +443,54 @@ export default async function HomePage() {
         </div>
       </section>
 
+
+      {suppliers.length > 0 && (
+        <section id="fornecedores" className="px-5 py-24 sm:px-8 lg:px-12">
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-12 grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+              <div>
+                <p className="border-l-4 border-red-600 pl-4 text-xs font-black uppercase tracking-[0.34em] text-red-500">
+                  {safeText(suppliersSection?.subtitle, "Fornecedores")}
+                </p>
+                <h2 className="mt-6 text-4xl font-black uppercase leading-[0.92] tracking-[-0.06em] text-white sm:text-6xl">
+                  {safeText(suppliersSection?.title, "Parceiros que fazem parte da nossa estrutura.")}
+                </h2>
+              </div>
+              <p className="max-w-3xl text-base leading-relaxed text-zinc-300 sm:text-lg">
+                {safeText(
+                  suppliersSection?.description,
+                  "Marcas e empresas parceiras que ajudam a Forbody a entregar uma experiência mais completa para alunos e unidades."
+                )}
+              </p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {suppliers.map((supplier) => (
+                <a
+                  key={`${supplier.name}-${supplier.href}`}
+                  href={supplier.href || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Abrir site do fornecedor ${supplier.name}`}
+                  className="group flex min-h-[140px] items-center justify-center rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-6 transition duration-300 hover:-translate-y-1 hover:border-red-600/60 hover:bg-red-600/10 hover:shadow-[0_0_48px_rgba(220,38,38,0.14)]"
+                >
+                  <span
+                    className="block h-20 w-full bg-contain bg-center bg-no-repeat opacity-75 grayscale transition duration-300 group-hover:opacity-100 group-hover:grayscale-0"
+                    style={{ backgroundImage: `url(${supplier.logo})` }}
+                  />
+                  <span className="sr-only">{supplier.name}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       <section className="px-5 py-24 sm:px-8 lg:px-12">
         <div className="mx-auto grid max-w-7xl gap-8 border border-white/10 bg-white/[0.03] p-8 backdrop-blur-xl lg:grid-cols-[0.8fr_1.2fr] lg:p-12">
           <div>
             <p className="border-l-4 border-red-600 pl-4 text-xs font-black uppercase tracking-[0.34em] text-red-500">Unidades</p>
-            <h2 className="mt-6 text-4xl font-black uppercase leading-[0.92] tracking-[-0.06em] text-white sm:text-6xl">Escolha onde começar.</h2>
+            <h2 className="mt-6 text-4xl font-black uppercase leading-[0.92] tracking-[-0.06em] text-white sm:text-6xl">Encontre sua unidade Forbody.</h2>
             <p className="mt-6 text-base leading-relaxed text-zinc-300">Encontre a unidade Forbody mais próxima e fale com nossa equipe para começar hoje.</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
