@@ -11,6 +11,29 @@ import { getUnitStatus, getUnitStatusBadgeClasses, getUnitStatusLabel, isPublicl
 const forbodyShopGlobalImageUrl = process.env.NEXT_PUBLIC_FORBODYSHOP_IMAGE_URL || '/images/forbodyshop/forbodyshop-oficial.jpg';
 const forbodyShopSalesUrl = process.env.NEXT_PUBLIC_FORBODYSHOP_SALES_URL || '#';
 
+const officialUnitLinks: Record<string, { salesUrl: string; locationUrl: string; instagramUrl: string }> = {
+  triunfo: {
+    salesUrl: 'https://evo-totem.w12app.com.br/fourbodyacademia/1/page/landing-page?preview=true',
+    locationUrl: 'https://maps.app.goo.gl/Rpq56nNQg5yXWTcGA',
+    instagramUrl: 'https://www.instagram.com/forbodytriunfo/',
+  },
+  'barao-do-bananal': {
+    salesUrl: 'https://evo-totem.w12app.com.br/fourbodyacademia/2/page/landing-page?preview=true',
+    locationUrl: 'https://maps.app.goo.gl/wGaseWp6ieZJ48cn7',
+    instagramUrl: 'https://www.instagram.com/forbodybananal/',
+  },
+  'vila-virginia': {
+    salesUrl: 'https://evo-totem.w12app.com.br/fourbodyacademia/3/page/landing-page?preview=true',
+    locationUrl: 'https://maps.app.goo.gl/iDg1mSLqWW3JSbZWA',
+    instagramUrl: 'https://www.instagram.com/forbodyvilavirginia/',
+  },
+  portinari: {
+    salesUrl: 'https://evo-totem.w12app.com.br/fourbodyacademia/4/page/landing-page?preview=true',
+    locationUrl: 'https://maps.app.goo.gl/aTXRt1dB2r1HDnkw5',
+    instagramUrl: 'https://www.instagram.com/forbodyportinari/',
+  },
+};
+
 function getGlobalForbodyShopItems(unitName: string): UnitGalleryItem[] {
   return [
     {
@@ -36,6 +59,12 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
   const status = getUnitStatus(unit.status);
   const isComingSoon = status === 'coming_soon';
   const isMaintenance = status === 'maintenance';
+  const officialLinks = officialUnitLinks[unit.slug];
+  const salesUrl = officialLinks?.salesUrl || unit.salesUrl;
+  const locationUrl = officialLinks?.locationUrl || unit.locationUrl;
+  const instagramUrl = officialLinks?.instagramUrl || unit.instagram;
+  const whatsappUrl = unit.whatsapp ? `https://wa.me/${unit.whatsapp}` : '';
+  const canShowCommercialButtons = !isComingSoon && !isMaintenance;
   const gallery = unit.galleryUrls || [];
   const galleryImages = gallery.filter((item) => item.category === 'galeria');
   const hasForbodyShop = gallery.some((item) => item.category === 'forbodyshop');
@@ -56,6 +85,31 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
             <span className={`mt-6 inline-flex rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] ${getUnitStatusBadgeClasses(unit.status)}`}>{getUnitStatusLabel(unit.status)}</span>
             {isMaintenance && <p className="mt-5 rounded-2xl border border-orange-600/20 bg-orange-600/10 px-5 py-4 text-sm text-orange-200">Esta unidade está temporariamente em manutenção.</p>}
             {isComingSoon && <p className="mt-5 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-slate-300">Essa unidade será inaugurada em breve.</p>}
+
+            {canShowCommercialButtons && (
+              <div className="mt-8 grid gap-3 sm:grid-cols-2">
+                {salesUrl && salesUrl !== '#' && (
+                  <a href={salesUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-xl bg-red-600 px-6 py-4 text-center text-xs font-black uppercase tracking-[0.2em] text-white shadow-[0_0_34px_rgba(220,38,38,0.26)] transition hover:-translate-y-0.5 hover:bg-red-700">
+                    Comprar um plano
+                  </a>
+                )}
+                {whatsappUrl && (
+                  <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-xl border border-white/15 bg-white/[0.04] px-6 py-4 text-center text-xs font-black uppercase tracking-[0.2em] text-white transition hover:-translate-y-0.5 hover:border-red-600 hover:bg-red-600/10">
+                    Falar no WhatsApp
+                  </a>
+                )}
+                {locationUrl && locationUrl !== '#' && (
+                  <a href={locationUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-xl border border-white/15 bg-white/[0.04] px-6 py-4 text-center text-xs font-black uppercase tracking-[0.2em] text-white transition hover:-translate-y-0.5 hover:border-red-600 hover:bg-red-600/10">
+                    Como chegar
+                  </a>
+                )}
+                {instagramUrl && instagramUrl !== '#' && (
+                  <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-xl border border-white/15 bg-white/[0.04] px-6 py-4 text-center text-xs font-black uppercase tracking-[0.2em] text-white transition hover:-translate-y-0.5 hover:border-red-600 hover:bg-red-600/10">
+                    Instagram
+                  </a>
+                )}
+              </div>
+            )}
           </div>
 
           {unit.imageUrl && (
@@ -89,7 +143,7 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
                   </div>
                   <p className="rounded-full border border-red-600/20 bg-red-600/10 px-3 py-2 text-xs font-bold text-red-200">{googleReviewsCount} avaliações</p>
                 </div>
-                <GoogleReviewsLoop reviews={displayReviews} googleUrl={unit.locationUrl} />
+                <GoogleReviewsLoop reviews={displayReviews} googleUrl={locationUrl} />
               </div>
             )}
 
