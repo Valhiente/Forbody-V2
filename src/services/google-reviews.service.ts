@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/server';
 
 export type GooglePlaceReview = {
   author_name?: string;
@@ -102,10 +102,10 @@ export async function syncGooglePlaceData(unitId: string, placeId: string) {
     return googleData;
   }
 
-  const supabase = await createClient();
+  const supabase = await createSupabaseAdminClient();
 
   if (!supabase) {
-    throw new Error('Supabase client not initialized');
+    throw new Error('Supabase admin client not initialized');
   }
 
   const { error } = await supabase
