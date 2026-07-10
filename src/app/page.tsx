@@ -77,10 +77,10 @@ const fallbackShowcaseCards = [
 ];
 
 const heroProofItems = [
-  "4 unidades",
+  "5 unidades abertas",
+  "3 em abertura",
   "Planos a partir de R$ 99,90",
   "Professores presentes",
-  "Aulas coletivas",
 ];
 
 const heroUnitCards = [
@@ -88,6 +88,7 @@ const heroUnitCards = [
   { name: "Barão do Bananal", href: "/unidades/barao-do-bananal" },
   { name: "Vila Virgínia", href: "/unidades/vila-virginia" },
   { name: "Portinari", href: "/unidades/portinari" },
+  { name: "Campo Belo", href: "/unidades" },
 ];
 
 function normalizeSupplierHref(value: string | null | undefined) {
@@ -224,30 +225,30 @@ export default async function HomePage() {
 
         <div className="relative z-10 mx-auto grid min-h-[calc(100vh-7rem)] w-full max-w-7xl items-center gap-8 lg:grid-cols-[0.9fr_1.1fr] xl:grid-cols-[0.95fr_1.05fr]">
           <div className="animate-slide-up">
-            <p className="mb-6 inline-flex border-l-4 border-red-600 bg-black/25 px-4 py-2 text-xs font-black uppercase tracking-[0.34em] text-red-500 backdrop-blur-xl">
+            <p className="mb-5 inline-flex border-l-4 border-red-600 bg-black/25 px-4 py-2 text-[10px] font-black uppercase tracking-[0.26em] text-red-500 backdrop-blur-xl sm:mb-6 sm:text-xs sm:tracking-[0.34em]">
               {hero.eyebrow}
             </p>
 
-            <h1 className="max-w-4xl text-5xl font-black uppercase leading-[0.88] tracking-[-0.075em] text-white drop-shadow-[0_10px_34px_rgba(0,0,0,0.7)] sm:text-7xl lg:text-[5.8rem] xl:text-[6.5rem]">
+            <h1 className="max-w-4xl text-[2.85rem] font-black uppercase leading-[0.92] tracking-[-0.055em] text-white drop-shadow-[0_10px_34px_rgba(0,0,0,0.7)] min-[390px]:text-[3.15rem] sm:text-7xl lg:text-[5.8rem] xl:text-[6.5rem]">
               {renderHeroTitle(hero.title)}
             </h1>
 
-            <p className="mt-7 max-w-2xl text-base leading-relaxed text-zinc-200 sm:text-lg">
+            <p className="mt-6 max-w-2xl text-base leading-relaxed text-zinc-200 sm:mt-7 sm:text-lg">
               {hero.description}
             </p>
 
-            <div className="mt-9 flex flex-col gap-4 sm:flex-row">
-              <Link href={hero.buttonHref} className="rounded-lg bg-red-600 px-8 py-4 text-center text-sm font-black uppercase tracking-[0.18em] text-white shadow-[0_0_38px_rgba(220,38,38,0.35)] transition duration-300 hover:-translate-y-0.5 hover:bg-red-700">
+            <div className="mt-8 flex flex-col gap-4 sm:mt-9 sm:flex-row">
+              <Link href={hero.buttonHref} className="rounded-lg bg-red-600 px-7 py-4 text-center text-xs font-black uppercase tracking-[0.16em] text-white shadow-[0_0_38px_rgba(220,38,38,0.35)] transition duration-300 hover:-translate-y-0.5 hover:bg-red-700 sm:px-8 sm:text-sm sm:tracking-[0.18em]">
                 {hero.buttonLabel} <span className="ml-2">→</span>
               </Link>
-              <Link href="/franquias" className="group rounded-lg border border-white/20 bg-black/30 px-8 py-4 text-center text-sm font-black uppercase tracking-[0.18em] text-white backdrop-blur-xl transition duration-300 hover:-translate-y-0.5 hover:border-red-600 hover:bg-red-600/10">
+              <Link href="/franquias" className="group rounded-lg border border-white/20 bg-black/30 px-7 py-4 text-center text-xs font-black uppercase tracking-[0.16em] text-white backdrop-blur-xl transition duration-300 hover:-translate-y-0.5 hover:border-red-600 hover:bg-red-600/10 sm:px-8 sm:text-sm sm:tracking-[0.18em]">
                 Seja franqueado <span className="ml-2 inline-block text-red-500 transition group-hover:translate-x-1">→</span>
               </Link>
             </div>
 
-            <div className="mt-10 grid overflow-hidden rounded-[1.4rem] border border-white/10 bg-black/45 shadow-[0_0_80px_rgba(220,38,38,0.12)] backdrop-blur-xl sm:grid-cols-2">
+            <div className="mt-9 grid overflow-hidden rounded-[1.4rem] border border-white/10 bg-black/45 shadow-[0_0_80px_rgba(220,38,38,0.12)] backdrop-blur-xl sm:mt-10 sm:grid-cols-2">
               {heroProofItems.map((item) => (
-                <div key={item} className="border-b border-white/10 px-5 py-4 text-xs font-black uppercase tracking-[0.16em] text-zinc-200 even:border-l sm:[&:nth-child(n+3)]:border-b-0">
+                <div key={item} className="border-b border-white/10 px-4 py-4 text-[10px] font-black uppercase tracking-[0.13em] text-zinc-200 even:border-l sm:px-5 sm:text-xs sm:tracking-[0.16em] sm:[&:nth-child(n+3)]:border-b-0">
                   <span className="mr-2 text-red-500">●</span>
                   {item}
                 </div>
@@ -298,7 +299,7 @@ export default async function HomePage() {
 
                     <div className="mt-6 grid gap-3">
                       {heroUnitCards.map((unit) => (
-                        <Link key={unit.href} href={unit.href} className="group flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-black/45 px-4 py-4 transition duration-300 hover:-translate-y-0.5 hover:border-red-600/60 hover:bg-red-600/10">
+                        <Link key={unit.href + unit.name} href={unit.href} className="group flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-black/45 px-4 py-4 transition duration-300 hover:-translate-y-0.5 hover:border-red-600/60 hover:bg-red-600/10">
                           <span>
                             <span className="block text-sm font-black uppercase tracking-[-0.03em] text-white">{unit.name}</span>
                             <span className="mt-1 block text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500">Ver unidade</span>
@@ -378,7 +379,7 @@ export default async function HomePage() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {heroUnitCards.map((unit) => (
-              <Link key={unit.href} href={unit.href} className="group border border-white/10 bg-black/30 p-5 transition hover:-translate-y-1 hover:border-red-600/50 hover:bg-red-600/10">
+              <Link key={unit.href + unit.name} href={unit.href} className="group border border-white/10 bg-black/30 p-5 transition hover:-translate-y-1 hover:border-red-600/50 hover:bg-red-600/10">
                 <p className="text-lg font-black uppercase tracking-[-0.04em] text-white">{unit.name}</p>
                 <span className="mt-4 inline-flex text-xs font-black uppercase tracking-[0.2em] text-red-500 group-hover:text-red-400">Ver unidade →</span>
               </Link>
