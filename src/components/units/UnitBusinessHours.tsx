@@ -42,7 +42,6 @@ function findNextOpenDay(hours: BusinessHour[], currentDay: number, nowMinutes: 
     const parsed = dayHours ? parseHours(dayHours.hours) : null;
 
     if (!parsed) continue;
-
     if (offset === 0 && parsed.openMinutes <= nowMinutes) continue;
 
     return { day, open: parsed.open };
@@ -55,9 +54,12 @@ export default function UnitBusinessHours({ hours }: { hours?: BusinessHour[] })
   const [now, setNow] = useState<Date | null>(null);
 
   useEffect(() => {
-    setNow(new Date());
+    const initialTimer = window.setTimeout(() => setNow(new Date()), 0);
     const interval = window.setInterval(() => setNow(new Date()), 60_000);
-    return () => window.clearInterval(interval);
+    return () => {
+      window.clearTimeout(initialTimer);
+      window.clearInterval(interval);
+    };
   }, []);
 
   const status = useMemo(() => {
@@ -115,10 +117,7 @@ export default function UnitBusinessHours({ hours }: { hours?: BusinessHour[] })
           const parsed = parseHours(item.hours);
 
           return (
-            <div
-              key={item.day}
-              className={`flex items-center justify-between gap-4 rounded-2xl border px-4 py-3 text-sm ${isToday ? 'border-red-600/50 bg-red-600/10 text-white' : 'border-white/10 bg-white/[0.03] text-slate-300'}`}
-            >
+            <div key={item.day} className={`flex items-center justify-between gap-4 rounded-2xl border px-4 py-3 text-sm ${isToday ? 'border-red-600/50 bg-red-600/10 text-white' : 'border-white/10 bg-white/[0.03] text-slate-300'}`}>
               <div>
                 <p className="font-black uppercase tracking-[0.16em]">{shortDayLabels[dayNumber]}</p>
                 <p className="mt-1 text-xs text-slate-500">{dayLabels[dayNumber]}</p>
@@ -134,9 +133,7 @@ export default function UnitBusinessHours({ hours }: { hours?: BusinessHour[] })
           <span className="mt-1 flex h-3 w-3 shrink-0 rounded-full bg-red-500 shadow-[0_0_18px_rgba(239,68,68,0.9)]" />
           <div>
             <p className="text-xs font-black uppercase tracking-[0.22em] text-red-300">Atenção aos feriados</p>
-            <p className="mt-2 text-sm font-semibold leading-relaxed text-white">
-              Feriados: <span className="text-red-300">08:00 às 13:00</span>.
-            </p>
+            <p className="mt-2 text-sm font-semibold leading-relaxed text-white">Feriados: <span className="text-red-300">08:00 às 13:00</span>.</p>
           </div>
         </div>
       </div>
