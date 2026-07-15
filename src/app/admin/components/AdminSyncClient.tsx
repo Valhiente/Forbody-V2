@@ -1,22 +1,25 @@
 "use client";
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { triggerSyncAllGoogleReviews } from '@/app/admin/actions';
+
+type SyncResult = {
+  synced: number;
+  failed: number;
+};
 
 export default function AdminSyncClient() {
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<{ synced: number; failed: number } | null>(null);
+  const [result, setResult] = useState<SyncResult | null>(null);
 
   async function handleClick() {
     setLoading(true);
     setResult(null);
     try {
-      // call server action
-      const res: any = await triggerSyncAllGoogleReviews();
-      setResult({ synced: res.synced ?? 0, failed: res.failed ?? 0 });
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error('Sync action failed', err);
+      const response = await triggerSyncAllGoogleReviews();
+      setResult({ synced: response.synced ?? 0, failed: response.failed ?? 0 });
+    } catch (error: unknown) {
+      console.error('Sync action failed', error);
       setResult({ synced: 0, failed: 1 });
     } finally {
       setLoading(false);
@@ -25,20 +28,10 @@ export default function AdminSyncClient() {
 
   return (
     <div className="inline-flex items-center gap-2">
-      <button
-        type="button"
-        onClick={handleClick}
-        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold uppercase text-xs tracking-widest rounded"
-        disabled={loading}
-      >
+      <button type="button" onClick={handleClick} className="rounded bg-blue-600 px-4 py-2 text-xs font-bold uppercase tracking-widest text-white hover:bg-blue-700" disabled={loading}>
         {loading ? 'Sincronizando...' : 'Sincronizar Google Reviews'}
       </button>
-
-      {result && (
-        <div className="text-sm text-gray-300 font-mono">
-          sincronizadas: {result.synced} • falhas: {result.failed}
-        </div>
-      )}
+      {result && <div className="font-mono text-sm text-gray-300">sincronizadas: {result.synced} • falhas: {result.failed}</div>}
     </div>
   );
 }
