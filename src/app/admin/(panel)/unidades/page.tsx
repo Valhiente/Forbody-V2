@@ -1,3 +1,4 @@
+import type { Unit } from '@/app/index';
 import { getAdminUnits } from '@/services/units.service';
 import Button from '@/components/ui/Button';
 import UnitsTableClient from '@/app/admin/(panel)/unidades/UnitsTableClient';
@@ -15,7 +16,7 @@ const sections: AdminSection[] = [
   {
     id: 'add-unit',
     title: 'Adicionar Unidade',
-    description: 'Cadastro de novas academias na rede ForBody',
+    description: 'Cadastro de novas academias na rede Forbody',
     items: [
       { icon: '📛', label: 'Nome da unidade' },
       { icon: '🌍', label: 'Cidade/estado' },
@@ -86,20 +87,14 @@ const sections: AdminSection[] = [
   },
 ];
 
-const getStatusBadge = (status: string | undefined) => {
-  const statusMap: Record<string, { label: string; color: string }> = {
-    active: { label: 'ATIVA', color: 'bg-green-600/20 text-green-400' },
-    coming_soon: { label: 'EM BREVE', color: 'bg-yellow-600/20 text-yellow-400' },
-  };
-  return statusMap[status || 'active'] || { label: 'DESCONHECIDO', color: 'bg-gray-600/20 text-gray-400' };
-};
-
-const getAverageRating = (unitsData: any[]) => {
-  const ratedUnits = unitsData.filter((unit) => typeof unit.googleReviewsScore === 'number' && unit.googleReviewsScore > 0);
+function getAverageRating(unitsData: Unit[]) {
+  const ratedUnits = unitsData.filter(
+    (unit) => typeof unit.googleReviewsScore === 'number' && unit.googleReviewsScore > 0
+  );
   if (!ratedUnits.length) return 'N/A';
   const average = ratedUnits.reduce((sum, unit) => sum + unit.googleReviewsScore, 0) / ratedUnits.length;
   return average.toFixed(1);
-};
+}
 
 export default async function AdminUnidadesPage() {
   const unitsData = await getAdminUnits();
@@ -110,17 +105,14 @@ export default async function AdminUnidadesPage() {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
       <div className="rounded-3xl border border-white/10 bg-[#111] p-8 shadow-xl shadow-black/20">
         <p className="text-xs font-bold uppercase tracking-[0.36em] text-red-600">Admin / Unidades</p>
         <h1 className="mt-4 text-4xl font-black text-white">Gestão de Unidades</h1>
         <p className="mt-3 max-w-3xl text-sm text-gray-400">
-          Central de controle de todas as unidades da rede ForBody. Adicione novas academias, edite dados, configure
-          integrações com EVO/W12, Google Place e gerencie fotos e status operacional.
+          Central de controle de todas as unidades da rede Forbody. Adicione novas academias, edite dados, configure integrações com EVO/W12, Google Place e gerencie fotos e status operacional.
         </p>
       </div>
 
-      {/* Summary Cards */}
       <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
         {[
           { label: 'Unidades Ativas', value: activeCount.toString(), color: 'text-green-400' },
@@ -135,20 +127,15 @@ export default async function AdminUnidadesPage() {
         ))}
       </div>
 
-      {/* Unit Create Form */}
       <UnitCreateForm />
 
-      {/* Management Sections Grid */}
       <div className="grid gap-6 lg:grid-cols-2">
         {sections.map((section) => (
-          <div
-            key={section.id}
-            className="flex flex-col rounded-3xl border border-white/10 bg-[#0a0a0a] p-6 shadow-xl shadow-black/40 transition-all duration-300 hover:border-red-600/30 hover:shadow-red-600/10"
-          >
+          <div key={section.id} className="flex flex-col rounded-3xl border border-white/10 bg-[#0a0a0a] p-6 shadow-xl shadow-black/40 transition-all duration-300 hover:border-red-600/30 hover:shadow-red-600/10">
             <h2 className="text-xl font-black text-white">{section.title}</h2>
             <p className="mt-2 text-sm text-gray-400">{section.description}</p>
             <div className="my-4 h-px bg-gradient-to-r from-red-600/20 to-transparent" />
-            <div className="space-y-3 flex-1">
+            <div className="flex-1 space-y-3">
               {section.items.map((item) => (
                 <div key={item.label} className="flex items-center gap-3 rounded-lg bg-black/30 px-3 py-2">
                   <span className="text-lg">{item.icon}</span>
@@ -156,23 +143,16 @@ export default async function AdminUnidadesPage() {
                 </div>
               ))}
             </div>
-            <Button variant="b2b-primary" disabled className="mt-6 w-full">
-              {section.buttonLabel}
-            </Button>
+            <Button variant="b2b-primary" disabled className="mt-6 w-full">{section.buttonLabel}</Button>
           </div>
         ))}
       </div>
 
-      {/* Units Table with Search/Filter */}
       <UnitsTableClient units={unitsData} />
 
-      {/* Info Box */}
       <div className="rounded-3xl border border-red-600/20 bg-[#111] p-6 text-sm text-gray-400">
         <p className="font-semibold text-red-500">Status:</p>
-        <p>
-          Estrutura visual criada. Funcionalidades de edição, filtragem e navegação de unidades foram preparadas
-          para evolução futura.
-        </p>
+        <p>Estrutura visual criada. Funcionalidades de edição, filtragem e navegação de unidades foram preparadas para evolução futura.</p>
       </div>
     </div>
   );
