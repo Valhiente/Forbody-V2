@@ -14,6 +14,10 @@ function SubmitButton() {
   );
 }
 
+function isRedirectError(error: unknown): error is Error {
+  return error instanceof Error && error.message === 'NEXT_REDIRECT';
+}
+
 export default function UnitCreateForm() {
   const [error, setError] = useState<string | null>(null);
 
@@ -24,9 +28,9 @@ export default function UnitCreateForm() {
       if (result && !result.success) {
         setError(result.error || 'Ocorreu um erro ao criar a unidade.');
       }
-    } catch (err: any) {
-      if (err.message === 'NEXT_REDIRECT') {
-        throw err;
+    } catch (caughtError: unknown) {
+      if (isRedirectError(caughtError)) {
+        throw caughtError;
       }
       setError('Ocorreu um erro inesperado.');
     }
@@ -49,82 +53,31 @@ export default function UnitCreateForm() {
 
       <form action={action} className="space-y-6">
         <div className="grid gap-6 md:grid-cols-2">
-          {/* Nome e Slug */}
           <div className="space-y-2">
-            <label htmlFor="name" className="text-sm font-semibold text-gray-300">
-              Nome da unidade *
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              required
-              className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
-              placeholder="Ex: ForBody Centro"
-            />
+            <label htmlFor="name" className="text-sm font-semibold text-gray-300">Nome da unidade *</label>
+            <input type="text" id="name" name="name" required className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500" placeholder="Ex: Forbody Centro" />
           </div>
           <div className="space-y-2">
-            <label htmlFor="slug" className="text-sm font-semibold text-gray-300">
-              Slug (opcional - gerado do nome se vazio)
-            </label>
-            <input
-              type="text"
-              id="slug"
-              name="slug"
-              className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
-              placeholder="Ex: centro"
-            />
+            <label htmlFor="slug" className="text-sm font-semibold text-gray-300">Slug (opcional - gerado do nome se vazio)</label>
+            <input type="text" id="slug" name="slug" className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500" placeholder="Ex: centro" />
           </div>
 
-          {/* Cidade e Estado */}
           <div className="space-y-2">
-            <label htmlFor="city" className="text-sm font-semibold text-gray-300">
-              Cidade
-            </label>
-            <input
-              type="text"
-              id="city"
-              name="city"
-              defaultValue="Ribeirão Preto"
-              className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
-            />
+            <label htmlFor="city" className="text-sm font-semibold text-gray-300">Cidade</label>
+            <input type="text" id="city" name="city" defaultValue="Ribeirão Preto" className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500" />
           </div>
           <div className="space-y-2">
-            <label htmlFor="state" className="text-sm font-semibold text-gray-300">
-              Estado
-            </label>
-            <input
-              type="text"
-              id="state"
-              name="state"
-              defaultValue="SP"
-              className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
-            />
+            <label htmlFor="state" className="text-sm font-semibold text-gray-300">Estado</label>
+            <input type="text" id="state" name="state" defaultValue="SP" className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500" />
           </div>
 
-          {/* Endereço e Status */}
           <div className="space-y-2">
-            <label htmlFor="address" className="text-sm font-semibold text-gray-300">
-              Endereço
-            </label>
-            <input
-              type="text"
-              id="address"
-              name="address"
-              className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
-              placeholder="Rua, Número, Bairro"
-            />
+            <label htmlFor="address" className="text-sm font-semibold text-gray-300">Endereço</label>
+            <input type="text" id="address" name="address" className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500" placeholder="Rua, Número, Bairro" />
           </div>
           <div className="space-y-2">
-            <label htmlFor="status" className="text-sm font-semibold text-gray-300">
-              Status
-            </label>
-            <select
-              id="status"
-              name="status"
-              defaultValue="coming_soon"
-              className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
-            >
+            <label htmlFor="status" className="text-sm font-semibold text-gray-300">Status</label>
+            <select id="status" name="status" defaultValue="coming_soon" className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500">
               <option value="active">Ativa</option>
               <option value="coming_soon">Em breve</option>
               <option value="maintenance">Manutenção</option>
@@ -132,82 +85,31 @@ export default function UnitCreateForm() {
             </select>
           </div>
 
-          {/* Redes Sociais */}
           <div className="space-y-2">
-            <label htmlFor="whatsapp" className="text-sm font-semibold text-gray-300">
-              WhatsApp
-            </label>
-            <input
-              type="text"
-              id="whatsapp"
-              name="whatsapp"
-              className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
-              placeholder="Ex: 16999999999"
-            />
+            <label htmlFor="whatsapp" className="text-sm font-semibold text-gray-300">WhatsApp</label>
+            <input type="text" id="whatsapp" name="whatsapp" className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500" placeholder="Ex: 16999999999" />
           </div>
           <div className="space-y-2">
-            <label htmlFor="instagram" className="text-sm font-semibold text-gray-300">
-              Instagram (username)
-            </label>
-            <input
-              type="text"
-              id="instagram"
-              name="instagram"
-              className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
-              placeholder="Ex: forbody.rp"
-            />
+            <label htmlFor="instagram" className="text-sm font-semibold text-gray-300">Instagram (username)</label>
+            <input type="text" id="instagram" name="instagram" className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500" placeholder="Ex: forbody.rp" />
           </div>
 
-          {/* Links EVO */}
           <div className="space-y-2">
-            <label htmlFor="salesUrl" className="text-sm font-semibold text-gray-300">
-              Link EVO Vendas
-            </label>
-            <input
-              type="url"
-              id="salesUrl"
-              name="salesUrl"
-              className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
-              placeholder="https://..."
-            />
+            <label htmlFor="salesUrl" className="text-sm font-semibold text-gray-300">Link EVO Vendas</label>
+            <input type="url" id="salesUrl" name="salesUrl" className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500" placeholder="https://..." />
           </div>
           <div className="space-y-2">
-            <label htmlFor="studentAreaUrl" className="text-sm font-semibold text-gray-300">
-              Área do Aluno (URL)
-            </label>
-            <input
-              type="url"
-              id="studentAreaUrl"
-              name="studentAreaUrl"
-              className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
-              placeholder="https://..."
-            />
+            <label htmlFor="studentAreaUrl" className="text-sm font-semibold text-gray-300">Área do Aluno (URL)</label>
+            <input type="url" id="studentAreaUrl" name="studentAreaUrl" className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500" placeholder="https://..." />
           </div>
 
-          {/* Google */}
           <div className="space-y-2">
-            <label htmlFor="locationUrl" className="text-sm font-semibold text-gray-300">
-              Link Google Maps
-            </label>
-            <input
-              type="url"
-              id="locationUrl"
-              name="locationUrl"
-              className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
-              placeholder="https://maps.app.goo.gl/..."
-            />
+            <label htmlFor="locationUrl" className="text-sm font-semibold text-gray-300">Link Google Maps</label>
+            <input type="url" id="locationUrl" name="locationUrl" className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500" placeholder="https://maps.app.goo.gl/..." />
           </div>
           <div className="space-y-2">
-            <label htmlFor="googlePlaceId" className="text-sm font-semibold text-gray-300">
-              Google Place ID
-            </label>
-            <input
-              type="text"
-              id="googlePlaceId"
-              name="googlePlaceId"
-              className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
-              placeholder="ChIJ..."
-            />
+            <label htmlFor="googlePlaceId" className="text-sm font-semibold text-gray-300">Google Place ID</label>
+            <input type="text" id="googlePlaceId" name="googlePlaceId" className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500" placeholder="ChIJ..." />
           </div>
         </div>
 
