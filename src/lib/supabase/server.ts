@@ -1,38 +1,33 @@
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 
 export async function createClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
-    // Retornar null se as variáveis não estiverem configuradas para não quebrar a build
-    console.warn('Supabase URL ou Anon Key ausente. Retornando client nulo.')
-    return null
+    console.warn('Supabase URL ou Anon Key ausente. Retornando client nulo.');
+    return null;
   }
 
-  const cookieStore = await cookies()
+  const cookieStore = await cookies();
 
-  return createServerClient(
-    supabaseUrl,
-    supabaseKey,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll()
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) => {
-              cookieStore.set(name, value, options)
-            })
-          } catch (error) {
-            // Ignorar erro ao setar cookie em Server Component
-          }
-        },
+  return createServerClient(supabaseUrl, supabaseKey, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll();
       },
-    }
-  )
+      setAll(cookiesToSet) {
+        try {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set(name, value, options);
+          });
+        } catch {
+          // Server Components podem não permitir mutação de cookies.
+        }
+      },
+    },
+  });
 }
 
 /**
@@ -40,25 +35,19 @@ export async function createClient() {
  * Bypassa RLS (Row Level Security).
  */
 export async function createSupabaseAdminClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseServiceKey) {
-    return null
+    return null;
   }
 
-  // Admin client não precisa de controle de sessão via cookies neste contexto
-  return createServerClient(
-    supabaseUrl,
-    supabaseServiceKey,
-    {
-      cookies: {
-        getAll() {
-          return []
-        },
-        setAll() {}
-      }
-    }
-  )
+  return createServerClient(supabaseUrl, supabaseServiceKey, {
+    cookies: {
+      getAll() {
+        return [];
+      },
+      setAll() {},
+    },
+  });
 }
-
