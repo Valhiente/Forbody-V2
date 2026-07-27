@@ -4,6 +4,7 @@ import type { Unit } from '@/app/index';
 import { createUnit } from '@/services/units.service';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { requireAdminSession } from '@/lib/admin-session';
 
 function trimText(value: FormDataEntryValue | null): string {
   return typeof value === 'string' ? value.trim() : '';
@@ -33,6 +34,8 @@ function normalizeStatus(value: string): NonNullable<Unit['status']> {
 }
 
 export async function createUnitAction(formData: FormData) {
+  await requireAdminSession();
+
   const rawName = trimText(formData.get('name'));
   const rawSlug = trimText(formData.get('slug'));
   const city = trimText(formData.get('city')) || 'Ribeirão Preto';

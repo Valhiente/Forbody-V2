@@ -3,6 +3,7 @@
 import { updateUnit } from '@/services/units.service';
 import { revalidatePath } from 'next/cache';
 import type { Unit } from '@/app/index';
+import { requireAdminSession } from '@/lib/admin-session';
 
 const normalizeText = (value: FormDataEntryValue | null): string | undefined => {
   if (value === null) return undefined;
@@ -17,6 +18,8 @@ const normalizeUrl = (value: FormDataEntryValue | null): string | undefined => {
 };
 
 export async function updateUnitAction(formData: FormData) {
+  await requireAdminSession();
+
   const id = formData.get('id') as string;
   const slug = formData.get('slug') as string;
   

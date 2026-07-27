@@ -22,12 +22,9 @@ export default async function AdminDashboardPage() {
     : '0.0';
 
   const quickActions = [
-    { title: 'Editar site', href: '/admin/site' },
     { title: 'Gerenciar unidades', href: '/admin/unidades' },
-    { title: 'Criar campanha', href: '/admin/marketing' },
+    { title: 'Gerenciar marketing', href: '/admin/marketing' },
     { title: 'Sincronizar reviews', href: '/admin/reviews' },
-    { title: 'Ver usuários', href: '/admin/users' },
-    { title: 'Abrir configurações', href: '/admin/settings' },
   ];
 
   const alerts = [
@@ -153,7 +150,7 @@ export default async function AdminDashboardPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="rounded-3xl border border-white/10 bg-[#111] p-6 sm:p-8 shadow-xl shadow-black/20 lg:col-span-2">
           <h2 className="text-xl font-bold text-white mb-6">Ações Rápidas</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             {quickActions.map((action, i) => (
               <Link
                 key={i}

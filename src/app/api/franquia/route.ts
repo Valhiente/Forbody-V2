@@ -8,12 +8,37 @@ interface FranchiseLeadPayload {
   capital?: string;
   message?: string;
   origin?: string;
+  website?: string;
+  startedAt?: number;
 }
 
+type ValidatedLead = Required<Omit<FranchiseLeadPayload, 'website' | 'startedAt'>>;
+
 const RESEND_API_URL = 'https://api.resend.com/emails';
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const RATE_LIMIT_MAX_REQUESTS = 3;
+const requestLog = new Map<string, number[]>();
 
 function sanitizeText(value?: string) {
-  return String(value ?? '').trim();
+  return String(value ?? '').trim().slice(0, 2_000);
+}
+
+function escapeHtml(value: string) {
+  return value.replace(
+    /[&<>"']/g,
+    (character) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[character]!,
+  );
+}
+
+function isRateLimited(request: Request) {
+  const forwardedFor = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim();
+  const ip = forwardedFor || request.headers.get('x-real-ip') || 'unknown';
+  const now = Date.now();
+  const recent = (requestLog.get(ip) || []).filter((time) => now - time < RATE_LIMIT_WINDOW_MS);
+  recent.push(now);
+  requestLog.set(ip, recent);
+  return recent.length > RATE_LIMIT_MAX_REQUESTS;
 }
 
 function validateEmail(email: string) {
@@ -25,7 +50,7 @@ function validatePhone(phone: string) {
   return cleaned.length >= 10 && cleaned.length <= 11;
 }
 
-function buildLeadEmailHtml(data: Required<FranchiseLeadPayload>) {
+function buildLeadEmailHtml(data: ValidatedLead) {
   const rows = [
     ['Nome Completo', data.name],
     ['Email', data.email],
@@ -45,7 +70,7 @@ function buildLeadEmailHtml(data: Required<FranchiseLeadPayload>) {
           ${rows.map(([label, value]) => `
             <tr>
               <td style="border-top:1px solid #2a2a2a; padding:12px 8px; color:#a3a3a3; width:190px; font-size:13px;">${label}</td>
-              <td style="border-top:1px solid #2a2a2a; padding:12px 8px; color:#ffffff; font-size:14px;">${value}</td>
+              <td style="border-top:1px solid #2a2a2a; padding:12px 8px; color:#ffffff; font-size:14px;">${escapeHtml(value)}</td>
             </tr>
           `).join('')}
         </table>
@@ -54,7 +79,7 @@ function buildLeadEmailHtml(data: Required<FranchiseLeadPayload>) {
   `;
 }
 
-async function saveLeadToSupabase(data: Required<FranchiseLeadPayload>) {
+async function saveLeadToSupabase(data: ValidatedLead) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -92,7 +117,7 @@ async function saveLeadToSupabase(data: Required<FranchiseLeadPayload>) {
   return { success: true, skipped: false };
 }
 
-async function sendLeadEmail(data: Required<FranchiseLeadPayload>) {
+async function sendLeadEmail(data: ValidatedLead) {
   const resendApiKey = process.env.RESEND_API_KEY;
   const toEmail = process.env.FRANCHISE_LEAD_TO_EMAIL || 'robertovalhiente@gmail.com';
   const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
@@ -127,9 +152,33 @@ async function sendLeadEmail(data: Required<FranchiseLeadPayload>) {
 
 export async function POST(request: Request) {
   try {
+    if (isRateLimited(request)) {
+      return NextResponse.json(
+        { error: 'Muitas tentativas. Aguarde alguns minutos e tente novamente.' },
+        { status: 429, headers: { 'Retry-After': '600' } },
+      );
+    }
+
+    const contentLength = Number(request.headers.get('content-length') || 0);
+    if (contentLength > 20_000) {
+      return NextResponse.json({ error: 'Dados enviados excedem o limite permitido.' }, { status: 413 });
+    }
+
     const body = (await request.json()) as FranchiseLeadPayload;
 
-    const data: Required<FranchiseLeadPayload> = {
+    if (sanitizeText(body.website)) {
+      return NextResponse.json({ success: true });
+    }
+
+    if (
+      typeof body.startedAt !== 'number' ||
+      Date.now() - body.startedAt < 2_500 ||
+      Date.now() - body.startedAt > 24 * 60 * 60 * 1000
+    ) {
+      return NextResponse.json({ error: 'Envio inválido. Atualize a página e tente novamente.' }, { status: 400 });
+    }
+
+    const data: ValidatedLead = {
       name: sanitizeText(body.name),
       email: sanitizeText(body.email),
       whatsapp: sanitizeText(body.whatsapp),

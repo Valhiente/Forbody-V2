@@ -1,17 +1,18 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
+import { redirect } from 'next/navigation';
+import { validateAdminSession } from '@/lib/admin-session';
 
 const navItems = [
   { label: 'Dashboard', href: '/admin' },
-  { label: 'Site', href: '/admin/site' },
   { label: 'Unidades', href: '/admin/unidades' },
   { label: 'Marketing', href: '/admin/marketing' },
   { label: 'Reviews', href: '/admin/reviews' },
-  { label: 'Configurações', href: '/admin/settings' },
-  { label: 'Usuários', href: '/admin/users' },
 ];
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
+export default async function AdminLayout({ children }: { children: ReactNode }) {
+  if (!(await validateAdminSession())) redirect('/admin/login');
+
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="flex min-h-screen">

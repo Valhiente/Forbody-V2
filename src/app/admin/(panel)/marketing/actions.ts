@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createSupabaseAdminClient } from '@/lib/supabase/server';
+import { requireAdminSession } from '@/lib/admin-session';
 
 type ActionResult = { success: boolean; error?: string };
 type SupabaseError = { message: string };
@@ -124,8 +125,25 @@ async function upsertItem(supabase: SupabaseWriterClient, payload: Record<string
   if (error) throw new Error(`Erro em site_marketing_items: ${error.message}`);
 }
 
+async function upsertPlan(supabase: SupabaseWriterClient, payload: Record<string, unknown>) {
+  const { error } = await supabase.from('site_plans').upsert(payload, {
+    onConflict: 'plan_key',
+  });
+
+  if (error) throw new Error(`Erro em site_plans: ${error.message}`);
+}
+
+function lines(formData: FormData, name: string): string[] {
+  return text(formData.get(name))
+    .split(/\r?\n/)
+    .map((value) => value.trim())
+    .filter(Boolean);
+}
+
 export async function updateMarketingManagerAction(formData: FormData): Promise<ActionResult> {
   try {
+    await requireAdminSession();
+
     const supabase = (await createSupabaseAdminClient()) as SupabaseWriterClient | null;
 
     if (!supabase) {
@@ -301,10 +319,35 @@ export async function updateMarketingManagerAction(formData: FormData): Promise<
       sort_order: 1,
       is_active: checkbox(formData.get('promoActive')),
       metadata: {
-        badge: text(formData.get('promoBadge')),
+        badge: text(formData.get('promoValue')),
         button_label: textWithFallback(formData, 'promoButtonLabel', 'Quero aproveitar'),
       },
     });
+
+    await Promise.all([
+      upsertPlan(supabase, {
+        plan_key: 'red',
+        name: textWithFallback(formData, 'redName', 'Plano Red'),
+        price_label: textWithFallback(formData, 'redPrice', 'A partir de R$ 99,90'),
+        description: text(formData.get('redDescription')),
+        badge: text(formData.get('redBadge')),
+        benefits: lines(formData, 'redFeatures'),
+        is_featured: false,
+        is_active: true,
+        sort_order: 1,
+      }),
+      upsertPlan(supabase, {
+        plan_key: 'black',
+        name: textWithFallback(formData, 'blackName', 'Plano Black'),
+        price_label: textWithFallback(formData, 'blackPrice', 'A partir de R$ 109,90'),
+        description: text(formData.get('blackDescription')),
+        badge: text(formData.get('blackBadge')),
+        benefits: lines(formData, 'blackFeatures'),
+        is_featured: true,
+        is_active: true,
+        sort_order: 2,
+      }),
+    ]);
 
     revalidatePath('/');
     revalidatePath('/admin/marketing');

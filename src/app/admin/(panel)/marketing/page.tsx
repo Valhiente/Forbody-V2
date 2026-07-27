@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { redirect } from 'next/navigation';
 import { updateMarketingManagerAction } from './actions';
 import { MarketingUploadGuard } from './MarketingUploadGuard';
+import { createSupabaseAdminClient } from '@/lib/supabase/server';
 
 type InputProps = {
   label: string;
@@ -9,6 +10,7 @@ type InputProps = {
   placeholder?: string;
   textarea?: boolean;
   helper?: string;
+  defaultValue?: string;
 };
 
 type FileInputProps = {
@@ -16,6 +18,7 @@ type FileInputProps = {
   name: string;
   urlName: string;
   helper?: string;
+  currentUrl?: string;
 };
 
 type SectionProps = {
@@ -37,6 +40,7 @@ function Input({
   placeholder = '',
   textarea = false,
   helper,
+  defaultValue,
 }: InputProps) {
   const baseClassName =
     'w-full rounded-2xl border border-zinc-700 bg-zinc-900 px-4 text-sm text-white outline-none transition focus:border-red-500 focus:ring-1 focus:ring-red-500';
@@ -52,6 +56,7 @@ function Input({
           id={name}
           name={name}
           placeholder={placeholder}
+          defaultValue={defaultValue}
           className={`${baseClassName} min-h-[120px] py-3`}
         />
       ) : (
@@ -59,6 +64,7 @@ function Input({
           id={name}
           name={name}
           placeholder={placeholder}
+          defaultValue={defaultValue}
           className={`${baseClassName} h-12`}
         />
       )}
@@ -68,7 +74,7 @@ function Input({
   );
 }
 
-function FileInput({ label, name, urlName, helper }: FileInputProps) {
+function FileInput({ label, name, urlName, helper, currentUrl }: FileInputProps) {
   return (
     <div className="space-y-3 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4">
       <label htmlFor={name} className="text-sm font-semibold text-white">
@@ -86,6 +92,7 @@ function FileInput({ label, name, urlName, helper }: FileInputProps) {
       <input
         name={urlName}
         type="url"
+        defaultValue={currentUrl}
         placeholder="Opcional: cole uma URL https:// se a imagem já estiver hospedada"
         className="h-11 w-full rounded-2xl border border-zinc-700 bg-zinc-950 px-4 text-xs text-zinc-300 outline-none transition focus:border-red-500 focus:ring-1 focus:ring-red-500"
       />
@@ -115,6 +122,29 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
   const params = await searchParams;
   const saved = params?.saved === '1';
   const error = params?.error;
+  const supabase = await createSupabaseAdminClient();
+  const [sectionsResult, itemsResult, plansResult] = supabase
+    ? await Promise.all([
+        supabase.from('site_marketing_sections').select('*'),
+        supabase.from('site_marketing_items').select('*'),
+        supabase.from('site_plans').select('*'),
+      ])
+    : [{ data: [] }, { data: [] }, { data: [] }];
+  const sections = sectionsResult.data ?? [];
+  const items = itemsResult.data ?? [];
+  const plans = plansResult.data ?? [];
+  const section = (key: string) => sections.find((item) => item.section_key === key);
+  const item = (sectionKey: string, itemKey: string) =>
+    items.find((entry) => entry.section_key === sectionKey && entry.item_key === itemKey);
+  const plan = (key: string) => plans.find((entry) => entry.plan_key === key);
+  const hero = section('home_hero');
+  const photos = (key: string) => item('home_photos', key);
+  const slide = (key: string) => item('home_hero', key);
+  const plansSection = section('home_plans');
+  const promotion = section('home_promotions');
+  const promotionItem = item('home_promotions', 'main');
+  const red = plan('red');
+  const black = plan('black');
 
   return (
     <div className="min-h-screen bg-black px-4 py-8 sm:px-6 lg:px-10">
@@ -175,6 +205,7 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
           <Input
             label="Texto pequeno acima do título"
             name="heroSubtitle"
+            defaultValue={hero?.subtitle ?? ''}
             placeholder="Ex: Forbody Academia"
             helper="Esse texto aparece acima do título principal da Home."
           />
@@ -182,6 +213,7 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
           <Input
             label="Título principal"
             name="heroTitle"
+            defaultValue={hero?.title ?? ''}
             placeholder="Ex: Forbody, feita para cada etapa da sua vida."
             helper="Principal chamada visual da Home."
           />
@@ -189,6 +221,7 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
           <Input
             label="Texto de apoio"
             name="heroDescription"
+            defaultValue={hero?.description ?? ''}
             textarea
             helper="Texto curto explicando a proposta da Forbody."
           />
@@ -197,30 +230,32 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
             label="Imagem principal do banner"
             name="heroImageFile"
             urlName="heroImageUrl"
+            currentUrl={hero?.image_url ?? ''}
             helper="Escolha a imagem do computador. Limite: 10MB. Recomendado: 1920x1080 em WebP/JPG com até 2MB para carregar rápido."
           />
 
           <div className="grid gap-5 lg:grid-cols-3">
-            <FileInput label="Carrossel - slide 1" name="heroSlide1File" urlName="heroSlide1Url" />
-            <FileInput label="Carrossel - slide 2" name="heroSlide2File" urlName="heroSlide2Url" />
-            <FileInput label="Carrossel - slide 3" name="heroSlide3File" urlName="heroSlide3Url" />
+            <FileInput label="Carrossel - slide 1" name="heroSlide1File" urlName="heroSlide1Url" currentUrl={slide('slide_1')?.image_url ?? ''} />
+            <FileInput label="Carrossel - slide 2" name="heroSlide2File" urlName="heroSlide2Url" currentUrl={slide('slide_2')?.image_url ?? ''} />
+            <FileInput label="Carrossel - slide 3" name="heroSlide3File" urlName="heroSlide3Url" currentUrl={slide('slide_3')?.image_url ?? ''} />
           </div>
 
           <div className="grid gap-5 lg:grid-cols-3">
-            <Input label="Título do slide 1" name="heroSlide1Title" placeholder="FORBODY ACADEMIA" />
-            <Input label="Título do slide 2" name="heroSlide2Title" placeholder="PLANOS RED E BLACK" />
-            <Input label="Título do slide 3" name="heroSlide3Title" placeholder="VENHA TREINAR" />
+            <Input label="Título do slide 1" name="heroSlide1Title" placeholder="FORBODY ACADEMIA" defaultValue={slide('slide_1')?.title ?? ''} />
+            <Input label="Título do slide 2" name="heroSlide2Title" placeholder="PLANOS RED E BLACK" defaultValue={slide('slide_2')?.title ?? ''} />
+            <Input label="Título do slide 3" name="heroSlide3Title" placeholder="VENHA TREINAR" defaultValue={slide('slide_3')?.title ?? ''} />
           </div>
 
           <div className="grid gap-5 lg:grid-cols-3">
-            <Input label="Descrição do slide 1" name="heroSlide1Description" />
-            <Input label="Descrição do slide 2" name="heroSlide2Description" />
-            <Input label="Descrição do slide 3" name="heroSlide3Description" />
+            <Input label="Descrição do slide 1" name="heroSlide1Description" defaultValue={slide('slide_1')?.description ?? ''} />
+            <Input label="Descrição do slide 2" name="heroSlide2Description" defaultValue={slide('slide_2')?.description ?? ''} />
+            <Input label="Descrição do slide 3" name="heroSlide3Description" defaultValue={slide('slide_3')?.description ?? ''} />
           </div>
 
           <Input
             label="Texto do botão principal"
             name="heroButtonLabel"
+            defaultValue={hero?.button_label ?? ''}
             placeholder="Escolher unidade"
           />
         </Section>
@@ -229,12 +264,12 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
           title="2. Fotos da Home"
           description="Essas imagens aparecem nos cards e blocos visuais da página inicial."
         >
-          <FileInput label="Imagem principal" name="photoMainFile" urlName="photoMain" />
+          <FileInput label="Imagem principal" name="photoMainFile" urlName="photoMain" currentUrl={photos('main')?.image_url ?? ''} />
 
           <div className="grid gap-5 md:grid-cols-3">
-            <FileInput label="Imagem do card 1" name="photoCard1File" urlName="photoCard1" />
-            <FileInput label="Imagem do card 2" name="photoCard2File" urlName="photoCard2" />
-            <FileInput label="Imagem do card 3" name="photoCard3File" urlName="photoCard3" />
+            <FileInput label="Imagem do card 1" name="photoCard1File" urlName="photoCard1" currentUrl={photos('card_1')?.image_url ?? ''} />
+            <FileInput label="Imagem do card 2" name="photoCard2File" urlName="photoCard2" currentUrl={photos('card_2')?.image_url ?? ''} />
+            <FileInput label="Imagem do card 3" name="photoCard3File" urlName="photoCard3" currentUrl={photos('card_3')?.image_url ?? ''} />
           </div>
         </Section>
 
@@ -245,18 +280,21 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
           <Input
             label="Título da sessão"
             name="plansTitle"
+            defaultValue={plansSection?.title ?? ''}
             placeholder="Escolha o plano que combina com sua rotina."
           />
 
           <Input
             label="Descrição da sessão"
             name="plansDescription"
+            defaultValue={plansSection?.description ?? ''}
             textarea
           />
 
           <Input
             label="Texto do botão"
             name="plansButtonLabel"
+            defaultValue={plansSection?.button_label ?? ''}
             placeholder="Ver planos"
           />
         </Section>
@@ -265,17 +303,19 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
           title="4. Promoções"
           description="Use esta área para destacar campanhas, descontos ou promoções temporárias."
         >
-          <Input label="Título da promoção" name="promoTitle" />
+          <Input label="Título da promoção" name="promoTitle" defaultValue={promotion?.title ?? ''} />
 
           <Input
             label="Descrição da promoção"
             name="promoDescription"
+            defaultValue={promotion?.description ?? ''}
             textarea
           />
 
           <Input
             label="Valor ou chamada promocional"
             name="promoValue"
+            defaultValue={promotionItem?.metadata?.badge ?? ''}
             placeholder="12x de R$ 99,90"
           />
 
@@ -283,6 +323,7 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
             <input
               type="checkbox"
               name="promoActive"
+              defaultChecked={promotion?.is_active === true}
               className="h-4 w-4 accent-red-600"
             />
             Promoção ativa
@@ -304,16 +345,17 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
                 </p>
               </div>
 
-              <Input label="Nome do plano" name="redName" />
-              <Input label="Preço" name="redPrice" placeholder="R$ 99,90" />
-              <Input label="Descrição" name="redDescription" textarea />
+              <Input label="Nome do plano" name="redName" defaultValue={red?.name ?? ''} />
+              <Input label="Preço" name="redPrice" placeholder="R$ 99,90" defaultValue={red?.price_label ?? ''} />
+              <Input label="Descrição" name="redDescription" textarea defaultValue={red?.description ?? ''} />
               <Input
                 label="Benefícios"
                 name="redFeatures"
+                defaultValue={Array.isArray(red?.benefits) ? red.benefits.join('\n') : ''}
                 textarea
                 helper="Digite um benefício por linha."
               />
-              <Input label="Texto de destaque" name="redBadge" />
+              <Input label="Texto de destaque" name="redBadge" defaultValue={red?.badge ?? ''} />
             </div>
 
             <div className="space-y-5 rounded-3xl border border-zinc-700 bg-zinc-900/60 p-6">
@@ -326,16 +368,17 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
                 </p>
               </div>
 
-              <Input label="Nome do plano" name="blackName" />
-              <Input label="Preço" name="blackPrice" placeholder="R$ 109,90" />
-              <Input label="Descrição" name="blackDescription" textarea />
+              <Input label="Nome do plano" name="blackName" defaultValue={black?.name ?? ''} />
+              <Input label="Preço" name="blackPrice" placeholder="R$ 109,90" defaultValue={black?.price_label ?? ''} />
+              <Input label="Descrição" name="blackDescription" textarea defaultValue={black?.description ?? ''} />
               <Input
                 label="Benefícios"
                 name="blackFeatures"
+                defaultValue={Array.isArray(black?.benefits) ? black.benefits.join('\n') : ''}
                 textarea
                 helper="Digite um benefício por linha."
               />
-              <Input label="Texto de destaque" name="blackBadge" />
+              <Input label="Texto de destaque" name="blackBadge" defaultValue={black?.badge ?? ''} />
             </div>
           </div>
         </Section>

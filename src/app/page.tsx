@@ -29,6 +29,18 @@ type MarketingItem = {
 type HomeMarketingData = {
   sections: MarketingSection[];
   items: MarketingItem[];
+  plans: MarketingPlan[];
+};
+
+type MarketingPlan = {
+  plan_key: string;
+  name: string;
+  price_label: string;
+  description: string | null;
+  badge: string | null;
+  is_featured: boolean | null;
+  is_active: boolean | null;
+  sort_order: number | null;
 };
 
 const officialHeroBackgroundImage =
@@ -125,9 +137,9 @@ function safeText(value: string | null | undefined, fallback: string) {
 async function getHomeMarketingData(): Promise<HomeMarketingData> {
   try {
     const supabase = await createSupabaseAdminClient();
-    if (!supabase) return { sections: [], items: [] };
+    if (!supabase) return { sections: [], items: [], plans: [] };
 
-    const [sectionsResult, itemsResult] = await Promise.all([
+    const [sectionsResult, itemsResult, plansResult] = await Promise.all([
       supabase
         .from("site_marketing_sections")
         .select("section_key,title,subtitle,description,button_label,button_href,is_active,sort_order")
@@ -136,15 +148,21 @@ async function getHomeMarketingData(): Promise<HomeMarketingData> {
         .from("site_marketing_items")
         .select("section_key,item_key,title,description,badge,image_url,is_active,sort_order")
         .order("sort_order", { ascending: true }),
+      supabase
+        .from("site_plans")
+        .select("plan_key,name,price_label,description,badge,is_featured,is_active,sort_order")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true }),
     ]);
 
     return {
       sections: (sectionsResult.data || []) as MarketingSection[],
       items: (itemsResult.data || []) as MarketingItem[],
+      plans: (plansResult.data || []) as MarketingPlan[],
     };
   } catch (error) {
     console.error("Erro ao carregar marketing da Home:", error);
-    return { sections: [], items: [] };
+    return { sections: [], items: [], plans: [] };
   }
 }
 
@@ -163,6 +181,16 @@ export default async function HomePage() {
   const heroSection = sectionByKey(marketing.sections, "home_hero");
   const photoItems = itemsBySection(marketing.items, "home_photos");
   const supplierItems = itemsBySection(marketing.items, "home_suppliers");
+  const planCards =
+    marketing.plans.length > 0
+      ? marketing.plans.map((plan) => ({
+          name: plan.name,
+          price: plan.price_label.replace(/^A partir de\s*/i, ""),
+          description: safeText(plan.description, "Plano Forbody."),
+          tag: safeText(plan.badge, plan.is_featured ? "Mais completo" : "Melhor entrada"),
+          featured: plan.is_featured === true,
+        }))
+      : fallbackPlanCards;
 
   const hero = {
     eyebrow: safeText(heroSection?.subtitle, "Forbody Academia"),
@@ -260,7 +288,7 @@ export default async function HomePage() {
             <div className="rounded-[1.8rem] border border-white/10 bg-black/55 p-4 shadow-[0_0_90px_rgba(220,38,38,0.14)] backdrop-blur-2xl sm:p-5">
               <div className="grid gap-4 xl:grid-cols-[0.9fr_1.1fr]">
                 <div className="grid gap-4">
-                  {fallbackPlanCards.map((plan) => (
+                  {planCards.map((plan) => (
                     <article key={plan.name} className={`relative overflow-hidden rounded-[1.35rem] border p-5 transition duration-300 hover:-translate-y-1 ${plan.featured ? "border-red-600/60 bg-red-600/15 shadow-[0_0_54px_rgba(220,38,38,0.16)]" : "border-white/10 bg-white/[0.06]"}`}>
                       <div className="absolute inset-x-0 top-0 h-1 bg-red-600" />
                       <div className="flex items-start justify-between gap-4">
