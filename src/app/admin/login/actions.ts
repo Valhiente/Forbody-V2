@@ -1,61 +1,53 @@
 'use server';
 
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import crypto from 'node:crypto';
-import { createAdminSessionToken } from '@/lib/admin-session';
-
-const ADMIN_USER = process.env.ADMIN_USER;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
-function safeEqual(value: string, expected: string) {
-  const valueHash = crypto.createHash('sha256').update(value).digest();
-  const expectedHash = crypto.createHash('sha256').update(expected).digest();
-  return crypto.timingSafeEqual(valueHash, expectedHash);
-}
+import { createClient, createSupabaseAdminClient } from '@/lib/supabase/server';
 
 export async function loginAdmin(formData: FormData) {
-  const username = formData.get('username');
+  const email = formData.get('email');
   const password = formData.get('password');
 
-  // Validações básicas
-  if (!username || !password) {
-    return { error: 'Usuário e senha são obrigatórios.' };
+  if (typeof email !== 'string' || typeof password !== 'string' || !email || !password) {
+    return { error: 'E-mail e senha são obrigatórios.' };
   }
 
-  // Comparar credenciais
-  if (
-    !ADMIN_USER ||
-    !ADMIN_PASSWORD ||
-    !process.env.ADMIN_SESSION_SECRET ||
-    typeof username !== 'string' ||
-    typeof password !== 'string'
-  ) {
+  const supabase = await createClient();
+  if (!supabase) {
     return { error: 'Configuração administrativa indisponível.' };
   }
 
-  if (!safeEqual(username, ADMIN_USER) || !safeEqual(password, ADMIN_PASSWORD)) {
-    // Não revelar qual campo está errado
-    return { error: 'Usuário ou senha incorretos.' };
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email.trim().toLowerCase(),
+    password,
+  });
+
+  if (error || !data.user) {
+    return { error: 'E-mail ou senha incorretos.' };
   }
 
-  try {
-    // Criar token de sessão
-    const sessionToken = createAdminSessionToken();
+  const adminClient = await createSupabaseAdminClient();
+  const { data: profile } = adminClient
+    ? await adminClient
+        .from('admin_profiles')
+        .select('status, role')
+        .eq('user_id', data.user.id)
+        .maybeSingle()
+    : { data: null };
 
-    // Definir cookie
-    const cookieStore = await cookies();
-    cookieStore.set('admin_session', sessionToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 24 * 60 * 60, // 24 horas em segundos
-    });
-  } catch (error) {
-    console.error('Login error:', error);
-    return { error: 'Erro ao fazer login. Tente novamente.' };
+  if (!profile || profile.status !== 'active' || !profile.role) {
+    await supabase.auth.signOut();
+    return {
+      error:
+        profile?.status === 'blocked'
+          ? 'Seu acesso está bloqueado. Fale com um administrador.'
+          : 'Sua conta ainda aguarda liberação de perfil.',
+    };
   }
 
-  // Redirecionar após sucesso
+  await adminClient
+    ?.from('admin_profiles')
+    .update({ last_sign_in_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+    .eq('user_id', data.user.id);
+
   redirect('/admin');
 }

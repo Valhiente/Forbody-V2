@@ -1,5 +1,6 @@
 import AdminSyncClient from '@/app/admin/components/AdminSyncClient';
 import { unitsData } from '@/app/data';
+import { hasAdminPermission, requirePermission } from '@/lib/admin-auth';
 
 const getStats = () => {
   const unitsWithPlace = unitsData.filter((u) => u.googlePlaceId && u.googlePlaceId.length > 0 && u.status !== 'coming_soon');
@@ -9,7 +10,9 @@ const getStats = () => {
   return { totalUnitsWithPlace, totalReviews, avgScore };
 };
 
-export default function AdminReviewsPage() {
+export default async function AdminReviewsPage() {
+  const admin = await requirePermission('reviews.read');
+  const canWrite = hasAdminPermission(admin, 'reviews.write');
   const stats = getStats();
 
   return (
@@ -50,7 +53,7 @@ export default function AdminReviewsPage() {
           </div>
           <div>
             {/* AdminSyncClient é um client component */}
-            <AdminSyncClient />
+            <AdminSyncClient canWrite={canWrite} />
           </div>
         </div>
       </section>

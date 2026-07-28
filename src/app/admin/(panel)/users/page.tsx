@@ -1,147 +1,106 @@
-const roles = [
-  {
-    key: 'admin',
-    title: 'Admin',
-    desc: 'Acesso total ao painel — gerenciar unidades, site, marketing e usuários.',
-    color: 'bg-red-600',
-  },
-  {
-    key: 'marketing',
-    title: 'Marketing',
-    desc: 'Editar campanhas, banners e textos; visualizar unidades.',
-    color: 'bg-violet-600',
-  },
-  {
-    key: 'editor',
-    title: 'Editor',
-    desc: 'Editar textos e imagens; revisar conteúdo.',
-    color: 'bg-green-600',
-  },
-];
+import { ADMIN_ROLE_LABELS, requirePermission, type AdminRole } from '@/lib/admin-auth';
+import { createSupabaseAdminClient } from '@/lib/supabase/server';
+import { inviteAdminUser, updateAdminAccess } from './actions';
 
-export default function AdminUsersPage() {
+type ProfileRow = {
+  user_id: string;
+  email: string;
+  full_name: string | null;
+  role: AdminRole | null;
+  status: 'pending' | 'active' | 'blocked';
+  invited_at: string;
+  invite_accepted_at: string | null;
+  last_sign_in_at: string | null;
+};
+
+export default async function AdminUsersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ success?: string; error?: string }>;
+}) {
+  await requirePermission('users.manage');
+  const params = await searchParams;
+  const adminClient = await createSupabaseAdminClient();
+  const { data } = adminClient
+    ? await adminClient
+        .from('admin_profiles')
+        .select('user_id, email, full_name, role, status, invited_at, invite_accepted_at, last_sign_in_at')
+        .order('created_at', { ascending: false })
+    : { data: [] };
+  const profiles = (data ?? []) as ProfileRow[];
+
   return (
     <div className="space-y-8">
-      <header className="rounded-3xl border border-white/10 bg-[#0b0b0b] p-8 shadow-lg">
-        <p className="text-xs font-bold uppercase tracking-widest text-red-500">Admin / Usuários</p>
-        <h1 className="mt-4 text-4xl font-extrabold text-white">Usuários</h1>
+      <header className="rounded-3xl border border-white/10 bg-[#0b0b0b] p-8">
+        <p className="text-xs font-bold uppercase tracking-widest text-red-500">Admin / Acessos</p>
+        <h1 className="mt-4 text-4xl font-extrabold text-white">Usuários e permissões</h1>
         <p className="mt-3 max-w-3xl text-sm text-gray-400">
-          Estrutura visual para gerenciamento de usuários e permissões do painel ForBody. Somente
-          estrutura — sem criação, salvamento ou alterações na autenticação atual.
+          Somente pessoas convidadas podem criar senha. Contas novas permanecem sem acesso até receberem um perfil.
         </p>
       </header>
 
-      <section className="grid gap-6 lg:grid-cols-3">
-        {roles.map((r) => (
-          <div key={r.key} className="rounded-2xl border border-white/5 bg-[#0f0f10] p-6 shadow-sm">
-            <div className="flex items-start justify-between">
-              <div>
-                <h2 className="text-lg font-bold text-white">{r.title}</h2>
-                <p className="mt-2 text-sm text-gray-400">{r.desc}</p>
-              </div>
-              <span className={`${r.color} ml-4 inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold text-white`}>{r.title}</span>
-            </div>
-          </div>
-        ))}
+      {(params.success || params.error) && (
+        <div className={`rounded-2xl border p-4 text-sm ${params.error ? 'border-red-500/30 bg-red-500/10 text-red-300' : 'border-green-500/30 bg-green-500/10 text-green-300'}`}>
+          {params.error || params.success}
+        </div>
+      )}
+
+      <section className="rounded-3xl border border-white/10 bg-[#0b0b0b] p-6">
+        <h2 className="text-xl font-bold">Convidar pessoa</h2>
+        <form action={inviteAdminUser} className="mt-5 flex flex-col gap-3 sm:flex-row">
+          <input name="email" type="email" required placeholder="pessoa@empresa.com.br" className="min-w-0 flex-1 rounded-xl border border-white/15 bg-black px-4 py-3 text-white outline-none focus:border-red-500" />
+          <button className="rounded-xl bg-red-600 px-6 py-3 text-sm font-bold uppercase tracking-wider">Enviar convite</button>
+        </form>
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-3xl border border-white/6 bg-[#0b0b0b] p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-xl font-bold text-white">Usuários cadastrados</h3>
-              <p className="mt-1 text-sm text-gray-400">Tabela placeholder com colunas principais.</p>
-            </div>
-            <div>
-              <button disabled className="rounded-md border border-white/6 bg-transparent px-4 py-2 text-sm font-medium text-gray-400" aria-disabled>
-                Novo usuário
-              </button>
-            </div>
-          </div>
-
-          <div className="mt-6 overflow-x-auto">
-            <table className="w-full table-auto text-sm">
-              <thead>
-                <tr className="text-left text-xs uppercase text-gray-400">
-                  <th className="px-3 py-2">Nome</th>
-                  <th className="px-3 py-2">Email</th>
-                  <th className="px-3 py-2">Perfil</th>
-                  <th className="px-3 py-2">Status</th>
-                  <th className="px-3 py-2">Último acesso</th>
-                  <th className="px-3 py-2">Ações</th>
-                </tr>
-              </thead>
-              <tbody className="mt-2">
-                {/* Placeholder rows - não criar usuários reais */}
-                <tr className="border-t border-white/6">
-                  <td className="px-3 py-4 text-white">Nome do Usuário</td>
-                  <td className="px-3 py-4 text-gray-300">usuario@exemplo.com</td>
-                  <td className="px-3 py-4">
-                    <span className="inline-flex items-center rounded-full bg-red-600 px-2 py-1 text-xs font-semibold text-white">Admin</span>
-                  </td>
-                  <td className="px-3 py-4 text-gray-300">Ativo</td>
-                  <td className="px-3 py-4 text-gray-300">2026-05-01</td>
-                  <td className="px-3 py-4">
-                    <button disabled className="rounded-md bg-white/5 px-3 py-1 text-sm text-gray-300" aria-disabled>
-                      Editar
-                    </button>
-                  </td>
-                </tr>
-                <tr className="border-t border-white/6">
-                  <td className="px-3 py-4 text-white">Maria Silva</td>
-                  <td className="px-3 py-4 text-gray-300">maria@exemplo.com</td>
-                  <td className="px-3 py-4">
-                    <span className="inline-flex items-center rounded-full bg-violet-600 px-2 py-1 text-xs font-semibold text-white">Marketing</span>
-                  </td>
-                  <td className="px-3 py-4 text-gray-300">Ativo</td>
-                  <td className="px-3 py-4 text-gray-300">2026-05-20</td>
-                  <td className="px-3 py-4">
-                    <button disabled className="rounded-md bg-white/5 px-3 py-1 text-sm text-gray-300" aria-disabled>
-                      Editar
-                    </button>
-                  </td>
-                </tr>
-                <tr className="border-t border-white/6">
-                  <td className="px-3 py-4 text-white">João Editor</td>
-                  <td className="px-3 py-4 text-gray-300">joao@exemplo.com</td>
-                  <td className="px-3 py-4">
-                    <span className="inline-flex items-center rounded-full bg-green-600 px-2 py-1 text-xs font-semibold text-white">Editor</span>
-                  </td>
-                  <td className="px-3 py-4 text-gray-300">Inativo</td>
-                  <td className="px-3 py-4 text-gray-300">2026-04-10</td>
-                  <td className="px-3 py-4">
-                    <button disabled className="rounded-md bg-white/5 px-3 py-1 text-sm text-gray-300" aria-disabled>
-                      Editar
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div className="rounded-3xl border border-white/6 bg-[#0b0b0b] p-6 space-y-6">
-          <div>
-            <h3 className="text-xl font-bold text-white">Convites</h3>
-            <p className="mt-2 text-sm text-gray-400">Futuramente será possível convidar membros da equipe por email.</p>
-            <div className="mt-4">
-              <button disabled className="rounded-md border border-white/6 bg-transparent px-4 py-2 text-sm font-medium text-gray-400" aria-disabled>
-                Convidar usuário
-              </button>
-            </div>
-          </div>
-
-          <div>
-            <h3 className="text-xl font-bold text-white">Segurança</h3>
-            <p className="mt-2 text-sm text-gray-400">
-              A autenticação atual é baseada em variáveis de ambiente. Haverá migração futura para
-              Supabase Auth e um modelo de roles/permissões mais robusto.
-            </p>
-            <ul className="mt-3 space-y-2 text-sm text-gray-400">
-              <li>- Roles planejadas: Admin, Marketing, Editor</li>
-              <li>- Não será alterado o sistema de autenticação atual nesta etapa</li>
-            </ul>
-          </div>
+      <section className="overflow-hidden rounded-3xl border border-white/10 bg-[#0b0b0b]">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[980px] text-left text-sm">
+            <thead className="bg-white/5 text-xs uppercase tracking-wider text-gray-400">
+              <tr>
+                <th className="px-5 py-4">Pessoa</th>
+                <th className="px-5 py-4">Convite</th>
+                <th className="px-5 py-4">Último acesso</th>
+                <th className="px-5 py-4">Perfil e status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {profiles.map((profile) => {
+                const updateAction = updateAdminAccess.bind(null, profile.user_id);
+                return (
+                  <tr key={profile.user_id} className="border-t border-white/5">
+                    <td className="px-5 py-5">
+                      <p className="font-semibold text-white">{profile.full_name || profile.email}</p>
+                      <p className="mt-1 text-xs text-gray-500">{profile.email}</p>
+                    </td>
+                    <td className="px-5 py-5 text-gray-300">
+                      <p>{profile.invite_accepted_at ? 'Senha criada' : 'Aguardando aceite'}</p>
+                      <p className="mt-1 text-xs text-gray-500">{new Date(profile.invited_at).toLocaleDateString('pt-BR')}</p>
+                    </td>
+                    <td className="px-5 py-5 text-gray-300">
+                      {profile.last_sign_in_at ? new Date(profile.last_sign_in_at).toLocaleString('pt-BR') : 'Nunca'}
+                    </td>
+                    <td className="px-5 py-5">
+                      <form action={updateAction} className="flex items-center gap-2">
+                        <select name="role" defaultValue={profile.role ?? 'viewer'} className="rounded-lg border border-white/10 bg-black px-3 py-2 text-white">
+                          {Object.entries(ADMIN_ROLE_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                        </select>
+                        <select name="status" defaultValue={profile.status} className="rounded-lg border border-white/10 bg-black px-3 py-2 text-white">
+                          <option value="pending">Pendente</option>
+                          <option value="active">Ativo</option>
+                          <option value="blocked">Bloqueado</option>
+                        </select>
+                        <button className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 font-semibold text-red-300">Salvar</button>
+                      </form>
+                    </td>
+                  </tr>
+                );
+              })}
+              {profiles.length === 0 && (
+                <tr><td colSpan={4} className="px-5 py-10 text-center text-gray-500">Nenhum administrador cadastrado.</td></tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </section>
     </div>

@@ -2,7 +2,7 @@
 
 import * as Google from '@/app/google';
 import { createSupabaseAdminClient } from '@/lib/supabase/server';
-import { requireAdminSession } from '@/lib/admin-session';
+import { requirePermission } from '@/lib/admin-auth';
 
 type ReviewSyncUnit = {
   id: string;
@@ -30,7 +30,7 @@ async function getUnitsForGoogleSync(): Promise<ReviewSyncUnit[]> {
 }
 
 export async function syncAllGoogleReviews() {
-  await requireAdminSession();
+  await requirePermission('reviews.write');
 
   let synced = 0;
   let failed = 0;

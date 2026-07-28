@@ -39,10 +39,10 @@ npm run build
 
 ## Segurança
 
-As rotas administrativas são protegidas por sessão assinada. Toda Server Action
-administrativa valida novamente a sessão no servidor. Nunca exponha
-`SUPABASE_SERVICE_ROLE_KEY`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET` ou
-`RESEND_API_KEY` no navegador.
+O painel usa Supabase Auth com acesso somente por convite e perfis `ADM FULL`,
+`Marketing`, `Gerente` e `Visualizador`. Toda Server Action administrativa
+valida novamente a identidade, o status e a permissão no servidor. Nunca exponha
+`SUPABASE_SERVICE_ROLE_KEY` ou `RESEND_API_KEY` no navegador.
 
 ## Deploy
 

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createSupabaseAdminClient } from '@/lib/supabase/server';
-import { requireAdminSession } from '@/lib/admin-session';
+import { requirePermission } from '@/lib/admin-auth';
 
 type ActionResult = { success: boolean; error?: string };
 type SupabaseError = { message: string };
@@ -142,7 +142,7 @@ function lines(formData: FormData, name: string): string[] {
 
 export async function updateMarketingManagerAction(formData: FormData): Promise<ActionResult> {
   try {
-    await requireAdminSession();
+    await requirePermission('marketing.write');
 
     const supabase = (await createSupabaseAdminClient()) as SupabaseWriterClient | null;
 
