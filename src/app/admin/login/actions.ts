@@ -2,50 +2,15 @@
 
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import crypto from 'crypto';
+import crypto from 'node:crypto';
+import { createAdminSessionToken } from '@/lib/admin-session';
 
 const ADMIN_USER = process.env.ADMIN_USER;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
-const ADMIN_SESSION_SECRET = process.env.ADMIN_SESSION_SECRET;
-
-if (!ADMIN_USER || !ADMIN_PASSWORD || !ADMIN_SESSION_SECRET) {
-  throw new Error('Missing required environment variables for admin auth');
-}
-
-function createSessionToken(): string {
-  const timestamp = Date.now().toString();
-  const random = crypto.randomBytes(16).toString('hex');
-  const data = `${timestamp}:${random}`;
-
-  const signature = crypto
-    .createHmac('sha256', ADMIN_SESSION_SECRET as string)
-    .update(data)
-    .digest('hex');
-
-  return `${data}:${signature}`;
-}
-
-function validateSessionToken(token: string): boolean {
-  const parts = token.split(':');
-  if (parts.length !== 3) return false;
-
-  const [timestamp, random, signature] = parts;
-  const data = `${timestamp}:${random}`;
-
-  const expectedSignature = crypto
-    .createHmac('sha256', ADMIN_SESSION_SECRET as string)
-    .update(data)
-    .digest('hex');
-
-  // Verificar assinatura
-  if (signature !== expectedSignature) return false;
-
-  // Verificar validade (24 horas)
-  const tokenTime = parseInt(timestamp, 10);
-  const now = Date.now();
-  const maxAge = 24 * 60 * 60 * 1000; // 24 horas em ms
-
-  return now - tokenTime < maxAge;
+function safeEqual(value: string, expected: string) {
+  const valueHash = crypto.createHash('sha256').update(value).digest();
+  const expectedHash = crypto.createHash('sha256').update(expected).digest();
+  return crypto.timingSafeEqual(valueHash, expectedHash);
 }
 
 export async function loginAdmin(formData: FormData) {
@@ -58,14 +23,24 @@ export async function loginAdmin(formData: FormData) {
   }
 
   // Comparar credenciais
-  if (username !== ADMIN_USER || password !== ADMIN_PASSWORD) {
+  if (
+    !ADMIN_USER ||
+    !ADMIN_PASSWORD ||
+    !process.env.ADMIN_SESSION_SECRET ||
+    typeof username !== 'string' ||
+    typeof password !== 'string'
+  ) {
+    return { error: 'Configuração administrativa indisponível.' };
+  }
+
+  if (!safeEqual(username, ADMIN_USER) || !safeEqual(password, ADMIN_PASSWORD)) {
     // Não revelar qual campo está errado
     return { error: 'Usuário ou senha incorretos.' };
   }
 
   try {
     // Criar token de sessão
-    const sessionToken = createSessionToken();
+    const sessionToken = createAdminSessionToken();
 
     // Definir cookie
     const cookieStore = await cookies();
@@ -83,17 +58,4 @@ export async function loginAdmin(formData: FormData) {
 
   // Redirecionar após sucesso
   redirect('/admin');
-}
-
-export async function validateAdminSession(): Promise<boolean> {
-  try {
-    const cookieStore = await cookies();
-    const sessionToken = cookieStore.get('admin_session')?.value;
-
-    if (!sessionToken) return false;
-
-    return validateSessionToken(sessionToken);
-  } catch {
-    return false;
-  }
 }

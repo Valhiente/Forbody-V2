@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Forbody V2
 
-## Getting Started
+Site institucional e painel administrativo da Forbody Academia.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 e React 19
+- TypeScript e Tailwind CSS 4
+- Supabase (Postgres e Storage)
+- Vercel
+- Resend para leads de franquia
+
+## Desenvolvimento
 
 ```bash
+npm ci
+cp .env.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Verificações
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm run typecheck
+npm run build
+```
 
-## Learn More
+## Estrutura principal
 
-To learn more about Next.js, take a look at the following resources:
+- `/`: site público
+- `/unidades`: unidades da rede
+- `/franquias`: captação de interessados
+- `/admin/login`: acesso administrativo
+- `/admin/marketing`: conteúdo e imagens da Home
+- `/admin/unidades`: gestão de unidades
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Segurança
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+As rotas administrativas são protegidas por sessão assinada. Toda Server Action
+administrativa valida novamente a sessão no servidor. Nunca exponha
+`SUPABASE_SERVICE_ROLE_KEY`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET` ou
+`RESEND_API_KEY` no navegador.
 
-## Deploy on Vercel
+## Deploy
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+O projeto é publicado automaticamente pela Vercel a partir da branch principal.
+O domínio de produção é `https://forbodyacademia.com.br`.

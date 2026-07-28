@@ -64,6 +64,7 @@ export default function FranchiseForm() {
   const [formData, setFormData] = useState<FranchiseLeadFormData>(initialFormData);
   const [status, setStatus] = useState<FormStatus>('idle');
   const [feedbackMessage, setFeedbackMessage] = useState('');
+  const [startedAt] = useState(() => Date.now());
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;
@@ -102,6 +103,8 @@ export default function FranchiseForm() {
           capital: formData.capital.trim(),
           message: formData.message.trim(),
           origin: 'Forbody-V2 /franquias',
+          website: '',
+          startedAt,
         }),
       });
 
@@ -125,6 +128,10 @@ export default function FranchiseForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="absolute -left-[10000px] h-px w-px overflow-hidden" aria-hidden="true">
+        <label htmlFor="website">Não preencha este campo</label>
+        <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label htmlFor="name" className="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-widest">Nome Completo</label>
