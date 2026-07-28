@@ -1,26 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { validateAdminSessionToken } from '@/lib/admin-session';
+import { updateSupabaseSession } from '@/lib/supabase/proxy';
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Rotas públicas de admin
-  if (pathname === '/admin/login' || pathname === '/admin/logout') {
-    return NextResponse.next();
+  const publicAdminRoutes = [
+    '/admin/login',
+    '/admin/accept-invite',
+    '/admin/forgot-password',
+    '/admin/reset-password',
+    '/admin/logout',
+  ];
+  const { response, authenticated } = await updateSupabaseSession(request);
+
+  if (pathname.startsWith('/admin') && !publicAdminRoutes.includes(pathname) && !authenticated) {
+    return NextResponse.redirect(new URL('/admin/login', request.url));
   }
 
-  // Proteger rotas /admin/*
-  if (pathname.startsWith('/admin')) {
-    const sessionToken = request.cookies.get('admin_session')?.value;
-
-    if (!validateAdminSessionToken(sessionToken)) {
-      // Redirecionar para login
-      const loginUrl = new URL('/admin/login', request.url);
-      return NextResponse.redirect(loginUrl);
-    }
-  }
-
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {

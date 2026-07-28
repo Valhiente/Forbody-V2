@@ -3,6 +3,7 @@ import { getAdminUnits } from '@/services/units.service';
 import Button from '@/components/ui/Button';
 import UnitsTableClient from '@/app/admin/(panel)/unidades/UnitsTableClient';
 import UnitCreateForm from './UnitCreateForm';
+import { hasAdminPermission, requirePermission } from '@/lib/admin-auth';
 
 interface AdminSection {
   id: string;
@@ -97,6 +98,8 @@ function getAverageRating(unitsData: Unit[]) {
 }
 
 export default async function AdminUnidadesPage() {
+  const admin = await requirePermission('units.read');
+  const canWrite = hasAdminPermission(admin, 'units.write');
   const unitsData = await getAdminUnits();
   const activeCount = unitsData.filter((unit) => unit.status === 'active').length;
   const comingSoonCount = unitsData.filter((unit) => unit.status === 'coming_soon').length;
@@ -127,7 +130,13 @@ export default async function AdminUnidadesPage() {
         ))}
       </div>
 
-      <UnitCreateForm />
+      {canWrite ? (
+        <UnitCreateForm />
+      ) : (
+        <div className="rounded-2xl border border-blue-500/30 bg-blue-500/10 p-4 text-sm text-blue-200">
+          Modo visualização: seu perfil pode consultar as unidades, mas não criar ou salvar alterações.
+        </div>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-2">
         {sections.map((section) => (

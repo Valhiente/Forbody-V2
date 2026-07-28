@@ -4,7 +4,7 @@ import type { Unit } from '@/app/index';
 import { createUnit } from '@/services/units.service';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { requireAdminSession } from '@/lib/admin-session';
+import { requirePermission } from '@/lib/admin-auth';
 
 function trimText(value: FormDataEntryValue | null): string {
   return typeof value === 'string' ? value.trim() : '';
@@ -34,7 +34,7 @@ function normalizeStatus(value: string): NonNullable<Unit['status']> {
 }
 
 export async function createUnitAction(formData: FormData) {
-  await requireAdminSession();
+  await requirePermission('units.write');
 
   const rawName = trimText(formData.get('name'));
   const rawSlug = trimText(formData.get('slug'));

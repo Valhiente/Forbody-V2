@@ -8,7 +8,7 @@ type SyncResult = {
   failed: number;
 };
 
-export default function AdminSyncClient() {
+export default function AdminSyncClient({ canWrite = true }: { canWrite?: boolean }) {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<SyncResult | null>(null);
 
@@ -28,8 +28,8 @@ export default function AdminSyncClient() {
 
   return (
     <div className="inline-flex items-center gap-2">
-      <button type="button" onClick={handleClick} className="rounded bg-blue-600 px-4 py-2 text-xs font-bold uppercase tracking-widest text-white hover:bg-blue-700" disabled={loading}>
-        {loading ? 'Sincronizando...' : 'Sincronizar Google Reviews'}
+      <button type="button" onClick={handleClick} className="rounded bg-blue-600 px-4 py-2 text-xs font-bold uppercase tracking-widest text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50" disabled={loading || !canWrite}>
+        {!canWrite ? 'Somente visualização' : loading ? 'Sincronizando...' : 'Sincronizar Google Reviews'}
       </button>
       {result && <div className="font-mono text-sm text-gray-300">sincronizadas: {result.synced} • falhas: {result.failed}</div>}
     </div>

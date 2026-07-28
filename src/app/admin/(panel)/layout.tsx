@@ -1,17 +1,26 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { redirect } from 'next/navigation';
-import { validateAdminSession } from '@/lib/admin-session';
+import {
+  ADMIN_ROLE_LABELS,
+  getCurrentAdmin,
+  hasAdminPermission,
+  type AdminPermission,
+} from '@/lib/admin-auth';
 
-const navItems = [
-  { label: 'Dashboard', href: '/admin' },
-  { label: 'Unidades', href: '/admin/unidades' },
-  { label: 'Marketing', href: '/admin/marketing' },
-  { label: 'Reviews', href: '/admin/reviews' },
+export const dynamic = 'force-dynamic';
+
+const navItems: Array<{ label: string; href: string; permission: AdminPermission }> = [
+  { label: 'Dashboard', href: '/admin', permission: 'dashboard.read' },
+  { label: 'Unidades', href: '/admin/unidades', permission: 'units.read' },
+  { label: 'Marketing', href: '/admin/marketing', permission: 'marketing.read' },
+  { label: 'Reviews', href: '/admin/reviews', permission: 'reviews.read' },
+  { label: 'Usuários', href: '/admin/users', permission: 'users.manage' },
 ];
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
-  if (!(await validateAdminSession())) redirect('/admin/login');
+  const admin = await getCurrentAdmin();
+  if (!admin) redirect('/admin/login');
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -30,7 +39,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           </div>
 
           <nav className="space-y-2 text-sm text-gray-300">
-            {navItems.map((item) => (
+            {navItems.filter((item) => hasAdminPermission(admin, item.permission)).map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -42,6 +51,12 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           </nav>
 
           <div className="mt-auto pt-6 border-t border-white/5">
+            <div className="mb-4 rounded-2xl border border-white/5 bg-white/5 px-4 py-3">
+              <p className="truncate text-xs text-gray-400">{admin.email}</p>
+              <p className="mt-1 text-xs font-bold uppercase tracking-wider text-red-400">
+                {ADMIN_ROLE_LABELS[admin.role]}
+              </p>
+            </div>
             <Link
               href="/admin/logout"
               className="inline-flex w-full items-center justify-center rounded-2xl bg-red-600 px-4 py-3 text-sm font-bold uppercase tracking-[0.24em] text-black transition hover:bg-red-700"

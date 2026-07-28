@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { updateMarketingManagerAction } from './actions';
 import { MarketingUploadGuard } from './MarketingUploadGuard';
 import { createSupabaseAdminClient } from '@/lib/supabase/server';
+import { hasAdminPermission, requirePermission } from '@/lib/admin-auth';
 
 type InputProps = {
   label: string;
@@ -119,6 +120,8 @@ function Section({ title, description, children }: SectionProps) {
 }
 
 export default async function MarketingPage({ searchParams }: MarketingPageProps) {
+  const admin = await requirePermission('marketing.read');
+  const canWrite = hasAdminPermission(admin, 'marketing.write');
   const params = await searchParams;
   const saved = params?.saved === '1';
   const error = params?.error;
@@ -164,6 +167,12 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
         className="mx-auto max-w-6xl space-y-8"
       >
         <MarketingUploadGuard />
+        {!canWrite && (
+          <div className="rounded-2xl border border-blue-500/30 bg-blue-500/10 p-4 text-sm text-blue-200">
+            Modo visualização: seu perfil pode consultar o Marketing, mas não salvar alterações.
+          </div>
+        )}
+        <fieldset disabled={!canWrite} className="contents">
 
         {saved ? (
           <div className="rounded-2xl border border-green-500/40 bg-green-500/10 p-4 text-sm font-semibold text-green-200">
@@ -401,6 +410,7 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
             </button>
           </div>
         </div>
+        </fieldset>
       </form>
     </div>
   );

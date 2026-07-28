@@ -4,6 +4,7 @@ import Button from '@/components/ui/Button';
 import { getAdminUnitBySlug } from '@/services/units.service';
 import type { Unit } from '@/app/index';
 import UnitEditForm from './UnitEditForm';
+import { hasAdminPermission, requirePermission } from '@/lib/admin-auth';
 
 const statusLabels: Record<string, { label: string; color: string }> = {
   active: { label: 'ATIVA', color: 'bg-green-600/20 text-green-400' },
@@ -23,6 +24,8 @@ const getIntegrationText = (unit: Unit) => ({
 });
 
 export default async function AdminUnitDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const admin = await requirePermission('units.read');
+  const canWrite = hasAdminPermission(admin, 'units.write');
   const { slug } = await params;
   const unit = await getAdminUnitBySlug(slug);
   if (!unit) notFound();
@@ -43,7 +46,13 @@ export default async function AdminUnitDetailPage({ params }: { params: Promise<
         </div>
       </div>
 
-      <UnitEditForm unit={unit} />
+      {canWrite ? (
+        <UnitEditForm unit={unit} />
+      ) : (
+        <div className="rounded-2xl border border-blue-500/30 bg-blue-500/10 p-4 text-sm text-blue-200">
+          Modo visualização: os dados abaixo são somente para consulta.
+        </div>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-2">
 

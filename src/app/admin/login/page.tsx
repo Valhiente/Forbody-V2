@@ -1,6 +1,7 @@
 'use client';
 
 import React, { FormEvent, useState } from 'react';
+import Link from 'next/link';
 import { loginAdmin } from './actions';
 
 export default function AdminLoginPage() {
@@ -47,19 +48,20 @@ export default function AdminLoginPage() {
             </div>
           )}
 
-          {/* Username Field */}
+          {/* Email Field */}
           <div className="mb-6">
-            <label htmlFor="username" className="block text-sm font-bold text-gray-400 mb-3 uppercase tracking-wider">
-              Usuário
+            <label htmlFor="email" className="block text-sm font-bold text-gray-400 mb-3 uppercase tracking-wider">
+              E-mail
             </label>
             <input
-              id="username"
-              name="username"
-              type="text"
+              id="email"
+              name="email"
+              type="email"
               required
+              autoComplete="email"
               disabled={loading}
               className="w-full bg-black border border-white/20 text-white px-4 py-3 focus:outline-none focus:border-red-600 transition-colors disabled:opacity-50"
-              placeholder="Digite seu usuário"
+              placeholder="voce@empresa.com.br"
             />
           </div>
 
@@ -73,6 +75,7 @@ export default function AdminLoginPage() {
               name="password"
               type="password"
               required
+              autoComplete="current-password"
               disabled={loading}
               className="w-full bg-black border border-white/20 text-white px-4 py-3 focus:outline-none focus:border-red-600 transition-colors disabled:opacity-50"
               placeholder="Digite sua senha"
@@ -87,11 +90,14 @@ export default function AdminLoginPage() {
           >
             {loading ? 'Verificando...' : 'Entrar no Admin'}
           </button>
+          <Link href="/admin/forgot-password" className="mt-5 block text-center text-sm text-gray-400 transition hover:text-white">
+            Esqueci minha senha
+          </Link>
         </form>
 
         {/* Footer */}
         <p className="text-center text-gray-600 text-xs mt-8">
-          Acesso restrito. Sistema de proteção simples.
+          Acesso restrito a pessoas convidadas.
         </p>
       </div>
     </div>
