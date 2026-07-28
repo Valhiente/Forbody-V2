@@ -1,10 +1,22 @@
 import type { MetadataRoute } from 'next';
-import { getUnits } from '@/services/units.service';
+import { createClient } from '@supabase/supabase-js';
 
 const baseUrl = 'https://forbodyacademia.com.br';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const units = await getUnits();
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const units =
+    supabaseUrl && supabaseKey
+      ? (
+          await createClient(supabaseUrl, supabaseKey, {
+            auth: { persistSession: false },
+          })
+            .from('units')
+            .select('slug, status')
+            .neq('status', 'hidden')
+        ).data ?? []
+      : [];
   const now = new Date();
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: baseUrl, lastModified: now, changeFrequency: 'weekly', priority: 1 },
@@ -12,7 +24,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/franquias`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
   ];
   const unitRoutes: MetadataRoute.Sitemap = units
-    .filter((unit) => unit.status !== 'hidden')
     .map((unit) => ({
       url: `${baseUrl}/unidades/${unit.slug}`,
       lastModified: now,
