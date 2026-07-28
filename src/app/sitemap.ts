@@ -1,22 +1,19 @@
 import type { MetadataRoute } from 'next';
 import { createClient } from '@supabase/supabase-js';
+import { supabasePublishableKey, supabaseUrl } from '@/lib/supabase/config';
 
 const baseUrl = 'https://forbodyacademia.com.br';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   const units =
-    supabaseUrl && supabaseKey
-      ? (
-          await createClient(supabaseUrl, supabaseKey, {
-            auth: { persistSession: false },
-          })
-            .from('units')
-            .select('slug, status')
-            .neq('status', 'hidden')
-        ).data ?? []
-      : [];
+    (
+      await createClient(supabaseUrl, supabasePublishableKey, {
+        auth: { persistSession: false },
+      })
+        .from('units')
+        .select('slug, status')
+        .neq('status', 'hidden')
+    ).data ?? [];
   const now = new Date();
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: baseUrl, lastModified: now, changeFrequency: 'weekly', priority: 1 },

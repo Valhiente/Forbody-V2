@@ -8,14 +8,27 @@ export default function ForgotAdminPasswordPage() {
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
+    setErrorMessage('');
     const supabase = createClient();
-    await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
       redirectTo: `${window.location.origin}/admin/reset-password`,
     });
+
+    if (error) {
+      setErrorMessage(
+        error.code === 'over_email_send_rate_limit'
+          ? 'Aguarde alguns minutos antes de solicitar outro link.'
+          : 'Não foi possível enviar o link. Tente novamente.'
+      );
+      setLoading(false);
+      return;
+    }
+
     setSent(true);
     setLoading(false);
   }
@@ -35,6 +48,11 @@ export default function ForgotAdminPasswordPage() {
         ) : (
           <form onSubmit={handleSubmit} className="mt-8 space-y-5">
             <p className="text-sm text-gray-400">Informe o e-mail utilizado no convite administrativo.</p>
+            {errorMessage ? (
+              <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-300">
+                {errorMessage}
+              </div>
+            ) : null}
             <input type="email" required autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="voce@empresa.com.br" className="w-full rounded-xl border border-white/15 bg-black px-4 py-3 outline-none focus:border-red-500" />
             <button disabled={loading} className="w-full rounded-xl bg-red-600 px-5 py-3 text-sm font-bold uppercase tracking-wider disabled:opacity-50">
               {loading ? 'Enviando...' : 'Enviar link'}
