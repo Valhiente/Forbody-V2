@@ -77,6 +77,7 @@ export default function FranchiseForm() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const website = String(new FormData(event.currentTarget).get('website') ?? '');
 
     const validationMessage = buildErrorMessage(formData);
 
@@ -103,7 +104,7 @@ export default function FranchiseForm() {
           capital: formData.capital.trim(),
           message: formData.message.trim(),
           origin: 'Forbody-V2 /franquias',
-          website: '',
+          website,
           startedAt,
         }),
       });

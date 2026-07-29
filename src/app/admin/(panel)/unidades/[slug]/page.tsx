@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation';
 
-import Button from '@/components/ui/Button';
 import { getAdminUnitBySlug } from '@/services/units.service';
 import type { Unit } from '@/app/index';
 import UnitEditForm from './UnitEditForm';
@@ -64,7 +63,6 @@ export default async function AdminUnitDetailPage({ params }: { params: Promise<
             <p><span className="font-semibold text-white">WhatsApp:</span> {unit.whatsapp || 'Não informado'}</p>
             <p><span className="font-semibold text-white">Instagram:</span> {unit.instagram || 'Não informado'}</p>
           </div>
-          <Button disabled variant="b2b-primary" className="mt-6 w-full">Editar dados</Button>
         </div>
 
         <div className="rounded-3xl border border-white/10 bg-[#0a0a0a] p-6 shadow-xl shadow-black/40">
@@ -74,7 +72,6 @@ export default async function AdminUnitDetailPage({ params }: { params: Promise<
             <p><span className="font-semibold text-white">Link de vendas:</span> {unit.salesUrl || 'Não configurado'}</p>
             <p><span className="font-semibold text-white">Área do aluno:</span> {unit.studentAreaUrl || 'Não configurado'}</p>
           </div>
-          <Button disabled variant="b2b-primary" className="mt-6 w-full">Configurar EVO</Button>
         </div>
       </div>
 
@@ -86,18 +83,15 @@ export default async function AdminUnitDetailPage({ params }: { params: Promise<
             <p><span className="font-semibold text-white">Nota Google:</span> {unit.googleReviewsScore || '0.0'}</p>
             <p><span className="font-semibold text-white">Avaliações:</span> {unit.googleReviewsCount}</p>
           </div>
-          <Button disabled variant="b2b-primary" className="mt-6 w-full">Atualizar Place ID</Button>
         </div>
 
         <div className="rounded-3xl border border-white/10 bg-[#0a0a0a] p-6 shadow-xl shadow-black/40">
           <h2 className="text-xl font-black text-white">Fotos</h2>
           <div className="mt-4 space-y-3 text-sm text-gray-300">
             <p><span className="font-semibold text-white">Galeria:</span> {unit.galleryUrls?.length ?? 0} imagens</p>
-            <p><span className="font-semibold text-white">Fachada:</span> placeholder</p>
-            <p><span className="font-semibold text-white">Ambiente interno:</span> placeholder</p>
+            <p><span className="font-semibold text-white">Imagem principal:</span> {unit.imageUrl ? 'Configurada' : 'Não configurada'}</p>
             <p><span className="font-semibold text-white">Professores:</span> {unit.teachers?.length ?? 0}</p>
           </div>
-          <Button disabled variant="b2b-primary" className="mt-6 w-full">Gerenciar fotos</Button>
         </div>
       </div>
 
@@ -118,7 +112,6 @@ export default async function AdminUnitDetailPage({ params }: { params: Promise<
             ))}
           </div>
         </div>
-        <Button disabled variant="b2b-primary" className="mt-6 w-full">Alterar status</Button>
       </div>
     </div>
   );

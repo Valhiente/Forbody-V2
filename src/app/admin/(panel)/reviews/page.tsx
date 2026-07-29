@@ -1,8 +1,8 @@
 import AdminSyncClient from '@/app/admin/components/AdminSyncClient';
-import { unitsData } from '@/app/data';
 import { hasAdminPermission, requirePermission } from '@/lib/admin-auth';
+import { getAdminUnits } from '@/services/units.service';
 
-const getStats = () => {
+const getStats = (unitsData: Awaited<ReturnType<typeof getAdminUnits>>) => {
   const unitsWithPlace = unitsData.filter((u) => u.googlePlaceId && u.googlePlaceId.length > 0 && u.status !== 'coming_soon');
   const totalUnitsWithPlace = unitsWithPlace.length;
   const totalReviews = unitsWithPlace.reduce((s, u) => s + (u.googleReviewsCount ?? 0), 0);
@@ -13,7 +13,8 @@ const getStats = () => {
 export default async function AdminReviewsPage() {
   const admin = await requirePermission('reviews.read');
   const canWrite = hasAdminPermission(admin, 'reviews.write');
-  const stats = getStats();
+  const unitsData = await getAdminUnits();
+  const stats = getStats(unitsData);
 
   return (
     <div className="space-y-8">
@@ -40,8 +41,8 @@ export default async function AdminReviewsPage() {
         </div>
 
         <div className="rounded-2xl border border-white/6 bg-[#0f0f10] p-5">
-          <p className="text-sm text-gray-400">Última sincronização</p>
-          <div className="mt-2 text-sm font-medium text-gray-300">manual / em breve</div>
+          <p className="text-sm text-gray-400">Modo de sincronização</p>
+          <div className="mt-2 text-sm font-medium text-gray-300">Sob demanda</div>
         </div>
       </section>
 
@@ -72,7 +73,6 @@ export default async function AdminReviewsPage() {
                 <th className="px-3 py-2">Nota Google</th>
                 <th className="px-3 py-2">Avaliações</th>
                 <th className="px-3 py-2">Integração</th>
-                <th className="px-3 py-2">Ação</th>
               </tr>
             </thead>
             <tbody className="mt-2">
@@ -91,11 +91,6 @@ export default async function AdminReviewsPage() {
                     <td className="px-3 py-4">
                       <span className={`${integrationClass} inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold text-white`}>{integrationLabel}</span>
                     </td>
-                    <td className="px-3 py-4">
-                      <button disabled className="rounded-md bg-white/5 px-3 py-1 text-sm text-gray-300" aria-disabled>
-                        Ação
-                      </button>
-                    </td>
                   </tr>
                 );
               })}
@@ -104,17 +99,6 @@ export default async function AdminReviewsPage() {
         </div>
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-3xl border border-white/6 bg-[#0b0b0b] p-6">
-          <h3 className="text-lg font-bold text-white">Alertas e recomendações</h3>
-          <ul className="mt-3 space-y-2 text-sm text-gray-400">
-            <li>- O Place ID precisa estar cadastrado em cada unidade para integração com Google.</li>
-            <li>- A variável `GOOGLE_PLACES_API_KEY` deve estar configurada na Vercel/ambiente.</li>
-            <li>- A sincronização é manual por enquanto; logs detalhados serão adicionados depois.</li>
-            <li>- Não há endpoints públicos nem alterações na função Google nesta etapa.</li>
-          </ul>
-        </div>
-      </section>
     </div>
   );
 }

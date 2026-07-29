@@ -1,7 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { unitsData } from '@/app/data';
+import { getUnits } from '@/services/units.service';
 import { getUnitStatusBadgeClasses, getUnitStatusLabel, isPubliclyVisible } from '@/utils/unit-status';
+
+export const dynamic = 'force-dynamic';
 
 function whatsappLink(phone?: string) {
   if (!phone) return undefined;
@@ -12,8 +14,8 @@ function whatsappLink(phone?: string) {
   return `https://wa.me/${digits}`;
 }
 
-export default function UnitsPage() {
-  const publicUnits = unitsData.filter(isPubliclyVisible);
+export default async function UnitsPage() {
+  const publicUnits = (await getUnits()).filter(isPubliclyVisible);
   const activeUnits = publicUnits.filter((unit) => unit.status === 'active');
   const comingSoonUnits = publicUnits.filter((unit) => unit.status === 'coming_soon');
   const maintenanceUnits = publicUnits.filter((unit) => unit.status === 'maintenance');

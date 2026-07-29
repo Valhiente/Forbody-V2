@@ -21,6 +21,7 @@ const navItems: Array<{ label: string; href: string; permission: AdminPermission
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   const admin = await getCurrentAdmin();
   if (!admin) redirect('/admin/login');
+  const allowedNavItems = navItems.filter((item) => hasAdminPermission(admin, item.permission));
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -39,7 +40,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           </div>
 
           <nav className="space-y-2 text-sm text-gray-300">
-            {navItems.filter((item) => hasAdminPermission(admin, item.permission)).map((item) => (
+            {allowedNavItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -66,8 +67,32 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           </div>
         </aside>
 
-        <main className="flex-1 p-6 md:p-10">
+        <main className="min-w-0 flex-1">
+          <header className="sticky top-0 z-40 border-b border-white/10 bg-[#0d0d0d]/95 px-4 py-3 backdrop-blur md:hidden">
+            <div className="flex items-center justify-between gap-3">
+              <Link href="/admin" className="flex items-center gap-2 text-sm font-black uppercase tracking-wider text-white">
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-red-600 text-[10px] text-black">FB</span>
+                Painel
+              </Link>
+              <Link href="/admin/logout" className="rounded-lg border border-white/10 px-3 py-2 text-xs font-bold text-gray-300">
+                Sair
+              </Link>
+            </div>
+            <nav className="mt-3 flex gap-2 overflow-x-auto pb-1">
+              {allowedNavItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="shrink-0 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-gray-200"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+          </header>
+          <div className="p-4 sm:p-6 md:p-10">
           <div className="mx-auto max-w-7xl">{children}</div>
+          </div>
         </main>
       </div>
     </div>

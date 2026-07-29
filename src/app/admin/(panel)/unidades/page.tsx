@@ -1,92 +1,8 @@
 import type { Unit } from '@/app/index';
 import { getAdminUnits } from '@/services/units.service';
-import Button from '@/components/ui/Button';
 import UnitsTableClient from '@/app/admin/(panel)/unidades/UnitsTableClient';
 import UnitCreateForm from './UnitCreateForm';
 import { hasAdminPermission, requirePermission } from '@/lib/admin-auth';
-
-interface AdminSection {
-  id: string;
-  title: string;
-  description: string;
-  items: { icon: string; label: string }[];
-  buttonLabel: string;
-}
-
-const sections: AdminSection[] = [
-  {
-    id: 'add-unit',
-    title: 'Adicionar Unidade',
-    description: 'Cadastro de novas academias na rede Forbody',
-    items: [
-      { icon: '📛', label: 'Nome da unidade' },
-      { icon: '🌍', label: 'Cidade/estado' },
-      { icon: '📍', label: 'Endereço' },
-      { icon: '🔘', label: 'Status inicial' },
-    ],
-    buttonLabel: 'Adicionar unidade',
-  },
-  {
-    id: 'edit-data',
-    title: 'Editar Dados',
-    description: 'Informações gerais e contatos da unidade',
-    items: [
-      { icon: '📝', label: 'Nome' },
-      { icon: '🔗', label: 'Slug' },
-      { icon: '📍', label: 'Endereço' },
-      { icon: '📱', label: 'WhatsApp' },
-      { icon: '📸', label: 'Instagram' },
-      { icon: '🕐', label: 'Horários' },
-    ],
-    buttonLabel: 'Editar dados',
-  },
-  {
-    id: 'evo-links',
-    title: 'Links EVO/W12',
-    description: 'Integrações com área do aluno e vendas',
-    items: [
-      { icon: '🛒', label: 'Link de vendas' },
-      { icon: '👨‍🎓', label: 'Área do aluno' },
-      { icon: '🆔', label: 'ID EVO' },
-    ],
-    buttonLabel: 'Configurar EVO',
-  },
-  {
-    id: 'google-place',
-    title: 'Google Place ID',
-    description: 'Integração com Google Maps e Reviews',
-    items: [
-      { icon: '🗺️', label: 'Campo Place ID' },
-      { icon: '📌', label: 'Nota Google' },
-      { icon: '⭐', label: 'Quantidade de avaliações' },
-    ],
-    buttonLabel: 'Atualizar Place ID',
-  },
-  {
-    id: 'unit-photos',
-    title: 'Fotos da Unidade',
-    description: 'Galeria de imagens e ambiente',
-    items: [
-      { icon: '🖼️', label: 'Galeria' },
-      { icon: '🏢', label: 'Fachada' },
-      { icon: '🏋️', label: 'Ambiente interno' },
-      { icon: '👨‍🏫', label: 'Professores' },
-    ],
-    buttonLabel: 'Gerenciar fotos',
-  },
-  {
-    id: 'unit-status',
-    title: 'Status da Unidade',
-    description: 'Controlar visibilidade e disponibilidade',
-    items: [
-      { icon: '✅', label: 'Ativa' },
-      { icon: '🚀', label: 'Em breve' },
-      { icon: '🔧', label: 'Manutenção' },
-      { icon: '👻', label: 'Oculta' },
-    ],
-    buttonLabel: 'Alterar status',
-  },
-];
 
 function getAverageRating(unitsData: Unit[]) {
   const ratedUnits = unitsData.filter(
@@ -112,7 +28,7 @@ export default async function AdminUnidadesPage() {
         <p className="text-xs font-bold uppercase tracking-[0.36em] text-red-600">Admin / Unidades</p>
         <h1 className="mt-4 text-4xl font-black text-white">Gestão de Unidades</h1>
         <p className="mt-3 max-w-3xl text-sm text-gray-400">
-          Central de controle de todas as unidades da rede Forbody. Adicione novas academias, edite dados, configure integrações com EVO/W12, Google Place e gerencie fotos e status operacional.
+          Adicione unidades e edite dados públicos, integrações EVO/W12, Google Place e status operacional.
         </p>
       </div>
 
@@ -138,31 +54,7 @@ export default async function AdminUnidadesPage() {
         </div>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        {sections.map((section) => (
-          <div key={section.id} className="flex flex-col rounded-3xl border border-white/10 bg-[#0a0a0a] p-6 shadow-xl shadow-black/40 transition-all duration-300 hover:border-red-600/30 hover:shadow-red-600/10">
-            <h2 className="text-xl font-black text-white">{section.title}</h2>
-            <p className="mt-2 text-sm text-gray-400">{section.description}</p>
-            <div className="my-4 h-px bg-gradient-to-r from-red-600/20 to-transparent" />
-            <div className="flex-1 space-y-3">
-              {section.items.map((item) => (
-                <div key={item.label} className="flex items-center gap-3 rounded-lg bg-black/30 px-3 py-2">
-                  <span className="text-lg">{item.icon}</span>
-                  <span className="text-sm text-gray-300">{item.label}</span>
-                </div>
-              ))}
-            </div>
-            <Button variant="b2b-primary" disabled className="mt-6 w-full">{section.buttonLabel}</Button>
-          </div>
-        ))}
-      </div>
-
       <UnitsTableClient units={unitsData} />
-
-      <div className="rounded-3xl border border-red-600/20 bg-[#111] p-6 text-sm text-gray-400">
-        <p className="font-semibold text-red-500">Status:</p>
-        <p>Estrutura visual criada. Funcionalidades de edição, filtragem e navegação de unidades foram preparadas para evolução futura.</p>
-      </div>
     </div>
   );
 }

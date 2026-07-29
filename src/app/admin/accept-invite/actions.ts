@@ -16,11 +16,13 @@ export async function completeAdminInvite() {
   if (!adminClient) return { error: 'Configuração administrativa indisponível.' };
 
   const now = new Date().toISOString();
-  const { error: updateError } = await adminClient
+  const { data: profile, error: updateError } = await adminClient
     .from('admin_profiles')
     .update({ invite_accepted_at: now, updated_at: now })
-    .eq('user_id', userId);
+    .eq('user_id', userId)
+    .select('user_id')
+    .maybeSingle();
 
-  if (updateError) return { error: 'Não foi possível concluir o convite.' };
+  if (updateError || !profile) return { error: 'Não foi possível concluir o convite.' };
   return { success: true };
 }

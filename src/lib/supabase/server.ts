@@ -2,6 +2,17 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { supabasePublishableKey, supabaseUrl } from './config';
 
+export function createPublicClient() {
+  return createServerClient(supabaseUrl, supabasePublishableKey, {
+    cookies: {
+      getAll() {
+        return [];
+      },
+      setAll() {},
+    },
+  });
+}
+
 export async function createClient() {
   const cookieStore = await cookies();
 

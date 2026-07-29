@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createSupabaseAdminClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/server";
 import HomeShowcaseRotatingCard from "@/components/home/HomeShowcaseRotatingCard";
 
 export const revalidate = 60;
@@ -100,7 +100,7 @@ const heroUnitCards = [
   { name: "Barão do Bananal", href: "/unidades/barao-do-bananal" },
   { name: "Vila Virgínia", href: "/unidades/vila-virginia" },
   { name: "Portinari", href: "/unidades/portinari" },
-  { name: "Campo Belo", href: "/unidades" },
+  { name: "Campo Belo", href: "/unidades/campo-belo" },
 ];
 
 function normalizeSupplierHref(value: string | null | undefined) {
@@ -136,8 +136,7 @@ function safeText(value: string | null | undefined, fallback: string) {
 
 async function getHomeMarketingData(): Promise<HomeMarketingData> {
   try {
-    const supabase = await createSupabaseAdminClient();
-    if (!supabase) return { sections: [], items: [], plans: [] };
+    const supabase = createPublicClient();
 
     const [sectionsResult, itemsResult, plansResult] = await Promise.all([
       supabase

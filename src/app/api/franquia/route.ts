@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import { createHash } from 'node:crypto';
+import { createSupabaseAdminClient } from '@/lib/supabase/server';
 
 interface FranchiseLeadPayload {
   name?: string;
@@ -17,7 +19,6 @@ type ValidatedLead = Required<Omit<FranchiseLeadPayload, 'website' | 'startedAt'
 const RESEND_API_URL = 'https://api.resend.com/emails';
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 3;
-const requestLog = new Map<string, number[]>();
 
 function sanitizeText(value?: string) {
   return String(value ?? '').trim().slice(0, 2_000);
@@ -31,14 +32,43 @@ function escapeHtml(value: string) {
   );
 }
 
-function isRateLimited(request: Request) {
+async function isRateLimited(request: Request) {
   const forwardedFor = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim();
   const ip = forwardedFor || request.headers.get('x-real-ip') || 'unknown';
-  const now = Date.now();
-  const recent = (requestLog.get(ip) || []).filter((time) => now - time < RATE_LIMIT_WINDOW_MS);
-  recent.push(now);
-  requestLog.set(ip, recent);
-  return recent.length > RATE_LIMIT_MAX_REQUESTS;
+  const userAgent = request.headers.get('user-agent') || 'unknown';
+  const fingerprint = createHash('sha256').update(`${ip}|${userAgent}`).digest('hex');
+  const supabase = await createSupabaseAdminClient();
+
+  if (!supabase) {
+    return { limited: true, unavailable: true };
+  }
+
+  const cutoff = new Date(Date.now() - RATE_LIMIT_WINDOW_MS).toISOString();
+  const { count, error } = await supabase
+    .from('franchise_rate_limits')
+    .select('id', { count: 'exact', head: true })
+    .eq('fingerprint', fingerprint)
+    .gte('created_at', cutoff);
+
+  if (error) {
+    console.error('Franchise rate-limit check error:', error.message);
+    return { limited: true, unavailable: true };
+  }
+
+  if ((count ?? 0) >= RATE_LIMIT_MAX_REQUESTS) {
+    return { limited: true, unavailable: false };
+  }
+
+  const { error: insertError } = await supabase
+    .from('franchise_rate_limits')
+    .insert({ fingerprint });
+
+  if (insertError) {
+    console.error('Franchise rate-limit insert error:', insertError.message);
+    return { limited: true, unavailable: true };
+  }
+
+  return { limited: false, unavailable: false };
 }
 
 function validateEmail(email: string) {
@@ -152,10 +182,18 @@ async function sendLeadEmail(data: ValidatedLead) {
 
 export async function POST(request: Request) {
   try {
-    if (isRateLimited(request)) {
+    const rateLimit = await isRateLimited(request);
+    if (rateLimit.limited) {
       return NextResponse.json(
-        { error: 'Muitas tentativas. Aguarde alguns minutos e tente novamente.' },
-        { status: 429, headers: { 'Retry-After': '600' } },
+        {
+          error: rateLimit.unavailable
+            ? 'Proteção temporariamente indisponível. Tente novamente em alguns minutos.'
+            : 'Muitas tentativas. Aguarde alguns minutos e tente novamente.',
+        },
+        {
+          status: rateLimit.unavailable ? 503 : 429,
+          headers: { 'Retry-After': '600' },
+        },
       );
     }
 

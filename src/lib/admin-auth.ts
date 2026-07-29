@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { cache } from 'react';
+import { redirect } from 'next/navigation';
 import { createClient, createSupabaseAdminClient } from '@/lib/supabase/server';
 
 export const ADMIN_ROLES = ['full_admin', 'marketing', 'manager', 'viewer'] as const;
@@ -119,14 +120,14 @@ export function hasAdminPermission(
 
 export async function requireAdmin(): Promise<AdminProfile> {
   const profile = await getCurrentAdmin();
-  if (!profile) throw new Error('Não autorizado. Entre novamente no painel.');
+  if (!profile) redirect('/admin/login');
   return profile;
 }
 
 export async function requirePermission(permission: AdminPermission): Promise<AdminProfile> {
   const profile = await requireAdmin();
   if (!hasAdminPermission(profile, permission)) {
-    throw new Error('Seu perfil não possui permissão para realizar esta ação.');
+    redirect('/admin');
   }
   return profile;
 }

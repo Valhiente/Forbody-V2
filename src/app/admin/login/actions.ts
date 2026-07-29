@@ -2,6 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { createClient, createSupabaseAdminClient } from '@/lib/supabase/server';
+import { ADMIN_ROLES } from '@/lib/admin-auth';
 
 export async function loginAdmin(formData: FormData) {
   const email = formData.get('email');
@@ -34,7 +35,7 @@ export async function loginAdmin(formData: FormData) {
         .maybeSingle()
     : { data: null };
 
-  if (!profile || profile.status !== 'active' || !profile.role) {
+  if (!profile || profile.status !== 'active' || !profile.role || !ADMIN_ROLES.includes(profile.role)) {
     await supabase.auth.signOut();
     return {
       error:

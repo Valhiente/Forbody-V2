@@ -32,6 +32,18 @@ type SupabaseWriterClient = {
   storage: { from: (bucket: string) => SupabaseStorageBucket };
 };
 
+type HomePhotoConfig = {
+  key: string;
+  fileField: string;
+  urlField: string;
+  title?: string;
+  description?: string;
+  titleField?: string;
+  descriptionField?: string;
+  fallbackTitle?: string;
+  order: number;
+};
+
 const marketingImagesBucket = 'marketing-images';
 const maxMarketingImageSizeMb = 10;
 const maxMarketingImageSizeBytes = maxMarketingImageSizeMb * 1024 * 1024;
@@ -141,9 +153,9 @@ function lines(formData: FormData, name: string): string[] {
 }
 
 export async function updateMarketingManagerAction(formData: FormData): Promise<ActionResult> {
-  try {
-    await requirePermission('marketing.write');
+  await requirePermission('marketing.write');
 
+  try {
     const supabase = (await createSupabaseAdminClient()) as SupabaseWriterClient | null;
 
     if (!supabase) {
@@ -194,11 +206,11 @@ export async function updateMarketingManagerAction(formData: FormData): Promise<
       },
     ];
 
-    const photos = [
-      { key: 'main', fileField: 'photoMainFile', urlField: 'photoMain', title: 'Foto principal', order: 10 },
-      { key: 'card_1', fileField: 'photoCard1File', urlField: 'photoCard1', title: 'Foto card 1', order: 11 },
-      { key: 'card_2', fileField: 'photoCard2File', urlField: 'photoCard2', title: 'Foto card 2', order: 12 },
-      { key: 'card_3', fileField: 'photoCard3File', urlField: 'photoCard3', title: 'Foto card 3', order: 13 },
+    const photos: HomePhotoConfig[] = [
+      { key: 'main', fileField: 'photoMainFile', urlField: 'photoMain', title: 'Foto principal', description: '', order: 10 },
+      { key: 'card_1', fileField: 'photoCard1File', urlField: 'photoCard1', titleField: 'photoCard1Title', descriptionField: 'photoCard1Description', fallbackTitle: 'Estrutura completa', order: 11 },
+      { key: 'card_2', fileField: 'photoCard2File', urlField: 'photoCard2', titleField: 'photoCard2Title', descriptionField: 'photoCard2Description', fallbackTitle: 'Professores presentes', order: 12 },
+      { key: 'card_3', fileField: 'photoCard3File', urlField: 'photoCard3', titleField: 'photoCard3Title', descriptionField: 'photoCard3Description', fallbackTitle: 'Aulas coletivas', order: 13 },
     ];
 
     const resolvedSlides = await Promise.all(
@@ -300,8 +312,12 @@ export async function updateMarketingManagerAction(formData: FormData): Promise<
         upsertItem(supabase, {
           section_key: 'home_photos',
           item_key: photo.key,
-          title: photo.title,
-          description: '',
+          title: photo.titleField
+            ? textWithFallback(formData, photo.titleField, photo.fallbackTitle ?? 'Foto da Home')
+            : photo.title,
+          description: photo.descriptionField
+            ? text(formData.get(photo.descriptionField))
+            : photo.description,
           image_url: photo.imageUrl,
           sort_order: photo.order,
           is_active: true,

@@ -1,14 +1,16 @@
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import type { Unit, UnitGalleryItem } from '@/app/index';
-import { unitsData } from '@/app/data';
+import type { UnitGalleryItem } from '@/app/index';
 import { fetchGooglePlaceReviews } from '@/app/google';
 import UnitBusinessHours from '@/components/units/UnitBusinessHours';
 import UnitGalleryCarousel from '@/components/units/UnitGalleryCarousel';
 import GoogleReviewsLoop from '@/components/units/GoogleReviewsLoop';
+import { getUnitBySlug } from '@/services/units.service';
 import { getUnitStatus, getUnitStatusBadgeClasses, getUnitStatusLabel, isPubliclyVisible } from '@/utils/unit-status';
 
-const forbodyShopGlobalImageUrl = process.env.NEXT_PUBLIC_FORBODYSHOP_IMAGE_URL || '/images/forbodyshop/forbodyshop-oficial.jpg';
+export const dynamic = 'force-dynamic';
+
+const forbodyShopGlobalImageUrl = process.env.NEXT_PUBLIC_FORBODYSHOP_IMAGE_URL || '/images/forbodyshop/forbodyshop-oficial.webp';
 const forbodyShopSalesUrl = process.env.NEXT_PUBLIC_FORBODYSHOP_SALES_URL || '#';
 
 const officialUnitLinks: Record<string, { salesUrl: string; locationUrl: string; instagramUrl: string }> = {
@@ -44,13 +46,9 @@ function getGlobalForbodyShopItems(unitName: string): UnitGalleryItem[] {
   ];
 }
 
-export async function generateStaticParams() {
-  return unitsData.filter(isPubliclyVisible).map((unit) => ({ slug: unit.slug }));
-}
-
 export default async function UnitPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const unit = unitsData.find((item) => item.slug === slug) as Unit | undefined;
+  const unit = await getUnitBySlug(slug);
 
   if (!unit || !isPubliclyVisible(unit)) {
     notFound();
@@ -61,6 +59,7 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
   const isMaintenance = status === 'maintenance';
   const officialLinks = officialUnitLinks[unit.slug];
   const salesUrl = officialLinks?.salesUrl || unit.salesUrl;
+  const studentAreaUrl = unit.studentAreaUrl;
   const locationUrl = officialLinks?.locationUrl || unit.locationUrl;
   const instagramUrl = officialLinks?.instagramUrl || unit.instagram;
   const whatsappUrl = unit.whatsapp ? `https://wa.me/${unit.whatsapp}` : '';
@@ -80,7 +79,7 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
         <div className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a] shadow-xl shadow-red-600/10 lg:grid lg:grid-cols-[1.05fr_0.95fr]">
           <div className="p-8 md:p-12">
             <span className="inline-flex w-fit items-center rounded-full border border-red-600/20 bg-red-600/10 px-4 py-2 text-xs font-black uppercase tracking-[0.36em] text-red-400">UNIDADE FORBODY</span>
-            <h1 className="mt-6 text-4xl font-black leading-tight sm:text-5xl">Forbody {unit.name}</h1>
+            <h1 className="mt-6 text-4xl font-black leading-tight sm:text-5xl">{unit.name.startsWith('Forbody ') ? unit.name : `Forbody ${unit.name}`}</h1>
             <p className="mt-5 max-w-3xl text-base text-slate-300 sm:text-lg">Treino forte, estrutura completa e informações da unidade em poucos cliques.</p>
             <span className={`mt-6 inline-flex rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] ${getUnitStatusBadgeClasses(unit.status)}`}>{getUnitStatusLabel(unit.status)}</span>
             {isMaintenance && <p className="mt-5 rounded-2xl border border-orange-600/20 bg-orange-600/10 px-5 py-4 text-sm text-orange-200">Esta unidade está temporariamente em manutenção.</p>}
@@ -91,6 +90,11 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
                 {salesUrl && salesUrl !== '#' && (
                   <a href={salesUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-xl bg-red-600 px-6 py-4 text-center text-xs font-black uppercase tracking-[0.2em] text-white shadow-[0_0_34px_rgba(220,38,38,0.26)] transition hover:-translate-y-0.5 hover:bg-red-700">
                     Comprar um plano
+                  </a>
+                )}
+                {studentAreaUrl && studentAreaUrl !== '#' && (
+                  <a href={studentAreaUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-xl border border-white/15 bg-white/[0.04] px-6 py-4 text-center text-xs font-black uppercase tracking-[0.2em] text-white transition hover:-translate-y-0.5 hover:border-red-600 hover:bg-red-600/10">
+                    Área do Aluno
                   </a>
                 )}
                 {whatsappUrl && (

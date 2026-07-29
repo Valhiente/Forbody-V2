@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     siteName: "Forbody Academia",
     images: [
       {
-        url: "/images/units/triunfo.jpg",
+        url: "/images/units/triunfo.webp",
         width: 1200,
         height: 630,
         alt: "Estrutura da Forbody Academia",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Forbody Academia | Planos, Unidades e Treinos",
     description: "Planos Red e Black, unidades, aulas coletivas e estrutura completa.",
-    images: ["/images/units/triunfo.jpg"],
+    images: ["/images/units/triunfo.webp"],
   },
 };
 

@@ -2,7 +2,6 @@
 
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { headers } from 'next/headers';
 import { ADMIN_ROLES, type AdminRole, requirePermission } from '@/lib/admin-auth';
 import { createSupabaseAdminClient } from '@/lib/supabase/server';
 
@@ -21,8 +20,7 @@ export async function inviteAdminUser(formData: FormData) {
   const adminClient = await createSupabaseAdminClient();
   if (!adminClient) resultRedirect('error', 'Configuração administrativa indisponível.');
 
-  const requestHeaders = await headers();
-  const origin = requestHeaders.get('origin') || 'https://forbodyacademia.com.br';
+  const origin = process.env.NEXT_PUBLIC_SITE_URL || 'https://forbodyacademia.com.br';
   const { data, error } = await adminClient.auth.admin.inviteUserByEmail(email, {
     redirectTo: `${origin}/admin/accept-invite`,
     data: { invited_to: 'Forbody Admin' },

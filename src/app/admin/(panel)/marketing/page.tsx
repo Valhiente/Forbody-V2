@@ -280,6 +280,27 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
             <FileInput label="Imagem do card 2" name="photoCard2File" urlName="photoCard2" currentUrl={photos('card_2')?.image_url ?? ''} />
             <FileInput label="Imagem do card 3" name="photoCard3File" urlName="photoCard3" currentUrl={photos('card_3')?.image_url ?? ''} />
           </div>
+
+          <div className="grid gap-5 md:grid-cols-3">
+            {[1, 2, 3].map((number) => {
+              const currentPhoto = photos(`card_${number}`);
+              return (
+                <div key={number} className="space-y-5 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-4">
+                  <Input
+                    label={`Título do card ${number}`}
+                    name={`photoCard${number}Title`}
+                    defaultValue={currentPhoto?.title ?? ''}
+                  />
+                  <Input
+                    label={`Descrição do card ${number}`}
+                    name={`photoCard${number}Description`}
+                    defaultValue={currentPhoto?.description ?? ''}
+                    textarea
+                  />
+                </div>
+              );
+            })}
+          </div>
         </Section>
 
         <Section
@@ -326,6 +347,13 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
             name="promoValue"
             defaultValue={promotionItem?.metadata?.badge ?? ''}
             placeholder="12x de R$ 99,90"
+          />
+
+          <Input
+            label="Texto do botão da promoção"
+            name="promoButtonLabel"
+            defaultValue={promotionItem?.metadata?.button_label ?? ''}
+            placeholder="Quero aproveitar"
           />
 
           <label className="flex items-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-900/60 px-4 py-4 text-sm text-white">

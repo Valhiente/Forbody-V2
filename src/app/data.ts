@@ -11,14 +11,14 @@ const defaultBusinessHours: UnitBusinessHour[] = [
 ];
 
 export const modalitiesData: Modality[] = [
-  { id: 'musculacao', title: 'Musculação', description: 'Estrutura completa para treinar melhor.', imageUrl: '/images/units/triunfo.jpg' },
+  { id: 'musculacao', title: 'Musculação', description: 'Estrutura completa para treinar melhor.', imageUrl: '/images/units/triunfo.webp' },
   { id: 'aulas', title: 'Aulas coletivas', description: 'Mais energia e constância para sua rotina.', imageUrl: '/images/units/barao-do-bananal.jpg' },
   { id: 'professores', title: 'Professores presentes', description: 'Apoio técnico para seu treino.', imageUrl: '/images/units/vila-virginia.jpg' },
   { id: 'cardio', title: 'Cardio', description: 'Estrutura para saúde e condicionamento.', imageUrl: '/images/units/portinari.jpg' },
 ];
 
 export const testimonialsData: Testimonial[] = [
-  { id: 't1', name: 'Aluno Forbody', text: '"Ambiente organizado e equipe presente."', avatarUrl: '/images/units/triunfo.jpg', rating: 5, offsetClass: '' },
+  { id: 't1', name: 'Aluno Forbody', text: '"Ambiente organizado e equipe presente."', avatarUrl: '/images/units/triunfo.webp', rating: 5, offsetClass: '' },
   { id: 't2', name: 'Aluno Forbody', text: '"Estrutura boa para manter constância."', avatarUrl: '/images/units/barao-do-bananal.jpg', rating: 5, offsetClass: 'md:mt-8' },
   { id: 't3', name: 'Aluno Forbody', text: '"Unidade bem localizada e equipe atenciosa."', avatarUrl: '/images/units/vila-virginia.jpg', rating: 5, offsetClass: 'md:mt-16' },
 ];
@@ -30,7 +30,7 @@ export const plansData: Plan[] = [
 
 export const unitsData: Unit[] = [
   {
-    id: 'u-triunfo', slug: 'triunfo', name: 'Triunfo', city: 'Ribeirão Preto', state: 'SP', evoId: 1, evoUnitId: 1, salesUrl: '#', studentAreaUrl: '#', locationUrl: 'https://www.google.com/maps/search/?api=1&query=Forbody&query_place_id=ChIJXZTIhbq_uZQRvvgjq08MRcc', status: 'active', googleReviewsScore: 4.7, googleReviewsCount: 48, address: 'R. Triunfo, 385 - Santa Cruz do Jose Jacques, Ribeirão Preto - SP', whatsapp: '5516994374366', imageUrl: '/images/units/triunfo.jpg', instagram: '@forbody.triunfo', mapEmbedUrl: '', businessHours: defaultBusinessHours,
+    id: 'u-triunfo', slug: 'triunfo', name: 'Triunfo', city: 'Ribeirão Preto', state: 'SP', evoId: 1, evoUnitId: 1, salesUrl: '#', studentAreaUrl: '#', locationUrl: 'https://www.google.com/maps/search/?api=1&query=Forbody&query_place_id=ChIJXZTIhbq_uZQRvvgjq08MRcc', status: 'active', googleReviewsScore: 4.7, googleReviewsCount: 48, address: 'R. Triunfo, 385 - Santa Cruz do Jose Jacques, Ribeirão Preto - SP', whatsapp: '5516994374366', imageUrl: '/images/units/triunfo.webp', instagram: '@forbody.triunfo', mapEmbedUrl: '', businessHours: defaultBusinessHours,
     googleReviews: [
       { authorName: 'João Victor Silva', rating: 5, text: 'Academia muito boa, equipamentos bem cuidados, com muita variedade e professores muito bons e atenciosos.', relativeTimeDescription: 'Avaliação Google' },
       { authorName: 'Jhoseph93', rating: 5, text: 'Estrutura excelente para treino de musculação e uma ótima opção para quem gosta de artes marciais.', relativeTimeDescription: 'Avaliação Google' },
@@ -40,16 +40,16 @@ export const unitsData: Unit[] = [
       { authorName: 'Samuel Valim', rating: 5, text: 'Aparelhos novos e instrutores atenciosos. Me ajudaram no treino mesmo estando só de passagem.', relativeTimeDescription: 'Avaliação Google' },
     ],
     galleryUrls: [
-      { category: 'galeria', title: 'Galeria Triunfo 1', imageUrl: '/images/units/triunfo/galeria/galeria-1.jpg' },
-      { category: 'galeria', title: 'Galeria Triunfo 2', imageUrl: '/images/units/triunfo/galeria/galeria-2.jpg' },
-      { category: 'galeria', title: 'Galeria Triunfo 3', imageUrl: '/images/units/triunfo/galeria/galeria-3.jpg' },
-      { category: 'galeria', title: 'Galeria Triunfo 4', imageUrl: '/images/units/triunfo/galeria/galeria-4.jpg' },
-      { category: 'galeria', title: 'Galeria Triunfo 5', imageUrl: '/images/units/triunfo/galeria/galeria-5.jpg' },
-      { category: 'galeria', title: 'Galeria Triunfo 6', imageUrl: '/images/units/triunfo/galeria/galeria-6.jpg' },
-      { category: 'galeria', title: 'Galeria Triunfo 7', imageUrl: '/images/units/triunfo/galeria/galeria-7.jpg' },
-      { category: 'galeria', title: 'Galeria Triunfo 8', imageUrl: '/images/units/triunfo/galeria/galeria-8.jpg' },
-      { category: 'galeria', title: 'Galeria Triunfo 9', imageUrl: '/images/units/triunfo/galeria/galeria-9.jpg' },
-      { category: 'forbodyshop', title: 'ForbodyShop Triunfo', imageUrl: '/images/units/triunfo/forbodyshop/forbodyshop-1.jpg' },
+      { category: 'galeria', title: 'Galeria Triunfo 1', imageUrl: '/images/units/triunfo/galeria/galeria-1.webp' },
+      { category: 'galeria', title: 'Galeria Triunfo 2', imageUrl: '/images/units/triunfo/galeria/galeria-2.webp' },
+      { category: 'galeria', title: 'Galeria Triunfo 3', imageUrl: '/images/units/triunfo/galeria/galeria-3.webp' },
+      { category: 'galeria', title: 'Galeria Triunfo 4', imageUrl: '/images/units/triunfo/galeria/galeria-4.webp' },
+      { category: 'galeria', title: 'Galeria Triunfo 5', imageUrl: '/images/units/triunfo/galeria/galeria-5.webp' },
+      { category: 'galeria', title: 'Galeria Triunfo 6', imageUrl: '/images/units/triunfo/galeria/galeria-6.webp' },
+      { category: 'galeria', title: 'Galeria Triunfo 7', imageUrl: '/images/units/triunfo/galeria/galeria-7.webp' },
+      { category: 'galeria', title: 'Galeria Triunfo 8', imageUrl: '/images/units/triunfo/galeria/galeria-8.webp' },
+      { category: 'galeria', title: 'Galeria Triunfo 9', imageUrl: '/images/units/triunfo/galeria/galeria-9.webp' },
+      { category: 'forbodyshop', title: 'ForbodyShop Triunfo', imageUrl: '/images/forbodyshop/forbodyshop-oficial.webp' },
     ], teachers: [], googlePlaceId: 'ChIJXZTIhbq_uZQRvvgjq08MRcc'
   },
   {
@@ -63,8 +63,12 @@ export const unitsData: Unit[] = [
       { authorName: 'Rodjunio Alessio', rating: 5, text: 'Ótimo ambiente, aparelhos bons e grande variedade.', relativeTimeDescription: 'Avaliação Google' },
     ],
     galleryUrls: [
-      { category: 'galeria', title: 'Galeria Barão do Bananal', imageUrl: '/images/units/barao-do-bananal/galeria/galeria-1.jpg' },
-      { category: 'forbodyshop', title: 'ForbodyShop Barão do Bananal', imageUrl: '/images/units/barao-do-bananal/forbodyshop/forbodyshop-1.jpg' },
+      { category: 'galeria', title: 'Galeria Barão do Bananal 1', imageUrl: '/images/units/barao-do-bananal/galeria/galeria-1.webp' },
+      { category: 'galeria', title: 'Galeria Barão do Bananal 2', imageUrl: '/images/units/barao-do-bananal/galeria/galeria-2.webp' },
+      { category: 'galeria', title: 'Galeria Barão do Bananal 3', imageUrl: '/images/units/barao-do-bananal/galeria/galeria-3.webp' },
+      { category: 'galeria', title: 'Galeria Barão do Bananal 4', imageUrl: '/images/units/barao-do-bananal/galeria/galeria-4.webp' },
+      { category: 'galeria', title: 'Galeria Barão do Bananal 5', imageUrl: '/images/units/barao-do-bananal/galeria/galeria-5.webp' },
+      { category: 'galeria', title: 'Galeria Barão do Bananal 6', imageUrl: '/images/units/barao-do-bananal/galeria/galeria-6.webp' },
     ], teachers: [], googlePlaceId: 'ChIJwVOXprm_uZQREFsgGHIf8y4'
   },
   {
@@ -78,8 +82,7 @@ export const unitsData: Unit[] = [
       { authorName: 'Luciana Fernandes', rating: 5, text: 'Profissionais simpáticos, tratamento excelente com os alunos e aparelhos muito bem cuidados.', relativeTimeDescription: 'Avaliação Google' },
     ],
     galleryUrls: [
-      { category: 'galeria', title: 'Galeria Vila Virgínia', imageUrl: '/images/units/vila-virginia/galeria/galeria-1.jpg' },
-      { category: 'forbodyshop', title: 'ForbodyShop Vila Virgínia', imageUrl: '/images/units/vila-virginia/forbodyshop/forbodyshop-1.jpg' },
+      { category: 'forbodyshop', title: 'ForbodyShop Vila Virgínia', imageUrl: '/images/forbodyshop/forbodyshop-oficial.webp' },
     ], teachers: [], googlePlaceId: 'ChIJjx8pfwC_uZQRt8MeuNMo8aA'
   },
   {
@@ -92,9 +95,23 @@ export const unitsData: Unit[] = [
       { authorName: 'Rodrigo Felício', rating: 5, text: 'Academia top de linha, equipamentos de ponta, estacionamento prático e limpeza impecável.', relativeTimeDescription: 'Avaliação Google' },
     ],
     galleryUrls: [
-      { category: 'galeria', title: 'Galeria Portinari', imageUrl: '/images/units/portinari/galeria/galeria-1.jpg' },
-      { category: 'forbodyshop', title: 'ForbodyShop Portinari', imageUrl: '/images/units/portinari/forbodyshop/forbodyshop-1.jpg' },
+      { category: 'galeria', title: 'Galeria Portinari 1', imageUrl: '/images/units/portinari/galeria/galeria-1.webp' },
+      { category: 'galeria', title: 'Galeria Portinari 2', imageUrl: '/images/units/portinari/galeria/galeria-2.webp' },
+      { category: 'galeria', title: 'Galeria Portinari 3', imageUrl: '/images/units/portinari/galeria/galeria-3.webp' },
+      { category: 'galeria', title: 'Galeria Portinari 4', imageUrl: '/images/units/portinari/galeria/galeria-4.webp' },
+      { category: 'galeria', title: 'Galeria Portinari 5', imageUrl: '/images/units/portinari/galeria/galeria-5.webp' },
     ], teachers: [], googlePlaceId: 'ChIJNegEDqjBuZQRsXJxQT9NpTo'
+  },
+  {
+    id: 'u-Campo-Belo-Campinas-SP', slug: 'campo-belo', name: 'Campo Belo', city: 'Campinas', state: 'SP', evoId: 5, evoUnitId: 5, salesUrl: 'https://evo-totem.w12app.com.br/fourbodyacademia/5/page/landing-page?preview=true', studentAreaUrl: 'https://evo-totem.w12app.com.br/fourbodyacademia/5/page/landing-page/login', locationUrl: 'https://www.google.com/maps/search/?api=1&query=R.%20Anderson%20Cipriano%20da%20Silva%2C%20160%20-%20Jardim%20Sao%20Domingos%2C%20Campinas%20-%20SP%2C%2013053-322', status: 'active', googleReviewsScore: 0, googleReviewsCount: 0, address: 'R. Anderson Cipriano da Silva, 160 - Jardim São Domingos, Campinas - SP, 13053-322', whatsapp: '', imageUrl: '/images/units/campo-belo.webp', instagram: '', mapEmbedUrl: '', businessHours: defaultBusinessHours,
+    googleReviews: [],
+    galleryUrls: [
+      { category: 'galeria', title: 'Galeria Campo Belo 1', imageUrl: '/images/units/campo-belo/galeria/galeria-1.webp' },
+      { category: 'galeria', title: 'Galeria Campo Belo 2', imageUrl: '/images/units/campo-belo/galeria/galeria-2.webp' },
+      { category: 'galeria', title: 'Galeria Campo Belo 3', imageUrl: '/images/units/campo-belo/galeria/galeria-3.webp' },
+      { category: 'galeria', title: 'Galeria Campo Belo 4', imageUrl: '/images/units/campo-belo/galeria/galeria-4.webp' },
+      { category: 'galeria', title: 'Galeria Campo Belo 5', imageUrl: '/images/units/campo-belo/galeria/galeria-5.webp' },
+    ], teachers: [], googlePlaceId: ''
   },
   { id: 'u-nova-rp-1', slug: 'nova-unidade-ribeirao-preto-1', name: 'Nova Unidade Ribeirão Preto 1', city: 'Ribeirão Preto', state: 'SP', evoId: 0, salesUrl: '#', studentAreaUrl: '#', status: 'coming_soon', googleReviewsScore: 0, googleReviewsCount: 0, address: 'Endereço em breve', whatsapp: '', instagram: '', mapEmbedUrl: '', businessHours: [], galleryUrls: [], teachers: [], locationUrl: '#', googlePlaceId: '' },
   { id: 'u-nova-rp-2', slug: 'nova-unidade-ribeirao-preto-2', name: 'Nova Unidade Ribeirão Preto 2', city: 'Ribeirão Preto', state: 'SP', evoId: 0, salesUrl: '#', studentAreaUrl: '#', status: 'coming_soon', googleReviewsScore: 0, googleReviewsCount: 0, address: 'Endereço em breve', whatsapp: '', instagram: '', mapEmbedUrl: '', businessHours: [], galleryUrls: [], teachers: [], locationUrl: '#', googlePlaceId: '' },

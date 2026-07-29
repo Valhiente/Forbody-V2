@@ -1,7 +1,7 @@
-import type { ReactNode } from 'react';
+import { redirect } from 'next/navigation';
 import { requirePermission } from '@/lib/admin-auth';
 
-export default async function SettingsLayout({ children }: { children: ReactNode }) {
+export default async function SettingsLayout() {
   await requirePermission('security.manage');
-  return children;
+  redirect('/admin');
 }

@@ -1,4 +1,4 @@
-import { createClient, createSupabaseAdminClient } from '@/lib/supabase/server';
+import { createPublicClient, createSupabaseAdminClient } from '@/lib/supabase/server';
 import { unitsData } from '@/app/data';
 import type {
   Unit,
@@ -73,29 +73,33 @@ function toNumber(value: number | string | null | undefined): number {
 }
 
 function mapUnitRow(item: UnitRow): Unit {
+  const fallback = unitsData.find((unit) => unit.slug === item.slug);
+
   return {
     id: item.id,
     slug: item.slug,
     name: item.name,
-    city: item.city || '',
-    state: item.state || '',
-    evoId: item.evo_id || 0,
-    evoUnitId: item.evo_unit_id || undefined,
-    googleReviewsScore: toNumber(item.google_reviews_score),
-    googleReviewsCount: item.google_reviews_count || 0,
-    address: item.address || '',
-    whatsapp: item.whatsapp || '',
-    instagram: item.instagram || undefined,
-    mapEmbedUrl: item.map_embed_url || undefined,
-    salesUrl: item.sales_url || undefined,
-    studentAreaUrl: item.student_area_url || undefined,
+    city: item.city || fallback?.city || '',
+    state: item.state || fallback?.state || '',
+    evoId: item.evo_id || fallback?.evoId || 0,
+    evoUnitId: item.evo_unit_id || fallback?.evoUnitId,
+    googleReviewsScore: toNumber(item.google_reviews_score) || fallback?.googleReviewsScore || 0,
+    googleReviewsCount: item.google_reviews_count || fallback?.googleReviewsCount || 0,
+    address: item.address || fallback?.address || '',
+    whatsapp: item.whatsapp || fallback?.whatsapp || '',
+    imageUrl: fallback?.imageUrl,
+    instagram: item.instagram || fallback?.instagram,
+    mapEmbedUrl: item.map_embed_url || fallback?.mapEmbedUrl,
+    salesUrl: item.sales_url || fallback?.salesUrl,
+    studentAreaUrl: item.student_area_url || fallback?.studentAreaUrl,
     checkoutUrl: item.checkout_url || undefined,
-    locationUrl: item.location_url || undefined,
-    status: item.status || undefined,
-    googlePlaceId: item.google_place_id,
-    businessHours: item.business_hours || [],
-    galleryUrls: item.gallery_urls || [],
-    teachers: item.teachers || [],
+    locationUrl: item.location_url || fallback?.locationUrl,
+    status: item.status || fallback?.status,
+    googlePlaceId: item.google_place_id || fallback?.googlePlaceId,
+    googleReviews: fallback?.googleReviews,
+    businessHours: item.business_hours?.length ? item.business_hours : fallback?.businessHours || [],
+    galleryUrls: item.gallery_urls?.length ? item.gallery_urls : fallback?.galleryUrls || [],
+    teachers: item.teachers?.length ? item.teachers : fallback?.teachers || [],
   };
 }
 
@@ -165,13 +169,13 @@ export async function createUnit(payload: Partial<Unit>): Promise<UnitMutationRe
 
 export async function getUnits(): Promise<Unit[]> {
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
 
-    if (!supabase) {
-      return unitsData;
-    }
-
-    const { data, error } = await supabase.from('units').select('*');
+    const { data, error } = await supabase
+      .from('units')
+      .select('*')
+      .order('evo_id', { ascending: true, nullsFirst: false })
+      .order('name', { ascending: true });
 
     if (error) {
       console.warn('Erro ao buscar unidades do Supabase:', error.message);
@@ -202,7 +206,11 @@ export async function getAdminUnits(): Promise<Unit[]> {
       return unitsData;
     }
 
-    const { data, error } = await supabaseAdmin.from('units').select('*');
+    const { data, error } = await supabaseAdmin
+      .from('units')
+      .select('*')
+      .order('evo_id', { ascending: true, nullsFirst: false })
+      .order('name', { ascending: true });
 
     if (error) {
       console.warn('Erro ao buscar unidades do Supabase (Admin):', error.message);
