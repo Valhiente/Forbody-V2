@@ -34,8 +34,8 @@ export default function UnitEditForm({ unit }: { unit: Unit }) {
 
   return (
     <div className="rounded-3xl border border-white/10 bg-[#0a0a0a] p-6 shadow-xl shadow-black/40">
-      <h2 className="text-xl font-black text-white mb-2">Editar Unidade</h2>
-      <p className="text-sm text-yellow-500 mb-6">Aviso: Alterações são salvas no Supabase. O fallback local continua preservado.</p>
+      <h2 className="mb-2 text-xl font-black text-white">Dados da unidade</h2>
+      <p className="mb-6 text-sm text-gray-400">Altere somente o necessário. Os demais valores permanecem como estão.</p>
       
       {message && (
         <div className={`p-4 mb-6 rounded-md text-sm font-bold ${message.type === 'success' ? 'bg-green-600/20 text-green-400' : 'bg-red-600/20 text-red-400'}`}>
@@ -78,23 +78,32 @@ export default function UnitEditForm({ unit }: { unit: Unit }) {
             <label className="block font-semibold text-white mb-1">Instagram</label>
             <input type="text" name="instagram" defaultValue={unit.instagram ?? ''} className="w-full bg-[#111] border border-white/10 rounded p-2 text-white" />
           </div>
-          <div>
-            <label className="block font-semibold text-white mb-1">Link EVO (Vendas)</label>
-            <input type="url" name="salesUrl" defaultValue={unit.salesUrl ?? ''} className="w-full bg-[#111] border border-white/10 rounded p-2 text-white" />
-          </div>
-          <div>
-            <label className="block font-semibold text-white mb-1">Área do Aluno</label>
-            <input type="url" name="studentAreaUrl" defaultValue={unit.studentAreaUrl ?? ''} className="w-full bg-[#111] border border-white/10 rounded p-2 text-white" />
-          </div>
-          <div>
-            <label className="block font-semibold text-white mb-1">Link Google Maps (locationUrl)</label>
-            <input type="url" name="locationUrl" defaultValue={unit.locationUrl ?? ''} className="w-full bg-[#111] border border-white/10 rounded p-2 text-white" />
-          </div>
-          <div>
-            <label className="block font-semibold text-white mb-1">Google Place ID</label>
-            <input type="text" name="googlePlaceId" defaultValue={unit.googlePlaceId ?? ''} className="w-full bg-[#111] border border-white/10 rounded p-2 text-white" />
-          </div>
         </div>
+
+        <details className="rounded-2xl border border-white/10 bg-[#111]">
+          <summary className="cursor-pointer px-5 py-4 font-bold text-white">
+            Integrações EVO e Google
+            <span className="ml-2 text-xs font-normal text-gray-500">Abra somente para configurar conexões</span>
+          </summary>
+          <div className="grid gap-4 border-t border-white/10 p-5 md:grid-cols-2">
+            <div>
+              <label className="mb-1 block font-semibold text-white">Link de matrícula EVO</label>
+              <input type="url" name="salesUrl" defaultValue={unit.salesUrl ?? ''} className="w-full rounded border border-white/10 bg-black p-2 text-white" />
+            </div>
+            <div>
+              <label className="mb-1 block font-semibold text-white">Área do aluno</label>
+              <input type="url" name="studentAreaUrl" defaultValue={unit.studentAreaUrl ?? ''} className="w-full rounded border border-white/10 bg-black p-2 text-white" />
+            </div>
+            <div>
+              <label className="mb-1 block font-semibold text-white">Link do Google Maps</label>
+              <input type="url" name="locationUrl" defaultValue={unit.locationUrl ?? ''} className="w-full rounded border border-white/10 bg-black p-2 text-white" />
+            </div>
+            <div>
+              <label className="mb-1 block font-semibold text-white">Google Place ID</label>
+              <input type="text" name="googlePlaceId" defaultValue={unit.googlePlaceId ?? ''} className="w-full rounded border border-white/10 bg-black p-2 text-white" />
+            </div>
+          </div>
+        </details>
 
         <Button type="submit" variant="b2b-primary" disabled={loading} className="w-full mt-6">
           {loading ? 'Salvando...' : 'Salvar alterações'}

@@ -98,8 +98,12 @@ export async function fetchGooglePlaceReviews(placeId?: string | null) {
 export async function syncGooglePlaceData(unitId: string, placeId: string) {
   const googleData = await fetchGooglePlaceReviews(placeId);
 
-  if (!googleData.rating && !googleData.reviewsCount) {
-    return googleData;
+  if (!googleData.hasApiKey) {
+    throw new Error('A chave da API Google Places não está configurada.');
+  }
+
+  if (googleData.rating === null && googleData.reviewsCount === null) {
+    throw new Error('O Google não retornou dados para este Place ID.');
   }
 
   const supabase = await createSupabaseAdminClient();

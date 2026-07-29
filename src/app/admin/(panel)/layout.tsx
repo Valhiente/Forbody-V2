@@ -7,6 +7,7 @@ import {
   hasAdminPermission,
   type AdminPermission,
 } from '@/lib/admin-auth';
+import AdminNav from '@/app/admin/components/AdminNav';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,6 +23,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   const admin = await getCurrentAdmin();
   if (!admin) redirect('/admin/login');
   const allowedNavItems = navItems.filter((item) => hasAdminPermission(admin, item.permission));
+  const navigation = allowedNavItems.map(({ label, href }) => ({ label, href }));
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -39,17 +41,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
             </Link>
           </div>
 
-          <nav className="space-y-2 text-sm text-gray-300">
-            {allowedNavItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="block rounded-2xl border border-white/5 bg-white/5 px-4 py-3 transition hover:border-red-600/20 hover:bg-red-600/10 hover:text-white"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
+          <AdminNav items={navigation} />
 
           <div className="mt-auto pt-6 border-t border-white/5">
             <div className="mb-4 rounded-2xl border border-white/5 bg-white/5 px-4 py-3">
@@ -58,12 +50,14 @@ export default async function AdminLayout({ children }: { children: ReactNode })
                 {ADMIN_ROLE_LABELS[admin.role]}
               </p>
             </div>
-            <Link
-              href="/admin/logout"
-              className="inline-flex w-full items-center justify-center rounded-2xl bg-red-600 px-4 py-3 text-sm font-bold uppercase tracking-[0.24em] text-black transition hover:bg-red-700"
-            >
-              Sair
-            </Link>
+            <form action="/admin/logout" method="post">
+              <button
+                type="submit"
+                className="inline-flex w-full items-center justify-center rounded-2xl bg-red-600 px-4 py-3 text-sm font-bold uppercase tracking-[0.24em] text-white transition hover:bg-red-700"
+              >
+                Sair
+              </button>
+            </form>
           </div>
         </aside>
 
@@ -74,24 +68,16 @@ export default async function AdminLayout({ children }: { children: ReactNode })
                 <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-red-600 text-[10px] text-black">FB</span>
                 Painel
               </Link>
-              <Link href="/admin/logout" className="rounded-lg border border-white/10 px-3 py-2 text-xs font-bold text-gray-300">
-                Sair
-              </Link>
+              <form action="/admin/logout" method="post">
+                <button type="submit" className="rounded-lg border border-white/10 px-3 py-2 text-xs font-bold text-gray-300">
+                  Sair
+                </button>
+              </form>
             </div>
-            <nav className="mt-3 flex gap-2 overflow-x-auto pb-1">
-              {allowedNavItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="shrink-0 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-gray-200"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
+            <AdminNav items={navigation} mobile />
           </header>
           <div className="p-4 sm:p-6 md:p-10">
-          <div className="mx-auto max-w-7xl">{children}</div>
+            <div className="mx-auto max-w-7xl">{children}</div>
           </div>
         </main>
       </div>

@@ -47,14 +47,27 @@ export default async function AdminUnidadesPage() {
       </div>
 
       {canWrite ? (
-        <UnitCreateForm />
+        <details className="rounded-3xl border border-white/10 bg-[#0a0a0a]">
+          <summary className="cursor-pointer list-none p-6">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-black text-white">Cadastrar nova unidade</h2>
+                <p className="mt-1 text-sm text-gray-400">Abra somente quando precisar adicionar uma unidade.</p>
+              </div>
+              <span className="rounded-xl bg-red-600 px-4 py-2 text-xs font-bold uppercase text-white">Nova unidade</span>
+            </div>
+          </summary>
+          <div className="border-t border-white/10">
+            <UnitCreateForm />
+          </div>
+        </details>
       ) : (
         <div className="rounded-2xl border border-blue-500/30 bg-blue-500/10 p-4 text-sm text-blue-200">
           Modo visualização: seu perfil pode consultar as unidades, mas não criar ou salvar alterações.
         </div>
       )}
 
-      <UnitsTableClient units={unitsData} />
+      <UnitsTableClient units={unitsData} canWrite={canWrite} />
     </div>
   );
 }

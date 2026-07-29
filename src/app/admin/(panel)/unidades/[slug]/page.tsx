@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 
 import { getAdminUnitBySlug } from '@/services/units.service';
-import type { Unit } from '@/app/index';
 import UnitEditForm from './UnitEditForm';
 import { hasAdminPermission, requirePermission } from '@/lib/admin-auth';
 
@@ -16,12 +16,6 @@ const getStatusBadge = (status?: string) => {
   return statusLabels[status || ''] || { label: 'DESCONHECIDO', color: 'bg-gray-600/20 text-gray-400' };
 };
 
-const getIntegrationText = (unit: Unit) => ({
-  evo: Boolean(unit.salesUrl || unit.studentAreaUrl || unit.evoUnitId),
-  google: Boolean(unit.googlePlaceId),
-  site: Boolean(unit.slug),
-});
-
 export default async function AdminUnitDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const admin = await requirePermission('units.read');
   const canWrite = hasAdminPermission(admin, 'units.write');
@@ -30,19 +24,51 @@ export default async function AdminUnitDetailPage({ params }: { params: Promise<
   if (!unit) notFound();
 
   const statusBadge = getStatusBadge(unit.status);
-  const integrations = getIntegrationText(unit);
 
   return (
     <div className="space-y-8">
       <div className="rounded-3xl border border-white/10 bg-[#111] p-8 shadow-xl shadow-black/20">
-        <p className="text-xs font-bold uppercase tracking-[0.36em] text-red-600">Admin / Unidades</p>
-        <h1 className="mt-4 text-4xl font-black text-white">Editar Unidade: {unit.name}</h1>
+        <Link href="/admin/unidades" className="text-xs font-bold uppercase tracking-[0.24em] text-red-500 hover:text-red-400">
+          ← Voltar para unidades
+        </Link>
+        <h1 className="mt-4 text-4xl font-black text-white">{unit.name}</h1>
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <span className={`inline-flex rounded-full px-3 py-1 text-sm font-bold ${statusBadge.color}`}>
             {statusBadge.label}
           </span>
           <span className="text-sm text-gray-400">Slug: {unit.slug}</span>
         </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {[
+          {
+            label: 'Contato',
+            value: unit.whatsapp || 'Não informado',
+            detail: unit.instagram || 'Instagram não informado',
+          },
+          {
+            label: 'EVO / W12',
+            value: unit.salesUrl && unit.studentAreaUrl ? 'Completo' : 'Pendente',
+            detail: `Unidade ${unit.evoUnitId ?? 'sem ID'}`,
+          },
+          {
+            label: 'Google',
+            value: unit.googlePlaceId ? 'Configurado' : 'Pendente',
+            detail: unit.googleReviewsScore > 0 ? `${unit.googleReviewsScore} · ${unit.googleReviewsCount} avaliações` : 'Sem nota',
+          },
+          {
+            label: 'Imagens',
+            value: `${unit.galleryUrls?.length ?? 0} na galeria`,
+            detail: unit.imageUrl ? 'Capa configurada' : 'Capa pendente',
+          },
+        ].map((item) => (
+          <div key={item.label} className="rounded-2xl border border-white/10 bg-[#0a0a0a] p-5">
+            <p className="text-xs font-bold uppercase tracking-widest text-gray-500">{item.label}</p>
+            <p className="mt-3 font-bold text-white">{item.value}</p>
+            <p className="mt-1 truncate text-xs text-gray-500">{item.detail}</p>
+          </div>
+        ))}
       </div>
 
       {canWrite ? (
@@ -52,67 +78,6 @@ export default async function AdminUnitDetailPage({ params }: { params: Promise<
           Modo visualização: os dados abaixo são somente para consulta.
         </div>
       )}
-
-      <div className="grid gap-6 lg:grid-cols-2">
-
-        <div className="rounded-3xl border border-white/10 bg-[#0a0a0a] p-6 shadow-xl shadow-black/40">
-          <h2 className="text-xl font-black text-white">Dados Básicos</h2>
-          <div className="mt-4 space-y-3 text-sm text-gray-300">
-            <p><span className="font-semibold text-white">Cidade:</span> {unit.city}, {unit.state}</p>
-            <p><span className="font-semibold text-white">Endereço:</span> {unit.address}</p>
-            <p><span className="font-semibold text-white">WhatsApp:</span> {unit.whatsapp || 'Não informado'}</p>
-            <p><span className="font-semibold text-white">Instagram:</span> {unit.instagram || 'Não informado'}</p>
-          </div>
-        </div>
-
-        <div className="rounded-3xl border border-white/10 bg-[#0a0a0a] p-6 shadow-xl shadow-black/40">
-          <h2 className="text-xl font-black text-white">Links EVO/W12</h2>
-          <div className="mt-4 space-y-3 text-sm text-gray-300">
-            <p><span className="font-semibold text-white">EVO Unit ID:</span> {unit.evoUnitId ?? 'Não configurado'}</p>
-            <p><span className="font-semibold text-white">Link de vendas:</span> {unit.salesUrl || 'Não configurado'}</p>
-            <p><span className="font-semibold text-white">Área do aluno:</span> {unit.studentAreaUrl || 'Não configurado'}</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-3xl border border-white/10 bg-[#0a0a0a] p-6 shadow-xl shadow-black/40">
-          <h2 className="text-xl font-black text-white">Google Place ID</h2>
-          <div className="mt-4 space-y-3 text-sm text-gray-300">
-            <p><span className="font-semibold text-white">Place ID:</span> {unit.googlePlaceId || 'Não informado'}</p>
-            <p><span className="font-semibold text-white">Nota Google:</span> {unit.googleReviewsScore || '0.0'}</p>
-            <p><span className="font-semibold text-white">Avaliações:</span> {unit.googleReviewsCount}</p>
-          </div>
-        </div>
-
-        <div className="rounded-3xl border border-white/10 bg-[#0a0a0a] p-6 shadow-xl shadow-black/40">
-          <h2 className="text-xl font-black text-white">Fotos</h2>
-          <div className="mt-4 space-y-3 text-sm text-gray-300">
-            <p><span className="font-semibold text-white">Galeria:</span> {unit.galleryUrls?.length ?? 0} imagens</p>
-            <p><span className="font-semibold text-white">Imagem principal:</span> {unit.imageUrl ? 'Configurada' : 'Não configurada'}</p>
-            <p><span className="font-semibold text-white">Professores:</span> {unit.teachers?.length ?? 0}</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="rounded-3xl border border-white/10 bg-[#0a0a0a] p-6 shadow-xl shadow-black/40">
-        <h2 className="text-xl font-black text-white">Status</h2>
-        <div className="mt-4 space-y-3 text-sm text-gray-300">
-          <p><span className="font-semibold text-white">Status atual:</span> <span className={`inline-flex rounded-full px-3 py-1 text-xs font-bold ${statusBadge.color}`}>{statusBadge.label}</span></p>
-          <p><span className="font-semibold text-white">Google Place ID:</span> {unit.googlePlaceId ? 'Configurado' : 'Não configurado'}</p>
-          <p><span className="font-semibold text-white">Integrações ativas:</span></p>
-          <div className="flex flex-wrap gap-2">
-            {Object.entries(integrations).map(([key, active]) => (
-              <span
-                key={key}
-                className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${active ? 'bg-red-600/20 text-red-300' : 'bg-white/5 text-gray-500'}`}
-              >
-                {key.toUpperCase()}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

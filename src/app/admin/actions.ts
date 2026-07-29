@@ -14,7 +14,7 @@ async function getUnitsForGoogleSync(): Promise<ReviewSyncUnit[]> {
   const supabase = await createSupabaseAdminClient();
 
   if (!supabase) {
-    return [];
+    throw new Error('Configuração administrativa do Supabase indisponível.');
   }
 
   const { data, error } = await supabase
@@ -22,8 +22,7 @@ async function getUnitsForGoogleSync(): Promise<ReviewSyncUnit[]> {
     .select('id, google_place_id, status');
 
   if (error) {
-    console.error('Erro ao buscar unidades para sincronização Google:', error.message);
-    return [];
+    throw new Error(`Não foi possível carregar as unidades: ${error.message}`);
   }
 
   return (data || []) as ReviewSyncUnit[];
@@ -36,9 +35,11 @@ export async function syncAllGoogleReviews() {
   let failed = 0;
 
   const units = await getUnitsForGoogleSync();
+  const eligibleUnits = units.filter(
+    (unit) => unit.status !== 'coming_soon' && Boolean(unit.google_place_id),
+  );
 
-  for (const unit of units) {
-    if (unit.status === 'coming_soon') continue;
+  for (const unit of eligibleUnits) {
     if (!unit.google_place_id) continue;
 
     try {
@@ -51,9 +52,10 @@ export async function syncAllGoogleReviews() {
   }
 
   return {
-    success: true,
+    success: failed === 0,
     synced,
     failed,
+    total: eligibleUnits.length,
   } as const;
 }
 

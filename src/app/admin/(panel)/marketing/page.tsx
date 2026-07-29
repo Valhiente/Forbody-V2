@@ -26,6 +26,7 @@ type SectionProps = {
   title: string;
   description: string;
   children: ReactNode;
+  open?: boolean;
 };
 
 type MarketingPageProps = {
@@ -90,13 +91,18 @@ function FileInput({ label, name, urlName, helper, currentUrl }: FileInputProps)
         className="block w-full cursor-pointer rounded-2xl border border-dashed border-red-600/40 bg-black px-4 py-4 text-sm text-zinc-300 file:mr-4 file:rounded-xl file:border-0 file:bg-red-600 file:px-4 file:py-2 file:text-xs file:font-black file:uppercase file:tracking-[0.14em] file:text-white hover:border-red-500"
       />
 
-      <input
-        name={urlName}
-        type="url"
-        defaultValue={currentUrl}
-        placeholder="Opcional: cole uma URL https:// se a imagem já estiver hospedada"
-        className="h-11 w-full rounded-2xl border border-zinc-700 bg-zinc-950 px-4 text-xs text-zinc-300 outline-none transition focus:border-red-500 focus:ring-1 focus:ring-red-500"
-      />
+      <details className="rounded-xl border border-zinc-800 bg-black/30 px-3 py-2">
+        <summary className="cursor-pointer text-xs font-semibold text-zinc-400">
+          Usar ou conferir endereço da imagem
+        </summary>
+        <input
+          name={urlName}
+          type="url"
+          defaultValue={currentUrl}
+          placeholder="https://..."
+          className="mt-3 h-11 w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 text-xs text-zinc-300 outline-none transition focus:border-red-500 focus:ring-1 focus:ring-red-500"
+        />
+      </details>
 
       <p className="text-xs leading-relaxed text-zinc-500">
         {helper ??
@@ -106,16 +112,22 @@ function FileInput({ label, name, urlName, helper, currentUrl }: FileInputProps)
   );
 }
 
-function Section({ title, description, children }: SectionProps) {
+function Section({ title, description, children, open = false }: SectionProps) {
   return (
-    <section className="space-y-6 rounded-3xl border border-zinc-800 bg-zinc-950/90 p-6 shadow-2xl shadow-black/20 backdrop-blur-xl sm:p-8">
-      <div className="space-y-2 border-b border-zinc-800 pb-5">
-        <h2 className="text-2xl font-black tracking-[-0.03em] text-white">{title}</h2>
-        <p className="max-w-3xl text-sm leading-relaxed text-zinc-400">{description}</p>
-      </div>
-
-      <div className="grid gap-5">{children}</div>
-    </section>
+    <details open={open} className="group rounded-3xl border border-zinc-800 bg-zinc-950/90 shadow-2xl shadow-black/20 backdrop-blur-xl">
+      <summary className="cursor-pointer list-none p-6 sm:p-8">
+        <div className="flex items-center justify-between gap-5">
+          <div className="space-y-2">
+            <h2 className="text-xl font-black tracking-[-0.03em] text-white sm:text-2xl">{title}</h2>
+            <p className="max-w-3xl text-sm leading-relaxed text-zinc-400">{description}</p>
+          </div>
+          <span className="shrink-0 rounded-full border border-white/10 px-3 py-2 text-xs font-bold text-zinc-400 group-open:text-red-400">
+            Abrir
+          </span>
+        </div>
+      </summary>
+      <div className="grid gap-5 border-t border-zinc-800 p-6 sm:p-8">{children}</div>
+    </details>
   );
 }
 
@@ -186,30 +198,29 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
           </div>
         ) : null}
 
-        <div className="overflow-hidden rounded-[2rem] border border-red-600/20 bg-[radial-gradient(circle_at_top,rgba(220,38,38,0.16),transparent_45%),#090909] p-8 shadow-[0_0_80px_rgba(220,38,38,0.08)] sm:p-10">
+        <div className="overflow-hidden rounded-[2rem] border border-red-600/20 bg-[radial-gradient(circle_at_top,rgba(220,38,38,0.16),transparent_45%),#090909] p-6 shadow-[0_0_80px_rgba(220,38,38,0.08)] sm:p-8">
           <div className="inline-flex items-center gap-3 border border-red-600/30 bg-red-600/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.32em] text-red-300">
             Gestão de Marketing
           </div>
 
-          <h1 className="mt-6 max-w-4xl text-4xl font-black uppercase leading-[0.92] tracking-[-0.06em] text-white sm:text-6xl">
-            Controle visual da Home da Forbody.
+          <h1 className="mt-5 max-w-4xl text-3xl font-black uppercase leading-[0.95] tracking-[-0.05em] text-white sm:text-5xl">
+            Conteúdo da página inicial
           </h1>
 
           <p className="mt-6 max-w-3xl text-base leading-relaxed text-zinc-400 sm:text-lg">
-            Edite banners, frases, promoções, planos e imagens sem precisar abrir o código.
-            Tudo que for salvo aqui será usado pela Home integrada ao Supabase.
+            Abra somente a seção que deseja alterar. Os valores atuais já estão preenchidos
+            e campos não modificados serão preservados.
           </p>
 
-          <div className="mt-6 rounded-2xl border border-red-600/30 bg-red-600/10 p-4 text-sm leading-relaxed text-red-100">
-            <strong>Upload de imagens:</strong> cada imagem pode ter até 10MB. O envio total
-            do formulário pode ter até 50MB. Se for usar carrossel, envie uma imagem por slide;
-            se ficar pesado, salve em partes ou comprima em WebP/JPG antes de salvar.
-          </div>
+          <p className="mt-5 text-xs text-zinc-500">
+            Imagens: até 10MB cada e 50MB por salvamento. Recomendado: WebP ou JPG otimizado.
+          </p>
         </div>
 
         <Section
           title="1. Banner principal"
           description="Essa é a primeira área que aparece para o aluno quando entra no site. Use frases curtas, fortes e diretas."
+          open
         >
           <Input
             label="Texto pequeno acima do título"
@@ -424,10 +435,7 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm font-semibold text-white">Salvar alterações</p>
-              <p className="text-xs text-zinc-500">
-                Cada imagem pode ter até 10MB. O salvamento completo pode ter até 50MB. No carrossel,
-                envie uma imagem por slide; se ficar pesado, salve em partes ou compacte antes de salvar.
-              </p>
+              <p className="text-xs text-zinc-500">O sistema preserva tudo que não foi alterado.</p>
             </div>
 
             <button

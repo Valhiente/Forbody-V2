@@ -64,6 +64,7 @@ export default async function AdminDashboardPage() {
           <Link
             key={action.href}
             href={action.href}
+            prefetch={false}
             className="rounded-2xl border border-white/10 bg-[#111] p-6 text-center text-sm font-bold text-gray-200 transition hover:border-red-600/40 hover:bg-red-600/5 hover:text-white"
           >
             {action.title}

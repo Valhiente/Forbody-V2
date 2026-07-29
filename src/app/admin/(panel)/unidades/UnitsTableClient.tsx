@@ -7,6 +7,7 @@ import { getUnitStatus, getUnitStatusBadgeClasses, getUnitStatusLabel } from '@/
 
 interface UnitsTableClientProps {
   units: Unit[];
+  canWrite?: boolean;
 }
 
 const getIntegrationBadges = (unit: Unit) => {
@@ -17,7 +18,7 @@ const getIntegrationBadges = (unit: Unit) => {
   ];
 };
 
-export default function UnitsTableClient({ units }: UnitsTableClientProps) {
+export default function UnitsTableClient({ units, canWrite = false }: UnitsTableClientProps) {
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('all');
 
@@ -74,10 +75,8 @@ export default function UnitsTableClient({ units }: UnitsTableClientProps) {
           <thead>
             <tr className="border-b border-white/10 bg-[#111]">
               <th className="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider text-gray-400">Unidade</th>
-              <th className="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider text-gray-400">Cidade</th>
               <th className="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider text-gray-400">Status</th>
-              <th className="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider text-gray-400">Integrações</th>
-              <th className="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider text-gray-400">Avaliações</th>
+              <th className="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider text-gray-400">Conexões</th>
               <th className="px-6 py-4 text-center text-sm font-bold uppercase tracking-wider text-gray-400">Ação</th>
             </tr>
           </thead>
@@ -90,8 +89,10 @@ export default function UnitsTableClient({ units }: UnitsTableClientProps) {
                   key={unit.id}
                   className={`${idx % 2 === 0 ? 'bg-black/20' : 'bg-black/10'} border-b border-white/5 transition-colors hover:bg-white/5`}
                 >
-                  <td className="px-6 py-4 text-sm font-semibold text-white">{unit.name}</td>
-                  <td className="px-6 py-4 text-sm text-gray-300">{unit.city}, {unit.state}</td>
+                  <td className="px-6 py-4">
+                    <p className="text-sm font-semibold text-white">{unit.name}</p>
+                    <p className="mt-1 text-xs text-gray-500">{unit.city}, {unit.state}</p>
+                  </td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex rounded-full border px-3 py-1 text-xs font-bold ${getUnitStatusBadgeClasses(unit.status)}`}>
                       {getUnitStatusLabel(unit.status)}
@@ -108,11 +109,13 @@ export default function UnitsTableClient({ units }: UnitsTableClientProps) {
                         </span>
                       ))}
                     </div>
+                    <p className="mt-2 text-xs text-gray-500">
+                      Google: {unit.googleReviewsScore > 0 ? `${unit.googleReviewsScore} · ${unit.googleReviewsCount} avaliações` : 'sem nota'}
+                    </p>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-300">⭐ {unit.googleReviewsScore} ({unit.googleReviewsCount})</td>
                   <td className="px-6 py-4 text-center">
-                    <Link href={`/admin/unidades/${unit.slug}`} className="inline-flex rounded-lg bg-red-600/20 px-4 py-2 text-xs font-bold uppercase text-red-400 transition hover:bg-red-600/30">
-                      Editar
+                    <Link prefetch={false} href={`/admin/unidades/${unit.slug}`} className="inline-flex rounded-lg bg-red-600/20 px-4 py-2 text-xs font-bold uppercase text-red-400 transition hover:bg-red-600/30">
+                      {canWrite ? 'Editar' : 'Visualizar'}
                     </Link>
                   </td>
                 </tr>
