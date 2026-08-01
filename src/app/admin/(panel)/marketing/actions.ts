@@ -241,12 +241,12 @@ export async function updateMarketingManagerAction(formData: FormData): Promise<
 
     await upsertSection(supabase, {
       section_key: 'home_hero',
-      title: textWithFallback(formData, 'heroTitle', 'Forbody, feita para cada etapa da sua vida.'),
+      title: textWithFallback(formData, 'heroTitle', 'Feita para cada etapa da sua vida.'),
       subtitle: textWithFallback(formData, 'heroSubtitle', 'Forbody Academia'),
       description: textWithFallback(
         formData,
         'heroDescription',
-        'Na Forbody, ajudamos você a conquistar seus objetivos, porque cada conquista sua também é nossa.'
+        'Aqui ajudamos você a conquistar seus objetivos, porque cada conquista sua também é nossa.'
       ),
       image_url: heroImageUrl,
       button_label: textWithFallback(formData, 'heroButtonLabel', 'Escolher unidade'),
@@ -273,7 +273,7 @@ export async function updateMarketingManagerAction(formData: FormData): Promise<
       description: textWithFallback(
         formData,
         'plansDescription',
-        'Dois caminhos para começar: Red para quem quer musculação com apoio técnico, e Black para quem quer a experiência completa da Forbody.'
+        'Dois caminhos para começar: Red para só musculação com apoio técnico, e Black para quem quer a experiência completa da Forbody.'
       ),
       button_label: textWithFallback(formData, 'plansButtonLabel', 'Ver planos'),
       button_href: '#planos',
