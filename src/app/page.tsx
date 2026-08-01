@@ -44,8 +44,7 @@ type MarketingPlan = {
 };
 
 const officialHeroBackgroundImage =
-  process.env.NEXT_PUBLIC_FORBODY_HERO_BACKGROUND_URL ||
-  "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=1800&q=90";
+  "/images/hero/forbody-hero-background.webp";
 
 const fallbackPlanCards = [
   {
@@ -235,22 +234,25 @@ export default async function HomePage() {
     "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1600&q=90";
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#030303] text-white">
-      <section className="relative flex min-h-screen items-center overflow-hidden px-5 pb-10 pt-24 sm:px-8 lg:px-12 lg:pt-28">
-        <div className="absolute inset-0">
+    <main className="min-h-screen overflow-x-clip bg-[#030303] text-white">
+      <section className="relative isolate min-h-screen overflow-clip">
+        <div
+          aria-hidden="true"
+          className="sticky top-0 h-svh -mb-[100svh] overflow-hidden"
+        >
           <div
-            className="absolute inset-0 bg-cover bg-center opacity-70 saturate-[1.08]"
-            style={{ backgroundImage: `url(${officialHeroBackgroundImage})`, backgroundPosition: "center right" }}
+            className="absolute inset-0 bg-cover bg-center opacity-90 saturate-[1.08]"
+            style={{ backgroundImage: `url(${officialHeroBackgroundImage})` }}
           />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_28%,rgba(220,38,38,0.26),transparent_34%),linear-gradient(90deg,#030303_0%,rgba(3,3,3,0.96)_32%,rgba(3,3,3,0.72)_62%,rgba(3,3,3,0.32)_100%)]" />
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,3,3,0.08)_0%,rgba(3,3,3,0.2)_58%,#030303_100%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,transparent_0%,rgba(3,3,3,0.08)_35%,rgba(3,3,3,0.46)_100%),linear-gradient(90deg,rgba(3,3,3,0.82)_0%,rgba(3,3,3,0.58)_34%,rgba(3,3,3,0.12)_68%,rgba(3,3,3,0.3)_100%)] max-lg:bg-[linear-gradient(180deg,rgba(3,3,3,0.12)_0%,rgba(3,3,3,0.42)_48%,rgba(3,3,3,0.94)_100%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,3,3,0.04)_0%,rgba(3,3,3,0.12)_68%,#030303_100%)]" />
           <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black to-transparent" />
         </div>
 
         <div className="absolute -left-32 top-1/2 h-[42rem] w-[42rem] -translate-y-1/2 rounded-full bg-red-600/20 blur-[160px]" />
         <div className="absolute bottom-10 right-0 h-[28rem] w-[28rem] rounded-full bg-red-600/10 blur-[140px]" />
 
-        <div className="relative z-10 mx-auto grid min-h-[calc(100vh-7rem)] w-full max-w-7xl items-center gap-8 lg:grid-cols-[0.9fr_1.1fr] xl:grid-cols-[0.95fr_1.05fr]">
+        <div className="relative z-10 mx-auto grid min-h-screen w-full max-w-7xl items-center gap-8 px-5 pb-10 pt-24 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:px-12 lg:pt-28 xl:grid-cols-[0.95fr_1.05fr]">
           <div className="animate-slide-up">
             <p className="mb-5 inline-flex border-l-4 border-red-600 bg-black/25 px-4 py-2 text-[10px] font-black uppercase tracking-[0.26em] text-red-500 backdrop-blur-xl sm:mb-6 sm:text-xs sm:tracking-[0.34em]">
               {hero.eyebrow}
