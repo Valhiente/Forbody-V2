@@ -226,7 +226,7 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
             label="Texto pequeno acima do título"
             name="heroSubtitle"
             defaultValue={hero?.subtitle ?? ''}
-            placeholder="Ex: Forbody Academia"
+            placeholder="ex:"
             helper="Esse texto aparece acima do título principal da Home."
           />
 
@@ -234,7 +234,7 @@ export default async function MarketingPage({ searchParams }: MarketingPageProps
             label="Título principal"
             name="heroTitle"
             defaultValue={hero?.title ?? ''}
-            placeholder="Ex: Forbody, feita para cada etapa da sua vida."
+            placeholder="Ex: Feita para cada etapa da sua vida."
             helper="Principal chamada visual da Home."
           />
 
