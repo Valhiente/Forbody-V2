@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 
 const navigationLinks = [
@@ -12,24 +13,32 @@ export default function Header() {
       <div className="h-[3px] w-full bg-gradient-to-r from-transparent via-red-600 to-transparent" />
 
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2.5 sm:px-5 sm:py-3 lg:px-8 xl:px-12">
-        <Link
-          href="/"
-          className="group inline-flex min-w-0 flex-1 items-center gap-2 sm:flex-none sm:gap-3"
-          aria-label="Voltar para a página inicial da Forbody"
-        >
-          <span className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-sm border border-red-600/60 bg-[#111] text-[11px] font-black text-red-500 shadow-[0_0_32px_rgba(220,38,38,0.22)] transition duration-300 group-hover:border-red-500 group-hover:bg-red-600 group-hover:text-white sm:h-11 sm:w-11 sm:text-sm">
-            <span className="absolute inset-y-0 left-0 w-1 bg-red-600" />
-            FB
-          </span>
-          <span className="flex min-w-0 flex-col leading-none">
-            <span className="max-w-[150px] truncate text-lg font-black italic tracking-[-0.08em] text-white sm:max-w-none sm:text-3xl">
-              FOR<span className="text-red-600">BODY</span>
-            </span>
-            <span className="mt-1 text-[7px] font-bold uppercase tracking-[0.28em] text-zinc-500 sm:text-[9px] sm:tracking-[0.42em]">
-              Academia
-            </span>
-          </span>
-        </Link>
+        <div className="inline-flex min-w-0 flex-1 items-center gap-2 sm:flex-none sm:gap-3">
+          <Link
+            href="/"
+            className="group shrink-0 transition duration-300 hover:scale-105"
+            aria-label="Voltar para a página inicial da Forbody"
+          >
+            <Image
+              src="/images/brand/forbody-emblem.webp"
+              alt=""
+              width={1240}
+              height={858}
+              priority
+              sizes="(max-width: 639px) 52px, 64px"
+              className="h-9 w-auto drop-shadow-[0_0_18px_rgba(220,38,38,0.2)] sm:h-11"
+            />
+          </Link>
+          <Image
+            src="/images/brand/forbody-wordmark.webp"
+            alt="Forbody Academia"
+            width={1341}
+            height={253}
+            priority
+            sizes="(max-width: 639px) 132px, (max-width: 1023px) 180px, 205px"
+            className="h-auto w-[132px] shrink-0 sm:w-[180px] lg:w-[205px]"
+          />
+        </div>
 
         <nav aria-label="Navegação principal" className="hidden items-center gap-0 xl:flex">
           {navigationLinks.map((link, index) => (
