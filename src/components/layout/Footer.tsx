@@ -5,7 +5,7 @@ const instagramUrl = 'https://www.instagram.com/forbodyacademia?utm_source=ig_we
 
 export default function Footer() {
   return (
-    <footer className="bg-black border-t border-white/5 pt-20 pb-10 px-6">
+    <footer className="relative z-10 bg-black border-t border-white/5 pt-20 pb-10 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div className="col-span-1 md:col-span-2">
