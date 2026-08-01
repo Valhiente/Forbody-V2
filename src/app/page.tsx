@@ -258,7 +258,7 @@ export default async function HomePage() {
               {hero.eyebrow}
             </p>
 
-            <h1 className="max-w-4xl text-[2.85rem] font-black uppercase leading-[0.92] tracking-[-0.055em] text-white drop-shadow-[0_10px_34px_rgba(0,0,0,0.7)] min-[390px]:text-[3.15rem] sm:text-7xl lg:text-[5.8rem] xl:text-[6.5rem]">
+            <h1 className="max-w-4xl text-[2.25rem] font-black uppercase leading-[0.94] tracking-[-0.05em] text-white drop-shadow-[0_10px_34px_rgba(0,0,0,0.7)] min-[390px]:text-[2.55rem] sm:text-[4rem] lg:text-[5rem] xl:text-[5.6rem]">
               {renderHeroTitle(hero.title)}
             </h1>
 
@@ -289,7 +289,7 @@ export default async function HomePage() {
             <div className="grid gap-4 xl:grid-cols-[0.9fr_1.1fr]">
                 <div className="grid gap-4">
                   {planCards.map((plan) => (
-                    <article key={plan.name} className={`relative overflow-hidden rounded-[1.35rem] border p-5 transition duration-300 hover:-translate-y-1 ${plan.featured ? "border-red-600/60 bg-red-600/15 shadow-[0_0_54px_rgba(220,38,38,0.16)]" : "border-white/10 bg-white/[0.06]"}`}>
+                    <article key={plan.name} className={`relative overflow-hidden rounded-[1.35rem] border p-5 transition duration-300 hover:-translate-y-1 ${plan.featured ? "border-red-600/70 bg-[linear-gradient(145deg,rgba(70,4,9,0.92),rgba(3,3,3,0.96))] shadow-[0_0_42px_rgba(220,38,38,0.12)] backdrop-blur-xl" : "border-white/10 bg-white/[0.06]"}`}>
                       <div className="absolute inset-x-0 top-0 h-1 bg-red-600" />
                       <div className="flex items-start justify-between gap-4">
                         <div>
