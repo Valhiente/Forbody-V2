@@ -286,8 +286,7 @@ export default async function HomePage() {
           </div>
 
           <div className="animate-fade-in">
-            <div className="rounded-[1.8rem] border border-white/10 bg-black/55 p-4 shadow-[0_0_90px_rgba(220,38,38,0.14)] backdrop-blur-2xl sm:p-5">
-              <div className="grid gap-4 xl:grid-cols-[0.9fr_1.1fr]">
+            <div className="grid gap-4 xl:grid-cols-[0.9fr_1.1fr]">
                 <div className="grid gap-4">
                   {planCards.map((plan) => (
                     <article key={plan.name} className={`relative overflow-hidden rounded-[1.35rem] border p-5 transition duration-300 hover:-translate-y-1 ${plan.featured ? "border-red-600/60 bg-red-600/15 shadow-[0_0_54px_rgba(220,38,38,0.16)]" : "border-white/10 bg-white/[0.06]"}`}>
@@ -340,7 +339,6 @@ export default async function HomePage() {
                   </div>
                 </article>
               </div>
-            </div>
           </div>
         </div>
       </section>
