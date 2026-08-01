@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 const instagramUrl = 'https://www.instagram.com/forbodyacademia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==';
@@ -9,10 +10,27 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div className="col-span-1 md:col-span-2">
-            <Link href="/" className="inline-block mb-6">
-              <span className="text-3xl font-black italic tracking-tighter text-white">
-                FOR<span className="text-red-600">BODY</span>
-              </span>
+            <Link
+              href="/"
+              className="mb-7 inline-flex items-center gap-3 transition duration-300 hover:scale-[1.02] sm:gap-4"
+              aria-label="Voltar para a página inicial da Forbody"
+            >
+              <Image
+                src="/images/brand/forbody-emblem.webp"
+                alt=""
+                width={1240}
+                height={858}
+                sizes="(max-width: 639px) 69px, 81px"
+                className="h-12 w-auto shrink-0 drop-shadow-[0_0_18px_rgba(220,38,38,0.18)] sm:h-14"
+              />
+              <Image
+                src="/images/brand/forbody-wordmark.webp"
+                alt="Forbody Academia"
+                width={1341}
+                height={253}
+                sizes="(max-width: 639px) 190px, 240px"
+                className="h-auto w-[190px] shrink-0 sm:w-[240px]"
+              />
             </Link>
             <p className="text-gray-500 text-sm leading-relaxed max-w-md">
               Academia com estrutura completa, professores presentes, planos acessíveis e ambiente preparado para acompanhar sua evolução todos os dias.
