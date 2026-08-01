@@ -234,20 +234,20 @@ export default async function HomePage() {
     "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1600&q=90";
 
   return (
-    <main className="min-h-screen overflow-x-clip bg-[#030303] text-white">
-      <section className="relative isolate min-h-screen overflow-clip">
+    <main className="relative isolate min-h-screen overflow-x-clip text-white">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+      >
         <div
-          aria-hidden="true"
-          className="sticky top-0 h-svh -mb-[100svh] overflow-hidden"
-        >
-          <div
-            className="absolute inset-0 bg-cover bg-center opacity-90 saturate-[1.08]"
-            style={{ backgroundImage: `url(${officialHeroBackgroundImage})` }}
-          />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,transparent_0%,rgba(3,3,3,0.08)_35%,rgba(3,3,3,0.46)_100%),linear-gradient(90deg,rgba(3,3,3,0.82)_0%,rgba(3,3,3,0.58)_34%,rgba(3,3,3,0.12)_68%,rgba(3,3,3,0.3)_100%)] max-lg:bg-[linear-gradient(180deg,rgba(3,3,3,0.12)_0%,rgba(3,3,3,0.42)_48%,rgba(3,3,3,0.94)_100%)]" />
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,3,3,0.04)_0%,rgba(3,3,3,0.12)_68%,#030303_100%)]" />
-          <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black to-transparent" />
-        </div>
+          className="absolute inset-0 bg-cover bg-center opacity-90 saturate-[1.08]"
+          style={{ backgroundImage: `url(${officialHeroBackgroundImage})` }}
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,transparent_0%,rgba(3,3,3,0.08)_38%,rgba(3,3,3,0.54)_100%),linear-gradient(90deg,rgba(3,3,3,0.78)_0%,rgba(3,3,3,0.5)_34%,rgba(3,3,3,0.16)_68%,rgba(3,3,3,0.34)_100%)] max-lg:bg-[linear-gradient(180deg,rgba(3,3,3,0.18)_0%,rgba(3,3,3,0.38)_52%,rgba(3,3,3,0.64)_100%)]" />
+        <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/80 to-transparent" />
+      </div>
+
+      <section className="relative z-10 isolate min-h-screen overflow-clip">
 
         <div className="absolute -left-32 top-1/2 h-[42rem] w-[42rem] -translate-y-1/2 rounded-full bg-red-600/20 blur-[160px]" />
         <div className="absolute bottom-10 right-0 h-[28rem] w-[28rem] rounded-full bg-red-600/10 blur-[140px]" />
@@ -345,7 +345,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="px-5 py-24 sm:px-8 lg:px-12">
+      <section className="relative z-10 px-5 py-24 sm:px-8 lg:px-12">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 max-w-3xl">
             <p className="border-l-4 border-red-600 pl-4 text-xs font-black uppercase tracking-[0.34em] text-red-500">Por que treinar na Forbody?</p>
@@ -366,7 +366,7 @@ export default async function HomePage() {
       </section>
 
       {suppliers.length > 0 && (
-        <section id="fornecedores" className="px-5 py-12 sm:px-8 lg:px-12">
+        <section id="fornecedores" className="relative z-10 px-5 py-12 sm:px-8 lg:px-12">
           <div className="mx-auto max-w-7xl rounded-[1.5rem] border border-white/10 bg-white/[0.025] px-5 py-6 sm:px-8">
             <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
               <div className="max-w-xl">
@@ -399,7 +399,7 @@ export default async function HomePage() {
         </section>
       )}
 
-      <section className="px-5 py-24 sm:px-8 lg:px-12">
+      <section className="relative z-10 px-5 py-24 sm:px-8 lg:px-12">
         <div className="mx-auto grid max-w-7xl gap-8 border border-white/10 bg-white/[0.03] p-8 backdrop-blur-xl lg:grid-cols-[0.8fr_1.2fr] lg:p-12">
           <div>
             <p className="border-l-4 border-red-600 pl-4 text-xs font-black uppercase tracking-[0.34em] text-red-500">Unidades</p>
