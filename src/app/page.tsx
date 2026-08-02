@@ -48,7 +48,6 @@ const officialHeroBackgroundImage =
 
 const fallbackPlanCards = [
   {
-    planKey: "red",
     name: "Plano Red",
     price: "R$ 99,90",
     description: "Musculação com apoio técnico e acesso ao aplicativo.",
@@ -56,7 +55,6 @@ const fallbackPlanCards = [
     featured: false,
   },
   {
-    planKey: "black",
     name: "Plano Black",
     price: "R$ 109,90",
     description: "Plano completo para quem quer aproveitar mais a Forbody.",
@@ -184,7 +182,6 @@ export default async function HomePage() {
   const planCards =
     marketing.plans.length > 0
       ? marketing.plans.map((plan) => ({
-          planKey: plan.plan_key.toLowerCase(),
           name: plan.name,
           price: plan.price_label.replace(/^A partir de\s*/i, ""),
           description: safeText(plan.description, "Plano Forbody."),
@@ -284,21 +281,21 @@ export default async function HomePage() {
             <div className="grid gap-4 xl:grid-cols-[0.9fr_1.1fr]">
                 <div className="grid gap-4">
                   {planCards.map((plan) => (
-                    <article key={plan.name} className={`relative overflow-hidden rounded-[1.35rem] border p-5 transition duration-300 hover:-translate-y-1 ${plan.planKey.includes("red") ? "border-white/70 bg-white/80 shadow-[0_18px_50px_rgba(255,255,255,0.12)] backdrop-blur-2xl" : plan.planKey.includes("black") ? "border-zinc-300/70 bg-zinc-200/85 shadow-[0_18px_50px_rgba(0,0,0,0.18)] backdrop-blur-2xl" : plan.featured ? "border-red-600/70 bg-[linear-gradient(145deg,rgba(70,4,9,0.92),rgba(3,3,3,0.96))] backdrop-blur-xl" : "border-white/10 bg-white/[0.06]"}`}>
+                    <article key={plan.name} className={`relative overflow-hidden rounded-[1.35rem] border p-5 transition duration-300 hover:-translate-y-1 ${plan.featured ? "border-red-600/70 bg-[linear-gradient(145deg,rgba(70,4,9,0.92),rgba(3,3,3,0.96))] backdrop-blur-xl" : "border-white/10 bg-white/[0.06]"}`}>
                       <div className="absolute inset-x-0 top-0 h-1 bg-red-600" />
                       <div className="flex items-start justify-between gap-4">
                         <div>
-                          <p className={`text-[10px] font-black uppercase tracking-[0.24em] ${plan.planKey.includes("red") ? "text-red-700" : plan.planKey.includes("black") ? "text-zinc-700" : "text-red-400"}`}>{plan.tag}</p>
-                          <h2 className={`mt-3 text-2xl font-black uppercase tracking-[-0.06em] ${plan.planKey.includes("red") ? "text-red-700" : plan.planKey.includes("black") ? "text-black" : "text-white"}`}>{plan.name}</h2>
+                          <p className="text-[10px] font-black uppercase tracking-[0.24em] text-red-400">{plan.tag}</p>
+                          <h2 className="mt-3 text-2xl font-black uppercase tracking-[-0.06em] text-white">{plan.name}</h2>
                         </div>
-                        <div className={`rounded-full border px-3 py-2 text-[10px] font-black uppercase tracking-[0.16em] ${plan.planKey.includes("red") ? "border-red-700/20 bg-red-700/10 text-red-700" : plan.planKey.includes("black") ? "border-black/15 bg-black/10 text-black" : "border-white/10 bg-black/30 text-zinc-300"}`}>
+                        <div className="rounded-full border border-white/10 bg-black/30 px-3 py-2 text-[10px] font-black uppercase tracking-[0.16em] text-zinc-300">
                           Plano
                         </div>
                       </div>
 
-                      <p className={`mt-5 text-[10px] font-black uppercase tracking-[0.24em] ${plan.planKey.includes("red") ? "text-red-700/70" : plan.planKey.includes("black") ? "text-zinc-600" : "text-zinc-500"}`}>A partir de</p>
-                      <p className={`mt-1 text-4xl font-black tracking-[-0.08em] ${plan.planKey.includes("red") ? "text-red-600" : plan.planKey.includes("black") ? "text-black" : "text-white"}`}>{plan.price}</p>
-                      <p className={`mt-4 text-xs leading-relaxed ${plan.planKey.includes("red") ? "text-red-950" : plan.planKey.includes("black") ? "text-zinc-900" : "text-zinc-300"}`}>{plan.description}</p>
+                      <p className="mt-5 text-[10px] font-black uppercase tracking-[0.24em] text-zinc-500">A partir de</p>
+                      <p className="mt-1 text-4xl font-black tracking-[-0.08em] text-white">{plan.price}</p>
+                      <p className="mt-4 text-xs leading-relaxed text-zinc-300">{plan.description}</p>
 
                       <Link href="/unidades" className="mt-5 inline-flex w-full justify-center rounded-lg bg-red-600 px-5 py-3 text-center text-[11px] font-black uppercase tracking-[0.18em] text-white transition hover:bg-red-700">
                         Escolher unidade
