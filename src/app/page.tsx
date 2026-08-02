@@ -191,7 +191,6 @@ export default async function HomePage() {
       : fallbackPlanCards;
 
   const hero = {
-    eyebrow: safeText(heroSection?.subtitle, "Forbody Academia"),
     title: safeText(heroSection?.title, "Sua melhor versão começa dentro da Forbody."),
     description: safeText(
       heroSection?.description,
@@ -254,10 +253,6 @@ export default async function HomePage() {
 
         <div className="relative z-10 mx-auto grid min-h-screen w-full max-w-7xl items-center gap-8 px-5 pb-10 pt-24 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:px-12 lg:pt-28 xl:grid-cols-[0.95fr_1.05fr]">
           <div className="animate-slide-up">
-            <p className="mb-5 inline-flex border-l-4 border-red-600 bg-black/25 px-4 py-2 text-[10px] font-black uppercase tracking-[0.26em] text-red-500 backdrop-blur-xl sm:mb-6 sm:text-xs sm:tracking-[0.34em]">
-              {hero.eyebrow}
-            </p>
-
             <h1 className="max-w-4xl text-[2.25rem] font-black uppercase leading-[0.94] tracking-[-0.05em] text-white drop-shadow-[0_10px_34px_rgba(0,0,0,0.7)] min-[390px]:text-[2.55rem] sm:text-[4rem] lg:text-[5rem] xl:text-[5.6rem]">
               {renderHeroTitle(hero.title)}
             </h1>
