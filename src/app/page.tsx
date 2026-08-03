@@ -9,6 +9,7 @@ type MarketingSection = {
   title: string | null;
   subtitle: string | null;
   description: string | null;
+  image_url: string | null;
   button_label: string | null;
   button_href: string | null;
   is_active: boolean | null;
@@ -140,7 +141,7 @@ async function getHomeMarketingData(): Promise<HomeMarketingData> {
     const [sectionsResult, itemsResult, plansResult] = await Promise.all([
       supabase
         .from("site_marketing_sections")
-        .select("section_key,title,subtitle,description,button_label,button_href,is_active,sort_order")
+        .select("section_key,title,subtitle,description,image_url,button_label,button_href,is_active,sort_order")
         .order("sort_order", { ascending: true }),
       supabase
         .from("site_marketing_items")
@@ -231,6 +232,7 @@ export default async function HomePage() {
   const mainVisualImage =
     photoItems.find((item) => item.item_key === "main")?.image_url ||
     "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1600&q=90";
+  const homeBackgroundImage = heroSection?.image_url || officialHeroBackgroundImage;
 
   return (
     <main className="relative isolate min-h-screen overflow-x-clip text-white">
@@ -240,7 +242,7 @@ export default async function HomePage() {
       >
         <div
           className="absolute inset-0 bg-cover bg-center opacity-90 saturate-[1.08]"
-          style={{ backgroundImage: `url(${officialHeroBackgroundImage})` }}
+          style={{ backgroundImage: `url(${homeBackgroundImage})` }}
         />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,transparent_0%,rgba(3,3,3,0.08)_38%,rgba(3,3,3,0.54)_100%),linear-gradient(90deg,rgba(3,3,3,0.78)_0%,rgba(3,3,3,0.5)_34%,rgba(3,3,3,0.16)_68%,rgba(3,3,3,0.34)_100%)] max-lg:bg-[linear-gradient(180deg,rgba(3,3,3,0.18)_0%,rgba(3,3,3,0.38)_52%,rgba(3,3,3,0.64)_100%)]" />
         <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/80 to-transparent" />

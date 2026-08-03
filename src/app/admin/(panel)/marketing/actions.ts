@@ -4,61 +4,21 @@ import { revalidatePath } from 'next/cache';
 import { createSupabaseAdminClient } from '@/lib/supabase/server';
 import { requirePermission } from '@/lib/admin-auth';
 
-type ActionResult = { success: boolean; error?: string };
-type SupabaseError = { message: string };
-type SupabaseWriteResult = { error: SupabaseError | null };
-type SupabaseUploadResult = { data: { path: string } | null; error: SupabaseError | null };
-type SupabasePublicUrlResult = { data: { publicUrl: string } };
-type SupabaseUpsertOptions = { onConflict?: string };
-
-type SupabaseTableWriter = {
-  upsert: (
-    payload: Record<string, unknown>,
-    options?: SupabaseUpsertOptions
-  ) => Promise<SupabaseWriteResult>;
-};
-
-type SupabaseStorageBucket = {
-  upload: (
-    path: string,
-    file: File,
-    options?: { cacheControl?: string; contentType?: string; upsert?: boolean }
-  ) => Promise<SupabaseUploadResult>;
-  getPublicUrl: (path: string) => SupabasePublicUrlResult;
-};
-
-type SupabaseWriterClient = {
-  from: (table: string) => SupabaseTableWriter;
-  storage: { from: (bucket: string) => SupabaseStorageBucket };
-};
-
-type HomePhotoConfig = {
-  key: string;
-  fileField: string;
-  urlField: string;
-  title?: string;
-  description?: string;
-  titleField?: string;
-  descriptionField?: string;
-  fallbackTitle?: string;
-  order: number;
-};
+export type MarketingActionResult = { success: boolean; error?: string };
 
 const marketingImagesBucket = 'marketing-images';
-const maxMarketingImageSizeMb = 10;
-const maxMarketingImageSizeBytes = maxMarketingImageSizeMb * 1024 * 1024;
+const maxImageSizeBytes = 10 * 1024 * 1024;
 
 function text(value: FormDataEntryValue | null): string {
   return typeof value === 'string' ? value.trim() : '';
 }
 
-function textWithFallback(formData: FormData, name: string, fallback: string): string {
-  const value = text(formData.get(name));
-  return value || fallback;
+function checked(formData: FormData, name: string): boolean {
+  return formData.get(name) === 'on';
 }
 
-function checkbox(value: FormDataEntryValue | null): boolean {
-  return value === 'on';
+function lines(formData: FormData, name: string): string[] {
+  return text(formData.get(name)).split(/\r?\n/).map((value) => value.trim()).filter(Boolean);
 }
 
 function slugFileName(value: string): string {
@@ -71,308 +31,203 @@ function slugFileName(value: string): string {
     .toLowerCase();
 }
 
-function formatFileSize(bytes: number): string {
-  return `${(bytes / 1024 / 1024).toFixed(1).replace('.', ',')}MB`;
-}
-
 function imageFile(formData: FormData, name: string): File | null {
   const value = formData.get(name);
-
   if (!(value instanceof File) || value.size === 0) return null;
 
-  if (!value.type.startsWith('image/')) {
-    throw new Error('Envie apenas arquivos de imagem nos campos de upload.');
+  const allowedTypes = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/avif']);
+  if (!allowedTypes.has(value.type)) {
+    throw new Error(`A imagem "${value.name}" não está em JPG, PNG, WebP ou AVIF.`);
   }
-
-  if (value.size > maxMarketingImageSizeBytes) {
-    throw new Error(
-      `A imagem "${value.name}" tem ${formatFileSize(value.size)} e ultrapassa o limite de ${maxMarketingImageSizeMb}MB. Comprima a imagem ou envie em WebP antes de salvar.`
-    );
+  if (value.size > maxImageSizeBytes) {
+    throw new Error(`A imagem "${value.name}" ultrapassa o limite de 10MB.`);
   }
-
   return value;
 }
 
 async function resolveImageUrl(
-  supabase: SupabaseWriterClient,
+  supabase: NonNullable<Awaited<ReturnType<typeof createSupabaseAdminClient>>>,
   formData: FormData,
   fileField: string,
   urlField: string,
-  storagePrefix: string
+  removeField: string,
+  storagePrefix: string,
 ): Promise<string | null> {
+  if (checked(formData, removeField)) return null;
   const file = imageFile(formData, fileField);
-  const manualUrl = text(formData.get(urlField));
+  const currentUrl = text(formData.get(urlField));
+  if (!file) return currentUrl || null;
 
-  if (!file) return manualUrl || null;
-
-  const extension = file.name.includes('.') ? file.name.split('.').pop() : 'webp';
+  const extension = file.name.split('.').pop()?.toLowerCase() || 'webp';
   const safeName = slugFileName(file.name.replace(/\.[^.]+$/, '')) || 'imagem';
   const filePath = `${storagePrefix}/${Date.now()}-${safeName}.${extension}`;
-
   const { error } = await supabase.storage.from(marketingImagesBucket).upload(filePath, file, {
     cacheControl: '3600',
     contentType: file.type,
     upsert: false,
   });
-
-  if (error) throw new Error(`Erro ao enviar imagem para o Supabase Storage: ${error.message}`);
-
-  const { data } = supabase.storage.from(marketingImagesBucket).getPublicUrl(filePath);
-  return data.publicUrl;
+  if (error) throw new Error(`Erro ao enviar "${file.name}": ${error.message}`);
+  return supabase.storage.from(marketingImagesBucket).getPublicUrl(filePath).data.publicUrl;
 }
 
-async function upsertSection(supabase: SupabaseWriterClient, payload: Record<string, unknown>) {
-  const { error } = await supabase.from('site_marketing_sections').upsert(payload, {
-    onConflict: 'section_key',
-  });
-
-  if (error) throw new Error(`Erro em site_marketing_sections: ${error.message}`);
-}
-
-async function upsertItem(supabase: SupabaseWriterClient, payload: Record<string, unknown>) {
-  const { error } = await supabase.from('site_marketing_items').upsert(payload, {
-    onConflict: 'section_key,item_key',
-  });
-
-  if (error) throw new Error(`Erro em site_marketing_items: ${error.message}`);
-}
-
-async function upsertPlan(supabase: SupabaseWriterClient, payload: Record<string, unknown>) {
-  const { error } = await supabase.from('site_plans').upsert(payload, {
-    onConflict: 'plan_key',
-  });
-
-  if (error) throw new Error(`Erro em site_plans: ${error.message}`);
-}
-
-function lines(formData: FormData, name: string): string[] {
-  return text(formData.get(name))
-    .split(/\r?\n/)
-    .map((value) => value.trim())
-    .filter(Boolean);
-}
-
-export async function updateMarketingManagerAction(formData: FormData): Promise<ActionResult> {
+async function marketingClient() {
   await requirePermission('marketing.write');
+  const supabase = await createSupabaseAdminClient();
+  if (!supabase) throw new Error('Supabase não está configurado no ambiente de produção.');
+  return supabase;
+}
 
+async function finish(action: () => Promise<void>): Promise<MarketingActionResult> {
   try {
-    const supabase = (await createSupabaseAdminClient()) as SupabaseWriterClient | null;
+    await action();
+    revalidatePath('/');
+    revalidatePath('/admin/marketing');
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error instanceof Error ? error.message : 'Erro inesperado ao salvar.' };
+  }
+}
 
-    if (!supabase) {
-      return {
-        success: false,
-        error: 'Supabase não está configurado na Vercel. Verifique as variáveis do projeto.',
-      };
-    }
-
-    const heroImageUrl = await resolveImageUrl(
-      supabase,
-      formData,
-      'heroImageFile',
-      'heroImageUrl',
-      'home/hero'
-    );
-
-    const carouselSlides = [
-      {
-        key: 'slide_1',
-        fileField: 'heroSlide1File',
-        urlField: 'heroSlide1Url',
-        titleField: 'heroSlide1Title',
-        fallbackTitle: 'FORBODY ACADEMIA',
-        descriptionField: 'heroSlide1Description',
-        fallbackDescription: 'Treino, estrutura e experiência premium em um só lugar.',
-        order: 1,
-      },
-      {
-        key: 'slide_2',
-        fileField: 'heroSlide2File',
-        urlField: 'heroSlide2Url',
-        titleField: 'heroSlide2Title',
-        fallbackTitle: 'PLANOS RED E BLACK',
-        descriptionField: 'heroSlide2Description',
-        fallbackDescription: 'Escolha o plano que combina com sua rotina.',
-        order: 2,
-      },
-      {
-        key: 'slide_3',
-        fileField: 'heroSlide3File',
-        urlField: 'heroSlide3Url',
-        titleField: 'heroSlide3Title',
-        fallbackTitle: 'VENHA TREINAR',
-        descriptionField: 'heroSlide3Description',
-        fallbackDescription: 'A Forbody feita para cada etapa da sua vida.',
-        order: 3,
-      },
-    ];
-
-    const photos: HomePhotoConfig[] = [
-      { key: 'main', fileField: 'photoMainFile', urlField: 'photoMain', title: 'Foto principal', description: '', order: 10 },
-      { key: 'card_1', fileField: 'photoCard1File', urlField: 'photoCard1', titleField: 'photoCard1Title', descriptionField: 'photoCard1Description', fallbackTitle: 'Estrutura completa', order: 11 },
-      { key: 'card_2', fileField: 'photoCard2File', urlField: 'photoCard2', titleField: 'photoCard2Title', descriptionField: 'photoCard2Description', fallbackTitle: 'Professores presentes', order: 12 },
-      { key: 'card_3', fileField: 'photoCard3File', urlField: 'photoCard3', titleField: 'photoCard3Title', descriptionField: 'photoCard3Description', fallbackTitle: 'Aulas coletivas', order: 13 },
-    ];
-
-    const resolvedSlides = await Promise.all(
-      carouselSlides.map(async (slide) => ({
-        ...slide,
-        imageUrl: await resolveImageUrl(
-          supabase,
-          formData,
-          slide.fileField,
-          slide.urlField,
-          `home/carousel/${slide.key}`
-        ),
-      }))
-    );
-
-    const resolvedPhotos = await Promise.all(
-      photos.map(async (photo) => ({
-        ...photo,
-        imageUrl: await resolveImageUrl(
-          supabase,
-          formData,
-          photo.fileField,
-          photo.urlField,
-          `home/photos/${photo.key}`
-        ),
-      }))
-    );
-
-    await upsertSection(supabase, {
+export async function updateHomeContentAction(formData: FormData): Promise<MarketingActionResult> {
+  return finish(async () => {
+    const supabase = await marketingClient();
+    const imageUrl = await resolveImageUrl(supabase, formData, 'heroImageFile', 'heroImageUrl', 'heroImageRemove', 'home/hero');
+    const { error } = await supabase.from('site_marketing_sections').upsert({
       section_key: 'home_hero',
-      title: textWithFallback(formData, 'heroTitle', 'Feita para cada etapa da sua vida.'),
-      subtitle: textWithFallback(formData, 'heroSubtitle', 'Forbody Academia'),
-      description: textWithFallback(
-        formData,
-        'heroDescription',
-        'Aqui ajudamos você a conquistar seus objetivos, porque cada conquista sua também é nossa.'
-      ),
-      image_url: heroImageUrl,
-      button_label: textWithFallback(formData, 'heroButtonLabel', 'Escolher unidade'),
-      button_href: '/unidades',
+      title: text(formData.get('heroTitle')),
+      subtitle: text(formData.get('heroSubtitle')),
+      description: text(formData.get('heroDescription')),
+      image_url: imageUrl,
+      button_label: text(formData.get('heroButtonLabel')),
+      button_href: text(formData.get('heroButtonHref')) || '/unidades',
       sort_order: 1,
       is_active: true,
-      metadata: { style: 'forbody-3d', carousel: true },
-    });
+      metadata: { style: 'forbody-3d' },
+    }, { onConflict: 'section_key' });
+    if (error) throw new Error(`Erro ao salvar Página Inicial: ${error.message}`);
+  });
+}
 
-    await upsertSection(supabase, {
+const homeCards = [
+  { key: 'card_1', label: 'Estrutura', titleFallback: 'Estrutura completa', sortOrder: 11 },
+  { key: 'card_2', label: 'Professores', titleFallback: 'Professores presentes', sortOrder: 21 },
+  { key: 'card_3', label: 'Aulas coletivas', titleFallback: 'Aulas coletivas', sortOrder: 31 },
+] as const;
+
+export async function updateHomeCardsAction(formData: FormData): Promise<MarketingActionResult> {
+  return finish(async () => {
+    const supabase = await marketingClient();
+    const { error: sectionError } = await supabase.from('site_marketing_sections').upsert({
       section_key: 'home_photos',
-      title: 'Fotos da Home',
-      subtitle: 'Imagens',
-      description: 'Imagens usadas nos blocos visuais da Home.',
+      title: 'Cards da Home',
+      subtitle: 'Estrutura, Professores e Aulas coletivas',
+      description: 'Imagens e textos dos três cards principais da página inicial.',
       sort_order: 2,
       is_active: true,
-      metadata: {},
-    });
+      metadata: { images_per_card: 3 },
+    }, { onConflict: 'section_key' });
+    if (sectionError) throw new Error(`Erro ao preparar os Cards da Home: ${sectionError.message}`);
 
-    await upsertSection(supabase, {
+    for (const [cardIndex, card] of homeCards.entries()) {
+      const title = text(formData.get(`${card.key}_title`)) || card.titleFallback;
+      const description = text(formData.get(`${card.key}_description`));
+
+      for (let slot = 1; slot <= 3; slot += 1) {
+        const itemKey = slot === 1 ? card.key : `${card.key}_${slot}`;
+        const fieldPrefix = `${card.key}_image_${slot}`;
+        const imageUrl = await resolveImageUrl(
+          supabase,
+          formData,
+          `${fieldPrefix}_file`,
+          `${fieldPrefix}_url`,
+          `${fieldPrefix}_remove`,
+          `home/photos/${card.key}`,
+        );
+        const { error } = await supabase.from('site_marketing_items').upsert({
+          section_key: 'home_photos',
+          item_key: itemKey,
+          title,
+          description: slot === 1 ? description : '',
+          image_url: imageUrl,
+          sort_order: card.sortOrder + slot - 1,
+          is_active: Boolean(imageUrl),
+          metadata: { type: 'home_card_image', card: card.label, slot },
+        }, { onConflict: 'section_key,item_key' });
+        if (error) throw new Error(`Erro ao salvar ${card.label}, imagem ${slot}: ${error.message}`);
+      }
+      revalidatePath(`/admin/marketing/cards#card-${cardIndex + 1}`);
+    }
+  });
+}
+
+export async function updatePlansAction(formData: FormData): Promise<MarketingActionResult> {
+  return finish(async () => {
+    const supabase = await marketingClient();
+    const { error: sectionError } = await supabase.from('site_marketing_sections').upsert({
       section_key: 'home_plans',
-      title: textWithFallback(formData, 'plansTitle', 'Escolha o plano que combina com sua rotina.'),
+      title: text(formData.get('plansTitle')),
       subtitle: 'Planos Forbody',
-      description: textWithFallback(
-        formData,
-        'plansDescription',
-        'Dois caminhos para começar: Red para só musculação com apoio técnico, e Black para quem quer a experiência completa da Forbody.'
-      ),
-      button_label: textWithFallback(formData, 'plansButtonLabel', 'Ver planos'),
+      description: text(formData.get('plansDescription')),
+      button_label: text(formData.get('plansButtonLabel')),
       button_href: '#planos',
       sort_order: 3,
       is_active: true,
       metadata: {},
-    });
+    }, { onConflict: 'section_key' });
+    if (sectionError) throw new Error(`Erro ao salvar a seção de planos: ${sectionError.message}`);
 
-    await upsertSection(supabase, {
-      section_key: 'home_promotions',
-      title: textWithFallback(formData, 'promoTitle', 'Promoções'),
-      subtitle: 'Promoções',
-      description: text(formData.get('promoDescription')),
-      sort_order: 4,
-      is_active: checkbox(formData.get('promoActive')),
+    const planConfigs = [
+      { key: 'red', featured: false, order: 1 },
+      { key: 'black', featured: true, order: 2 },
+    ] as const;
+    for (const plan of planConfigs) {
+      const { error } = await supabase.from('site_plans').upsert({
+        plan_key: plan.key,
+        name: text(formData.get(`${plan.key}Name`)),
+        price_label: text(formData.get(`${plan.key}Price`)),
+        description: text(formData.get(`${plan.key}Description`)),
+        badge: text(formData.get(`${plan.key}Badge`)),
+        benefits: lines(formData, `${plan.key}Features`),
+        is_featured: plan.featured,
+        is_active: true,
+        sort_order: plan.order,
+      }, { onConflict: 'plan_key' });
+      if (error) throw new Error(`Erro ao salvar o plano ${plan.key.toUpperCase()}: ${error.message}`);
+    }
+  });
+}
+
+export async function updatePartnersAction(formData: FormData): Promise<MarketingActionResult> {
+  return finish(async () => {
+    const supabase = await marketingClient();
+    const { error: sectionError } = await supabase.from('site_marketing_sections').upsert({
+      section_key: 'home_suppliers',
+      title: 'Empresas parceiras',
+      subtitle: 'Parceiros',
+      description: 'Marcas que fazem parte da estrutura Forbody.',
+      sort_order: 50,
+      is_active: true,
       metadata: {},
-    });
+    }, { onConflict: 'section_key' });
+    if (sectionError) throw new Error(`Erro ao preparar Parceiros: ${sectionError.message}`);
 
-    await Promise.all(
-      resolvedSlides.map((slide) =>
-        upsertItem(supabase, {
-          section_key: 'home_hero',
-          item_key: slide.key,
-          title: textWithFallback(formData, slide.titleField, slide.fallbackTitle),
-          description: textWithFallback(formData, slide.descriptionField, slide.fallbackDescription),
-          image_url: slide.imageUrl,
-          sort_order: slide.order,
-          is_active: true,
-          metadata: { type: 'carousel_slide' },
-        })
-      )
-    );
-
-    await Promise.all(
-      resolvedPhotos.map((photo) =>
-        upsertItem(supabase, {
-          section_key: 'home_photos',
-          item_key: photo.key,
-          title: photo.titleField
-            ? textWithFallback(formData, photo.titleField, photo.fallbackTitle ?? 'Foto da Home')
-            : photo.title,
-          description: photo.descriptionField
-            ? text(formData.get(photo.descriptionField))
-            : photo.description,
-          image_url: photo.imageUrl,
-          sort_order: photo.order,
-          is_active: true,
-          metadata: { type: 'home_photo' },
-        })
-      )
-    );
-
-    await upsertItem(supabase, {
-      section_key: 'home_promotions',
-      item_key: 'main',
-      title: textWithFallback(formData, 'promoTitle', 'Promoções'),
-      description: text(formData.get('promoDescription')),
-      image_url: null,
-      sort_order: 1,
-      is_active: checkbox(formData.get('promoActive')),
-      metadata: {
-        badge: text(formData.get('promoValue')),
-        button_label: textWithFallback(formData, 'promoButtonLabel', 'Quero aproveitar'),
-      },
-    });
-
-    await Promise.all([
-      upsertPlan(supabase, {
-        plan_key: 'red',
-        name: textWithFallback(formData, 'redName', 'Plano Red'),
-        price_label: textWithFallback(formData, 'redPrice', 'A partir de R$ 99,90'),
-        description: text(formData.get('redDescription')),
-        badge: text(formData.get('redBadge')),
-        benefits: lines(formData, 'redFeatures'),
-        is_featured: false,
-        is_active: true,
-        sort_order: 1,
-      }),
-      upsertPlan(supabase, {
-        plan_key: 'black',
-        name: textWithFallback(formData, 'blackName', 'Plano Black'),
-        price_label: textWithFallback(formData, 'blackPrice', 'A partir de R$ 109,90'),
-        description: text(formData.get('blackDescription')),
-        badge: text(formData.get('blackBadge')),
-        benefits: lines(formData, 'blackFeatures'),
-        is_featured: true,
-        is_active: true,
-        sort_order: 2,
-      }),
-    ]);
-
-    revalidatePath('/');
-    revalidatePath('/admin/marketing');
-
-    return { success: true };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Erro inesperado ao salvar Marketing.',
-    };
-  }
+    for (let slot = 1; slot <= 4; slot += 1) {
+      const prefix = `partner_${slot}`;
+      const logoUrl = await resolveImageUrl(supabase, formData, `${prefix}_logo_file`, `${prefix}_logo_url`, `${prefix}_logo_remove`, `home/fornecedores`);
+      const name = text(formData.get(`${prefix}_name`));
+      const href = text(formData.get(`${prefix}_href`));
+      const isActive = checked(formData, `${prefix}_active`) && Boolean(name && href && logoUrl);
+      const { error } = await supabase.from('site_marketing_items').upsert({
+        section_key: 'home_suppliers',
+        item_key: `fornecedor_${slot}`,
+        title: name,
+        description: href,
+        image_url: logoUrl,
+        sort_order: slot,
+        is_active: isActive,
+        metadata: { type: 'partner' },
+      }, { onConflict: 'section_key,item_key' });
+      if (error) throw new Error(`Erro ao salvar o parceiro ${slot}: ${error.message}`);
+    }
+  });
 }

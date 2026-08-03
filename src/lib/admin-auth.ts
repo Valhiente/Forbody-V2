@@ -49,7 +49,9 @@ const ROLE_PERMISSIONS: Record<AdminRole, readonly AdminPermission[]> = {
     'marketing.read',
     'marketing.write',
     'units.read',
+    'units.write',
     'reviews.read',
+    'reviews.write',
     'leads.read',
   ],
   manager: [
