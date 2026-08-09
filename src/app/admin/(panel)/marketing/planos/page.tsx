@@ -28,9 +28,10 @@ export default async function MarketingPlansPage({ searchParams }: { searchParam
       }} className="space-y-7">
         <fieldset disabled={!canWrite} className="contents">
           <MarketingSection title="Texto da seção" description="Chamada que apresenta os planos na página inicial.">
-            <TextField label="Título" name="plansTitle" defaultValue={section?.title ?? ''} />
-            <TextField label="Descrição" name="plansDescription" defaultValue={section?.description ?? ''} textarea />
-            <TextField label="Texto do botão" name="plansButtonLabel" defaultValue={section?.button_label ?? ''} />
+            <TextField label="Título" name="plansTitle" defaultValue={section?.title ?? ''} required />
+            <TextField label="Descrição" name="plansDescription" defaultValue={section?.description ?? ''} textarea required />
+            <TextField label="Texto do botão" name="plansButtonLabel" defaultValue={section?.button_label ?? ''} required />
+            <TextField label="Destino do botão" name="plansButtonHref" defaultValue={section?.button_href === '#planos' ? '/unidades' : (section?.button_href ?? '/unidades')} helper="Exemplo: /unidades" required />
           </MarketingSection>
           <div className="grid gap-6 lg:grid-cols-2">
             {(['red', 'black'] as const).map((key) => {
@@ -38,10 +39,10 @@ export default async function MarketingPlansPage({ searchParams }: { searchParam
               const label = key === 'red' ? 'Plano RED' : 'Plano BLACK';
               return (
                 <MarketingSection key={key} title={label} description={key === 'red' ? 'Plano de entrada com foco em musculação.' : 'Plano completo da experiência Forbody.'}>
-                  <TextField label="Nome" name={`${key}Name`} defaultValue={current?.name ?? label} />
-                  <TextField label="Preço exibido" name={`${key}Price`} defaultValue={current?.price_label ?? ''} placeholder="A partir de R$ 99,90" />
-                  <TextField label="Descrição" name={`${key}Description`} defaultValue={current?.description ?? ''} textarea />
-                  <TextField label="Benefícios" name={`${key}Features`} defaultValue={Array.isArray(current?.benefits) ? current.benefits.join('\n') : ''} textarea helper="Digite um benefício por linha." />
+                  <TextField label="Nome" name={`${key}Name`} defaultValue={current?.name ?? label} required />
+                  <TextField label="Preço exibido" name={`${key}Price`} defaultValue={current?.price_label ?? ''} placeholder="R$ 99,90" required />
+                  <TextField label="Descrição" name={`${key}Description`} defaultValue={current?.description ?? ''} textarea required />
+                  <TextField label="Benefícios" name={`${key}Features`} defaultValue={Array.isArray(current?.benefits) ? current.benefits.join('\n') : ''} textarea helper="Digite um benefício por linha. É necessário informar pelo menos um." required />
                   <TextField label="Texto de destaque" name={`${key}Badge`} defaultValue={current?.badge ?? ''} />
                 </MarketingSection>
               );

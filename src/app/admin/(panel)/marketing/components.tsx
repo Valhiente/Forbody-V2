@@ -79,6 +79,7 @@ export function TextField({
   placeholder,
   textarea = false,
   type = 'text',
+  required = false,
 }: {
   label: string;
   name: string;
@@ -87,6 +88,7 @@ export function TextField({
   placeholder?: string;
   textarea?: boolean;
   type?: 'text' | 'url';
+  required?: boolean;
 }) {
   const className = 'w-full rounded-2xl border border-zinc-700 bg-zinc-900 px-4 text-sm text-white outline-none transition focus:border-red-500 focus:ring-1 focus:ring-red-500';
 
@@ -94,9 +96,9 @@ export function TextField({
     <div className="space-y-2">
       <label htmlFor={name} className="text-sm font-semibold text-white">{label}</label>
       {textarea ? (
-        <textarea id={name} name={name} defaultValue={defaultValue} placeholder={placeholder} className={`${className} min-h-[120px] py-3`} />
+        <textarea id={name} name={name} defaultValue={defaultValue} placeholder={placeholder} required={required} className={`${className} min-h-[120px] py-3`} />
       ) : (
-        <input id={name} name={name} type={type} defaultValue={defaultValue} placeholder={placeholder} className={`${className} h-12`} />
+        <input id={name} name={name} type={type} defaultValue={defaultValue} placeholder={placeholder} required={required} className={`${className} h-12`} />
       )}
       {helper ? <p className="text-xs leading-relaxed text-zinc-500">{helper}</p> : null}
     </div>

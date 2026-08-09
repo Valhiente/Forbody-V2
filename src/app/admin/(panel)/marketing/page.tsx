@@ -7,6 +7,7 @@ const primaryModules = [
   { number: '02', title: 'Cards da Home', description: 'Gerencie Estrutura, Professores e Aulas coletivas, com até três imagens em cada card.', href: '/admin/marketing/cards', action: 'Editar cards e imagens' },
   { number: '03', title: 'Planos', description: 'Atualize nomes, preços, descrições e benefícios dos planos RED e BLACK.', href: '/admin/marketing/planos', action: 'Editar planos' },
   { number: '04', title: 'Parceiros', description: 'Atualize logos, nomes, links e visibilidade das empresas parceiras.', href: '/admin/marketing/parceiros', action: 'Editar parceiros' },
+  { number: '05', title: 'Promoções', description: 'Crie, publique ou desative campanhas promocionais exibidas na página inicial.', href: '/admin/marketing/promocoes', action: 'Editar promoções' },
 ];
 
 export default async function MarketingHubPage() {

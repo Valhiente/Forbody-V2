@@ -28,13 +28,10 @@ export default async function MarketingHomePage({ searchParams }: { searchParams
         <MarketingUploadGuard />
         <fieldset disabled={!canWrite} className="contents">
           <MarketingSection title="Chamada principal" description="Esses textos aparecem no primeiro bloco da página inicial.">
-            <div className="grid gap-5 lg:grid-cols-2">
-              <TextField label="Texto de identificação" name="heroSubtitle" defaultValue={hero?.subtitle ?? ''} helper="Texto menor que identifica a marca ou campanha." />
-              <TextField label="Texto do botão" name="heroButtonLabel" defaultValue={hero?.button_label ?? ''} placeholder="Escolher unidade" />
-            </div>
-            <TextField label="Título principal" name="heroTitle" defaultValue={hero?.title ?? ''} helper="Use uma frase curta e forte." />
-            <TextField label="Texto de apoio" name="heroDescription" defaultValue={hero?.description ?? ''} textarea />
-            <TextField label="Destino do botão" name="heroButtonHref" type="text" defaultValue={hero?.button_href ?? '/unidades'} helper="Exemplo: /unidades ou /franquias" />
+            <TextField label="Texto do botão" name="heroButtonLabel" defaultValue={hero?.button_label ?? ''} placeholder="Escolher unidade" required />
+            <TextField label="Título principal" name="heroTitle" defaultValue={hero?.title ?? ''} helper="Use uma frase curta e forte." required />
+            <TextField label="Texto de apoio" name="heroDescription" defaultValue={hero?.description ?? ''} textarea required />
+            <TextField label="Destino do botão" name="heroButtonHref" type="text" defaultValue={hero?.button_href ?? '/unidades'} helper="Exemplo: /unidades ou /franquias" required />
           </MarketingSection>
 
           <MarketingSection title="Imagem principal da Home" description="Quando nenhuma imagem é cadastrada aqui, o site utiliza a imagem de fundo padrão incorporada ao projeto.">

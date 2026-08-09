@@ -39,6 +39,7 @@ type MarketingPlan = {
   price_label: string;
   description: string | null;
   badge: string | null;
+  benefits: string[] | null;
   is_featured: boolean | null;
   is_active: boolean | null;
   sort_order: number | null;
@@ -53,6 +54,7 @@ const fallbackPlanCards = [
     price: "R$ 99,90",
     description: "Musculação com apoio técnico e acesso ao aplicativo.",
     tag: "Melhor entrada",
+    benefits: [],
     featured: false,
   },
   {
@@ -60,6 +62,7 @@ const fallbackPlanCards = [
     price: "R$ 109,90",
     description: "Plano completo para quem quer aproveitar mais a Forbody.",
     tag: "Mais completo",
+    benefits: [],
     featured: true,
   },
 ];
@@ -149,7 +152,7 @@ async function getHomeMarketingData(): Promise<HomeMarketingData> {
         .order("sort_order", { ascending: true }),
       supabase
         .from("site_plans")
-        .select("plan_key,name,price_label,description,badge,is_featured,is_active,sort_order")
+        .select("plan_key,name,price_label,description,badge,benefits,is_featured,is_active,sort_order")
         .eq("is_active", true)
         .order("sort_order", { ascending: true }),
     ]);
@@ -178,6 +181,8 @@ function itemsBySection(items: MarketingItem[], key: string) {
 export default async function HomePage() {
   const marketing = await getHomeMarketingData();
   const heroSection = sectionByKey(marketing.sections, "home_hero");
+  const plansSection = sectionByKey(marketing.sections, "home_plans");
+  const promotionSection = sectionByKey(marketing.sections, "home_promotion");
   const photoItems = itemsBySection(marketing.items, "home_photos");
   const supplierItems = itemsBySection(marketing.items, "home_suppliers");
   const planCards =
@@ -187,6 +192,7 @@ export default async function HomePage() {
           price: plan.price_label.replace(/^A partir de\s*/i, ""),
           description: safeText(plan.description, "Plano Forbody."),
           tag: safeText(plan.badge, plan.is_featured ? "Mais completo" : "Melhor entrada"),
+          benefits: Array.isArray(plan.benefits) ? plan.benefits.filter(Boolean) : [],
           featured: plan.is_featured === true,
         }))
       : fallbackPlanCards;
@@ -199,6 +205,13 @@ export default async function HomePage() {
     ),
     buttonLabel: safeText(heroSection?.button_label, "Escolher unidade"),
     buttonHref: safeText(heroSection?.button_href, "/unidades"),
+  };
+
+  const plansContent = {
+    title: safeText(plansSection?.title, "Planos Forbody"),
+    description: safeText(plansSection?.description, "Escolha o plano que combina com a sua rotina."),
+    buttonLabel: safeText(plansSection?.button_label, "Escolher unidade"),
+    buttonHref: plansSection?.button_href === "#planos" ? "/unidades" : safeText(plansSection?.button_href, "/unidades"),
   };
 
   const showcaseCards = fallbackShowcaseCards.map((card, index) => {
@@ -280,6 +293,10 @@ export default async function HomePage() {
           </div>
 
           <div className="animate-fade-in">
+            <div className="mb-4 rounded-[1.1rem] border border-white/10 bg-black/45 px-5 py-4 backdrop-blur-xl">
+              <p className="text-[10px] font-black uppercase tracking-[0.25em] text-red-400">{plansContent.title}</p>
+              <p className="mt-2 text-xs leading-relaxed text-zinc-300">{plansContent.description}</p>
+            </div>
             <div className="grid gap-4 xl:grid-cols-[0.9fr_1.1fr]">
                 <div className="grid gap-4">
                   {planCards.map((plan) => (
@@ -299,8 +316,16 @@ export default async function HomePage() {
                       <p className="mt-1 text-4xl font-black tracking-[-0.08em] text-white">{plan.price}</p>
                       <p className="mt-4 text-xs leading-relaxed text-zinc-300">{plan.description}</p>
 
-                      <Link href="/unidades" className="mt-5 inline-flex w-full justify-center rounded-lg bg-red-600 px-5 py-3 text-center text-[11px] font-black uppercase tracking-[0.18em] text-white transition hover:bg-red-700">
-                        Escolher unidade
+                      {plan.benefits.length > 0 ? (
+                        <ul className="mt-4 space-y-2 text-xs text-zinc-300">
+                          {plan.benefits.map((benefit) => (
+                            <li key={benefit} className="flex gap-2"><span className="text-red-500">●</span><span>{benefit}</span></li>
+                          ))}
+                        </ul>
+                      ) : null}
+
+                      <Link href={plansContent.buttonHref} className="mt-5 inline-flex w-full justify-center rounded-lg bg-red-600 px-5 py-3 text-center text-[11px] font-black uppercase tracking-[0.18em] text-white transition hover:bg-red-700">
+                        {plansContent.buttonLabel}
                       </Link>
                     </article>
                   ))}
@@ -356,6 +381,25 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {promotionSection ? (
+        <section id="promocao" className="relative z-10 px-5 py-12 sm:px-8 lg:px-12">
+          <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[1.75rem] border border-red-600/35 bg-[#090909] px-6 py-10 sm:px-10 lg:px-14 lg:py-14">
+            {promotionSection.image_url ? (
+              <div className="absolute inset-0 bg-cover bg-center opacity-35" style={{ backgroundImage: `url(${promotionSection.image_url})` }} />
+            ) : null}
+            <div className="absolute inset-0 bg-gradient-to-r from-black via-black/90 to-red-950/55" />
+            <div className="relative max-w-3xl">
+              {promotionSection.subtitle ? <p className="text-[10px] font-black uppercase tracking-[0.32em] text-red-400 sm:text-xs">{promotionSection.subtitle}</p> : null}
+              <h2 className="mt-4 text-3xl font-black uppercase leading-none tracking-[-0.05em] text-white sm:text-5xl">{safeText(promotionSection.title, "Promoção Forbody")}</h2>
+              <p className="mt-5 max-w-2xl text-sm leading-relaxed text-zinc-300 sm:text-base">{safeText(promotionSection.description, "Confira as condições disponíveis nas unidades Forbody.")}</p>
+              <Link href={safeText(promotionSection.button_href, "/unidades")} className="mt-7 inline-flex rounded-lg bg-red-600 px-7 py-4 text-xs font-black uppercase tracking-[0.16em] text-white transition hover:bg-red-500">
+                {safeText(promotionSection.button_label, "Conhecer unidades")} →
+              </Link>
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       {suppliers.length > 0 && (
         <section id="fornecedores" className="relative z-10 px-5 py-12 sm:px-8 lg:px-12">

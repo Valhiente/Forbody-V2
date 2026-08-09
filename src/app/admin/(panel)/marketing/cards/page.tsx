@@ -4,7 +4,7 @@ import { hasAdminPermission, requirePermission } from '@/lib/admin-auth';
 import { updateHomeCardsAction } from '../actions';
 import { MarketingUploadGuard } from '../MarketingUploadGuard';
 import { MarketingImageField } from '../MarketingImageField';
-import { MarketingFeedback, MarketingHeader, ReadOnlyNotice, SaveBar, TextField, type MarketingSearchParams } from '../components';
+import { MarketingFeedback, MarketingHeader, MarketingSection, ReadOnlyNotice, SaveBar, TextField, type MarketingSearchParams } from '../components';
 
 const cardConfigs = [
   { key: 'card_1', label: 'Estrutura', fallbackTitle: 'Estrutura completa', description: 'Equipamentos, espaço físico e ambiente da academia.' },
@@ -35,6 +35,18 @@ export default async function MarketingCardsPage({ searchParams }: { searchParam
       }} className="space-y-7">
         <MarketingUploadGuard />
         <fieldset disabled={!canWrite} className="contents">
+          <MarketingSection title="Card Nossas unidades" description="Esta imagem aparece ao fundo do card que lista Triunfo, Barão do Bananal, Vila Virgínia, Portinari e Campo Belo.">
+            <div className="max-w-xl">
+              <MarketingImageField
+                label="Imagem de fundo de Nossas unidades"
+                name="unitsCardImageFile"
+                urlName="unitsCardImageUrl"
+                removeName="unitsCardImageRemove"
+                currentUrl={item('main')?.image_url ?? ''}
+                helper="Recomendado: imagem vertical ou quadrada, com o assunto principal centralizado."
+              />
+            </div>
+          </MarketingSection>
           {cardConfigs.map((card, cardIndex) => {
             const mainItem = item(card.key);
             return (
@@ -43,8 +55,8 @@ export default async function MarketingCardsPage({ searchParams }: { searchParam
                 <h2 className="mt-3 text-3xl font-black text-white">{card.label}</h2>
                 <p className="mt-2 text-sm text-zinc-400">{card.description}</p>
                 <div className="mt-6 grid gap-5 lg:grid-cols-2">
-                  <TextField label={`Título exibido em ${card.label}`} name={`${card.key}_title`} defaultValue={mainItem?.title ?? card.fallbackTitle} />
-                  <TextField label={`Descrição de ${card.label}`} name={`${card.key}_description`} defaultValue={mainItem?.description ?? ''} textarea />
+                  <TextField label={`Título exibido em ${card.label}`} name={`${card.key}_title`} defaultValue={mainItem?.title ?? card.fallbackTitle} required />
+                  <TextField label={`Descrição de ${card.label}`} name={`${card.key}_description`} defaultValue={mainItem?.description ?? ''} textarea required />
                 </div>
                 <div className="mt-6 grid gap-5 md:grid-cols-3">
                   {[1, 2, 3].map((slot) => {
